@@ -9,4 +9,5 @@ Maintainer: Who to complain to <akashtndn.acm@gmail.com>
 Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Imports: git2r,
-    ggplot2
+    ggplot2,
+    testthat
