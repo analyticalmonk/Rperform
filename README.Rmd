@@ -1,0 +1,90 @@
+Rperform
+--------
+
+Rperform is an R package that makes it easy for R package developers to track quantitative performance metrics of their code, over time. <b>It focuses on providing changes brought over in the package’s performance metrics over subsequent development versions, most importantly relating to time and memory.</b>
+<em>The project is under development, as a part of the [Google Summer of Code 2015](https://github.com/rstats-gsoc/gsoc2015/wiki/Test-timings-on-Travis) program.</em>
+
+Installation
+------------
+
+To get started, you can install the package from github using `devtools`.
+
+``` r
+library(devtools)
+install_github("da-ta-vinci21/Rperform")
+```
+
+Examples
+--------
+
+The following example illustrates the use of the <em>Rpeform::get_times()</em> function on the git repository
+of the package [stringr](https://github.com/tdhock/stringr).
+
+```r
+> setwd("./stringr")
+> get_times(test_path = "./tsts/testthat/test-split.r", num_commits = 1)
+                                                                                  test_name
+special cases are correct.1                                                 special cases are correct
+special cases are correct.2                                                 special cases are correct
+special cases are correct.3                                                 special cases are correct
+str_split functions as expected.1                                     str_split functions as expected
+str_split functions as expected.2                                     str_split functions as expected
+str_split functions as expected.3                                     str_split functions as expected
+vectors give correct results dealt with correctly.1 vectors give correct results dealt with correctly
+vectors give correct results dealt with correctly.2 vectors give correct results dealt with correctly
+vectors give correct results dealt with correctly.3 vectors give correct results dealt with correctly
+n sets maximum number of splits in str_split.1           n sets maximum number of splits in str_split
+n sets maximum number of splits in str_split.2           n sets maximum number of splits in str_split
+n sets maximum number of splits in str_split.3           n sets maximum number of splits in str_split
+n sets exact number of splits in str_split_fixed.1   n sets exact number of splits in str_split_fixed
+n sets exact number of splits in str_split_fixed.2   n sets exact number of splits in str_split_fixed
+n sets exact number of splits in str_split_fixed.3   n sets exact number of splits in str_split_fixed
+                                                        seconds status
+special cases are correct.1                         0.001190747   pass
+special cases are correct.2                         0.000883997   pass
+special cases are correct.3                         0.000862947   pass
+str_split functions as expected.1                   0.001744738   pass
+str_split functions as expected.2                   0.001448384   pass
+str_split functions as expected.3                   0.001458779   pass
+vectors give correct results dealt with correctly.1 0.002342436   pass
+vectors give correct results dealt with correctly.2 0.002042825   pass
+vectors give correct results dealt with correctly.3 0.002010272   pass
+n sets maximum number of splits in str_split.1      0.003309564   pass
+n sets maximum number of splits in str_split.2      0.002981273   pass
+n sets maximum number of splits in str_split.3      0.003013406   pass
+n sets exact number of splits in str_split_fixed.1  0.002944533   pass
+n sets exact number of splits in str_split_fixed.2  0.002624187   pass
+n sets exact number of splits in str_split_fixed.3  0.002602117   pass
+                                                                                     sha_val
+special cases are correct.1                         a0f03f53ecb1f391a575cd645990e437faa724c0
+special cases are correct.2                         a0f03f53ecb1f391a575cd645990e437faa724c0
+special cases are correct.3                         a0f03f53ecb1f391a575cd645990e437faa724c0
+str_split functions as expected.1                   a0f03f53ecb1f391a575cd645990e437faa724c0
+str_split functions as expected.2                   a0f03f53ecb1f391a575cd645990e437faa724c0
+str_split functions as expected.3                   a0f03f53ecb1f391a575cd645990e437faa724c0
+vectors give correct results dealt with correctly.1 a0f03f53ecb1f391a575cd645990e437faa724c0
+vectors give correct results dealt with correctly.2 a0f03f53ecb1f391a575cd645990e437faa724c0
+vectors give correct results dealt with correctly.3 a0f03f53ecb1f391a575cd645990e437faa724c0
+n sets maximum number of splits in str_split.1      a0f03f53ecb1f391a575cd645990e437faa724c0
+n sets maximum number of splits in str_split.2      a0f03f53ecb1f391a575cd645990e437faa724c0
+n sets maximum number of splits in str_split.3      a0f03f53ecb1f391a575cd645990e437faa724c0
+n sets exact number of splits in str_split_fixed.1  a0f03f53ecb1f391a575cd645990e437faa724c0
+n sets exact number of splits in str_split_fixed.2  a0f03f53ecb1f391a575cd645990e437faa724c0
+n sets exact number of splits in str_split_fixed.3  a0f03f53ecb1f391a575cd645990e437faa724c0
+```
+
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
