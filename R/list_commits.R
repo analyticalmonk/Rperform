@@ -1,25 +1,55 @@
 ##  -----------------------------------------------------------------------------------------
 
+#' Commits' details.
+#' 
+#' Given a repository path and number of commits (n), returns a data frame containing
+#' the SHA1 values and summary of the last n commits in the repo.
+#' 
+#' @param path File-path to the git repository whose commits are to be summarized.
+#' @param num_commits Number of commits to be summarized. The default is 20.
+#' 
+#' @examples
+#' 
+#' ## Example-1
+#' 
+#' # Changed to the directory containing the git repository
+#' setwd(path)
+#' 
+#' # Obtained details of the last 10 commits in the repository
+#' list_commits(num_commits = 10)
+#' 
+#' ## Example-2
+#' 
+#' # Obtained the details of the last 20 (default value) commits in the repository
+#' # specified by path.
+#' list_commits(path)
+#' 
+#' @section Warning:
+#'   Library assumes the current directory to be the root directory of the
+#'   package being tested.
+#' 
+#' @seealso \code{\link[git2r]{commits}}
+
 # The list_commits function, given a repository path and number of commits (n), returns
 # a data frame containing the SHA1 values and summary of the last n commits in the repo.
 
-list_commits <- function(path = "./", num_commits = 20, test_path = NULL){
+list_commits <- function(path = "./", num_commits = 20){
   stopifnot(is.character(path))
   stopifnot(length(path) == 1)
   stopifnot(is.numeric(num_commits))
   stopifnot(length(num_commits) == 1)
   num_commits <- floor(num_commits)
-  if (!is.null(test_path)) {
-    stopifnot(is.character(test_path))
-    stopifnot(length(test_path) == 1)
-  }
+#   if (!is.null(test_path)) {
+#     stopifnot(is.character(test_path))
+#     stopifnot(length(test_path) == 1)
+#   }
   target <- git2r::repository(path)
-  if (!is.null(test_path)) {
-    test_lines <- readLines(test_path)
-    qlines <- sub("test_that(", "testthatQuantity(", test_lines, fixed=TRUE)
-    qfile <- tempfile()
-    writeLines(qlines, qfile)
-  }
+#   if (!is.null(test_path)) {
+#     test_lines <- readLines(test_path)
+#     qlines <- sub("test_that(", "testthatQuantity(", test_lines, fixed=TRUE)
+#     qfile <- tempfile()
+#     writeLines(qlines, qfile)
+#   }
   
   commit_list <- git2r::commits(target, n = num_commits, reverse = T)
   sha_vec  <- character(num_commits)
@@ -39,7 +69,35 @@ list_commits <- function(path = "./", num_commits = 20, test_path = NULL){
 
 ##  -----------------------------------------------------------------------------------------
 
-# The get_time function, given a test-file path, checks its run-time against the specified
+#' Test file's run-time.
+#' 
+#' Given a test-file's path, checks its run-time against the commit specified by the 
+#' commit \code{object} passed as a parameter.
+#' 
+#' @param test_path File-path for the test file whose run-time is to be checked.
+#' @param test_commit git2r commit \code{object} corresponding to the commit corresponding to
+#'    which the run-time is to be checked.
+#'    
+#' @examples
+#' ## Example-1
+#' # Obtain the commit object
+#' commit_list <- git2r::commits()
+#' t_commit <- commit_list[[1]]
+#' 
+#' # Specify the test-file path
+#' t_path <- "Path/to/file"
+#' 
+#' # Pass the parameters and obtain the run-time details
+#' library(Rperform)
+#' time_commit(t_path, t_commit)
+#' 
+#' @section Warning:
+#'   Library assumes the current directory to be the root directory of the
+#'   package being tested.
+#' 
+#' @seealso \code{\link[git2r]{commits}}
+
+# The commit_time function, given a test-file path, checks its run-time against the specified
 # commit in the current git repository.
 
 time_commit <- function(test_path, test_commit) {
@@ -89,10 +147,38 @@ time_commit <- function(test_path, test_commit) {
 
 ##  -----------------------------------------------------------------------------------------
 
-# The get_time function, given a test-file path, checks its run-time against the specified
-# number of commits in the current git repository and returns a data-frame comprised of the
-# test name, status of test run, time (if successful) and SHA1 value corresponding to the 
-# commit the value is for.
+#' Run-time across versions.
+#' 
+#' Given a test-file path, checks its run-time against the specified number of commits 
+#' in the current git repository and returns a data-frame comprised of the test name, 
+#' status of test run, time (if successful) and SHA1 value corresponding to the commit
+#' the value is for.
+#' 
+#' @param test_path File-path of the test-file which is to be used for run-time
+#'   comparisons.
+#' @param num_commits Number of commits (versions) against which the file is to
+#'   be tested, with default being 20.
+#'   
+#' @examples
+#' ## Example-1
+#' 
+#' # Specify the test-file path
+#' t_path <- "Path/to/file"
+#' 
+#' # Pass the parameters and obtain the run-time details against 10 commits
+#' library(Rperform)
+#' time_commit(test_path = t_path, n_commits = 10)
+#' 
+#' @section Warning:
+#'   Library assumes the current directory to be the root directory of the
+#'   package being tested.
+#' 
+#' @seealso \code{\link[git2r]{commits}} 
+
+# The get_time function, given a test-file path, checks its run-time against the
+# specified number of commits in the current git repository and returns a
+# data-frame comprised of the test name, status of test run, time (if
+# successful) and SHA1 value corresponding to the commit the value is for.
 
 get_times <- function(test_path, num_commits = 20) {
   stopifnot(is.character(test_path))
@@ -104,6 +190,8 @@ get_times <- function(test_path, num_commits = 20) {
   target <- git2r::repository("./")
   commit_list <- git2r::commits(target, n = num_commits)
   test_results <- list()
+  # Loads the functions from the repository for the package to be tested
+  devtools::load_all(file.path("./"))
   
   for (c in commit_list) {
     if (length(test_results) == 0) {
@@ -117,6 +205,31 @@ get_times <- function(test_path, num_commits = 20) {
 }
 
 ##  -----------------------------------------------------------------------------------------
+
+#' Run-times across branches.
+#' 
+#' Given a test-file and branch, returns the run-time of the file over the given
+#' number of commits on the branch and the latest commit on master.
+#' 
+#' @param test_path File-path for the test file to be tested.
+#' @param branch_name Branch name against whose commits the test file is to be 
+#'   tested.
+#' @param num_commits Number of commits on the branch against which the test
+#'   file is to be tested.
+#'   
+#' @examples
+#' # Set the file-path
+#' t_path <- "Path/to/file"
+#'
+#' # Load the library and pass the parameters to the function
+#' library(Rperform)
+#' compare_branch(test_path = t_path, branch_name = "helper", num_commits = 10)
+#' 
+#' @section Warning:
+#'   Library assumes the current directory to be the root directory of the
+#'   package being tested.
+#' 
+#' @seealso \code{\link[git2r]{commits}}
 
 # Given a test and branch, compare_branch returns the run-time of the test over the given
 # number of commits on the branch and the latest commit on master.
@@ -141,5 +254,53 @@ compare_branch <- function(test_path, branch_name, num_commits) {
   rbind(test_results, master_result)
 }
 
+
+##  -----------------------------------------------------------------------------------------
+
+mem_commit <- function(test_path, test_commit) {
+  stopifnot(is.character(test_path))
+  stopifnot(length(test_path) == 1)
+  stopifnot(!is.null(test_commit))
+  stopifnot(git2r::is_commit(test_commit))
+  
+  sha_val <- get_sha(test_commit)
+  t_lines <- readLines(test_path)
+  t_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed=TRUE)
+  temp_file <- tempfile()
+  writeLines(t_lines, temp_file)
+  target <- git2r::repository("./")
+  git2r::checkout(test_commit)
+  on.exit(expr = git2r::checkout(target, "master"))
+  test_results <- list()
+  
+  
+  testthatQuantity <- function(test_name, code){
+    e <- parent.frame()
+    code_subs <- substitute(code)
+    run <- function(){
+      testthat:::test_code(test_name, code_subs, env=e)
+    }
+#     seconds <- if(require(microbenchmark)){
+#       times <- microbenchmark(test = {
+#         run()
+#       }, times = 3)
+#       times$time/1e9
+#     } else {
+#       replicate(3, {
+#         time_vec <- system.time( {
+#           run()
+#         } )
+#         time_vec[["elapsed"]]
+#       })
+#     }
+    memory <- as.numeric(pryr::mem_change(run()))
+    status <- "pass"
+    time_df <- data.frame(test_name, memory, status, sha_val)
+    test_results[[test_name]] <<- time_df
+  }
+  
+  source(temp_file, local = T)
+  do.call(rbind, test_results)
+}
 
 ##  -----------------------------------------------------------------------------------------
