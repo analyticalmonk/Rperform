@@ -73,6 +73,8 @@ n sets exact number of splits in str_split_fixed.2  a0f03f53ecb1f391a575cd645990
 n sets exact number of splits in str_split_fixed.3  a0f03f53ecb1f391a575cd645990e437faa724c0
 ```
 
+---
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, echo = FALSE}
