@@ -4,7 +4,7 @@
 \alias{get_times}
 \title{Run-time across versions.}
 \usage{
-get_times(test_path, num_commits = 20)
+get_times(test_path, num_commits = 20, mode = 1)
 }
 \arguments{
 \item{test_path}{File-path of the test-file which is to be used for run-time
