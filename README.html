@@ -76,24 +76,19 @@ install_github(&quot;da-ta-vinci21/Rperform&quot;)</code></pre>
 <p>The following example illustrates the use of the <em>Rpeform::get_times()</em> function on the git repository of the package <a href="https://github.com/tdhock/stringr">stringr</a>.</p>
 <pre class="r"><code>&gt; setwd(&quot;./stringr&quot;)
 &gt; get_times(test_path = &quot;./tests/testthat/test-split.r&quot;, num_commits = 1)
-                                                                                                                                                                                    test_name
-special cases are correct                                           special cases are correct
-str_split functions as expected                               str_split functions as expected
-vectors give correct results dealt with correctly vectors give correct results dealt with correctly
-n sets maximum number of splits in str_split      n sets maximum number of splits in str_split
-n sets exact number of splits in str_split_fixed  n sets exact number of splits in str_split_fixed
-                                                       seconds status
-special cases are correct                         0.0007989073   pass
-str_split functions as expected                   0.0013156327   pass
-vectors give correct results dealt with correctly 0.0017844417   pass
-n sets maximum number of splits in str_split      0.0025774343   pass
-n sets exact number of splits in str_split_fixed  0.0022530520   pass
-                                                                                   sha_val
-special cases are correct                         a0f03f53ecb1f391a575cd645990e437faa724c0
-str_split functions as expected                   a0f03f53ecb1f391a575cd645990e437faa724c0
-vectors give correct results dealt with correctly a0f03f53ecb1f391a575cd645990e437faa724c0
-n sets maximum number of splits in str_split      a0f03f53ecb1f391a575cd645990e437faa724c0
-n sets exact number of splits in str_split_fixed  a0f03f53ecb1f391a575cd645990e437faa724c0</code></pre>
+
+test_name                                                seconds status
+1                         special cases are correct 0.0009759963   pass
+2                   str_split functions as expected 0.0015615240   pass
+3 vectors give correct results dealt with correctly 0.0021526630   pass
+4      n sets maximum number of splits in str_split 0.0031284990   pass
+5  n sets exact number of splits in str_split_fixed 0.0027357150   pass
+                                   sha_val file runtime
+1 a0f03f53ecb1f391a575cd645990e437faa724c0   0.01218899
+2 a0f03f53ecb1f391a575cd645990e437faa724c0   0.01218899
+3 a0f03f53ecb1f391a575cd645990e437faa724c0   0.01218899
+4 a0f03f53ecb1f391a575cd645990e437faa724c0   0.01218899
+5 a0f03f53ecb1f391a575cd645990e437faa724c0   0.01218899</code></pre>
 <hr />
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 </div>

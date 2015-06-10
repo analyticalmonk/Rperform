@@ -70,7 +70,7 @@ list_commits <- function(path = "./", num_commits = 20){
 ##  -----------------------------------------------------------------------------------------
 ##  -----------------------------------------------------------------------------------------
 
-#' Test file's run-time (mode-2).
+#' Test file's run-time.
 #' 
 #' Given a test-file's path, checks its run-time against the commit specified by the 
 #' commit \code{object} passed as a parameter.
@@ -98,10 +98,11 @@ list_commits <- function(path = "./", num_commits = 20){
 #' 
 #' @seealso \code{\link[git2r]{commits}}
 
-# The commit_time function, given a test-file path, checks its run-time against the specified
-# commit in the current git repository.
+# The commit_time function, given a test-file path, checks its run-time details
+# against the specified commit in the current git repository.
 
-time_commit2 <- function(test_path, test_commit) {
+time_commit <- function(test_path, test_commit) {
+  
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
   stopifnot(!is.null(test_commit))
@@ -109,14 +110,41 @@ time_commit2 <- function(test_path, test_commit) {
 
   sha_val <- get_sha(test_commit)
   t_lines <- readLines(test_path)
-  t_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed=TRUE)
-  temp_file <- tempfile()
-  writeLines(t_lines, temp_file)
+  q_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed=TRUE)
+  temp_file1 <- tempfile()
+  temp_file2 <- tempfile()
+  writeLines(t_lines, temp_file1)
+  writeLines(q_lines, temp_file2)
+  
   target <- git2r::repository("./")
   curr_version <- git2r::commits()[[1]]
   git2r::checkout(test_commit)
   on.exit(expr = git2r::checkout(curr_version))
   test_results <- list()
+  
+# Code block measuring the run-time for the test file as a whole
+# --------------------------------------------------------------
+  
+  require(testthat)
+  file_time <- if(require(microbenchmark)){
+    times <- microbenchmark(test = {
+      source(temp_file1, local = T)
+    }, times = 3)
+    times$time/1e9
+  } else {
+    replicate(3, {
+      time_vec <- system.time( {
+        source(temp_file1, local = T)
+      } )
+      time_vec[["elapsed"]]
+    })
+  }
+  seconds_file <- mean(file_time)
+
+# ---------------------------------------------------------------
+
+# Code block measuring the run-time of the testthat code blocks (if present)
+# --------------------------------------------------------------------------
 
   testthatQuantity <- function(test_name, code){
     e <- parent.frame()
@@ -128,91 +156,27 @@ time_commit2 <- function(test_path, test_commit) {
       times <- microbenchmark(test = {
         run()
       }, times = 3)
-      mean(times$time/1e9)
+      times$time/1e9
     } else {
       replicate(3, {
         time_vec <- system.time( {
           run()
         } )
-        mean(time_vec[["elapsed"]])
+        time_vec[["elapsed"]]
       })
     }
+    seconds <- mean(seconds)
     status <- "pass"
     time_df <- data.frame(test_name, seconds, status, sha_val)
     test_results[[test_name]] <<- time_df
   }
-  
-  require(testthat)
-  source(temp_file, local = T)
-  do.call(rbind, test_results)
-}
 
-##  -----------------------------------------------------------------------------------------
-
-#' Test file's run-time (mode-1).
-#' 
-#' Given a test-file's path, checks its run-time against the commit specified by the 
-#' commit \code{object} passed as a parameter.
-#' 
-#' @param test_path File-path for the test file whose run-time is to be checked.
-#' @param test_commit git2r commit \code{object} corresponding to the commit corresponding to
-#'    which the run-time is to be checked.
-#'    
-#' @examples
-#' ## Example-1
-#' # Obtain the commit object
-#' commit_list <- git2r::commits()
-#' t_commit <- commit_list[[1]]
-#' 
-#' # Specify the test-file path
-#' t_path <- "Path/to/file"
-#' 
-#' # Pass the parameters and obtain the run-time details
-#' library(Rperform)
-#' time_commit(t_path, t_commit)
-#' 
-#' @section Warning:
-#'   Library assumes the current directory to be the root directory of the
-#'   package being tested.
-#' 
-#' @seealso \code{\link[git2r]{commits}}
-
-
-time_commit1 <- function(test_path, test_commit) {
-  stopifnot(is.character(test_path))
-  stopifnot(length(test_path) == 1)
-  stopifnot(!is.null(test_commit))
-  stopifnot(git2r::is_commit(test_commit))
-  
-  base_file <- basename(test_path)
-  sha_val <- get_sha(test_commit)
-  t_lines <- readLines(test_path)
-  temp_file <- tempfile()
-  writeLines(t_lines, temp_file)
-  target <- git2r::repository("./")
-  curr_version <- git2r::commits()[[1]]
-  git2r::checkout(test_commit)
-  on.exit(expr = git2r::checkout(curr_version))
-  test_results <- list()
-  
-  require(testthat)
-  seconds <- if(require(microbenchmark)){
-    times <- microbenchmark(test = {
-      source(temp_file, local = T)
-    }, times = 3)
-    mean(times$time/1e9)
-  } else {
-    replicate(3, {
-      time_vec <- system.time( {
-        source(temp_file, local = T)
-      } )
-      mean(time_vec[["elapsed"]])
-    })
-  }
-#   seconds <- microbenchmark(source(temp_file, local = T), times = 3)
-#   seconds <- mean(seconds$time/1e9)
-  test_results[[base_file]] <- data.frame(test_file = base_file, seconds = seconds)
-  do.call(rbind, test_results)
+  source(temp_file2, local = T)  
+#   --------------------------------------------------------------------------
+  test_results <- do.call(rbind, test_results)
+  test_results["file runtime"] <- seconds_file
+  rownames(test_results) <- NULL
+  test_results
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -265,22 +229,12 @@ get_times <- function(test_path, num_commits = 20, mode = 1) {
   # Loads the functions from the repository for the package to be tested
   devtools::load_all(file.path("./"))
   
-  if (mode == 1) {
-    for (commit_i in commit_list) {
-      if (length(test_results) == 0) {
-        test_results <- time_commit1(test_path, commit_i)
-        } else {
-        test_results <- rbind(test_results, time_commit1(test_path, commit_i))
-        }
+  for (commit_i in commit_list) {
+    if (length(test_results) == 0) {
+      test_results <- time_commit(test_path, commit_i)
+    } else {
+      test_results <- rbind(test_results, time_commit(test_path, commit_i))
     }
-  } else {
-    for (commit_i in commit_list) {
-      if (length(test_results) == 0) {
-        test_results <- time_commit2(test_path, commit_i)
-      } else {
-        test_results <- rbind(test_results, time_commit2(test_path, commit_i))
-      }
-    } 
   } 
   
   test_results
