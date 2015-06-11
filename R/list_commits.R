@@ -109,6 +109,7 @@ time_commit <- function(test_path, test_commit) {
   stopifnot(git2r::is_commit(test_commit))
 
   sha_val <- get_sha(test_commit)
+  commit_dtime <- get_datetime(test_commit)
   t_lines <- readLines(test_path)
   q_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed=TRUE)
   temp_file1 <- tempfile()
@@ -117,9 +118,9 @@ time_commit <- function(test_path, test_commit) {
   writeLines(q_lines, temp_file2)
   
   target <- git2r::repository("./")
-  curr_version <- git2r::commits()[[1]]
+#   curr_version <- git2r::commits()[[1]]
   git2r::checkout(test_commit)
-  on.exit(expr = git2r::checkout(curr_version))
+  on.exit(expr = git2r::checkout(target, "master"))
   test_results <- list()
   
 # Code block measuring the run-time for the test file as a whole
@@ -167,7 +168,8 @@ time_commit <- function(test_path, test_commit) {
     }
     seconds <- mean(seconds)
     status <- "pass"
-    time_df <- data.frame(test_name, seconds, status, sha_val)
+    time_df <- data.frame(test_name, seconds, status, sha_val,
+                          date_time = commit_dtime)
     test_results[[test_name]] <<- time_df
   }
 
