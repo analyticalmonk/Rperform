@@ -216,7 +216,7 @@ time_commit <- function(test_path, test_commit) {
 # data-frame comprised of the test name, status of test run, time (if
 # successful) and SHA1 value corresponding to the commit the value is for.
 
-get_times <- function(test_path, num_commits = 20, mode = 1) {
+get_times <- function(test_path, num_commits = 20) {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
   stopifnot(is.numeric(num_commits))
