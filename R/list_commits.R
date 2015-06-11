@@ -292,6 +292,7 @@ compare_branch <- function(test_path, branch_name, num_commits) {
 
 
 ##  -----------------------------------------------------------------------------------------
+##  -----------------------------------------------------------------------------------------
 
 mem_commit <- function(test_path, test_commit) {
   stopifnot(is.character(test_path))
@@ -316,27 +317,21 @@ mem_commit <- function(test_path, test_commit) {
     run <- function(){
       testthat:::test_code(test_name, code_subs, env=e)
     }
-#     seconds <- if(require(microbenchmark)){
-#       times <- microbenchmark(test = {
-#         run()
-#       }, times = 3)
-#       times$time/1e9
-#     } else {
-#       replicate(3, {
-#         time_vec <- system.time( {
-#           run()
-#         } )
-#         time_vec[["elapsed"]]
-#       })
-#     }
+    gc()
     memory <- as.numeric(pryr::mem_change(run()))
+    gc()
     status <- "pass"
     time_df <- data.frame(test_name, memory, status, sha_val)
-    test_results[[test_name]] <<- time_df
+    test_results[[test_name]] <<- memory
   }
   
+  devtools::load_all("./")
+#   require(testthat)
+#   pryr::mem_change(source(temp_file, local = T))
+  test_results <- do.call(rbind, test_results)
   source(temp_file, local = T)
-  do.call(rbind, test_results)
+  rownames(test_results) <- NULL
+  test_results
 }
 
 ##  -----------------------------------------------------------------------------------------
