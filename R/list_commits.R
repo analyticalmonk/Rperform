@@ -183,8 +183,11 @@ time_commit <- function(test_path, test_commit) {
   seconds_file <- (microbenchmark(source(temp_file2, local = T)
                                   , times = 1))$time/1e9
   test_results_df <- do.call(rbind, test_results)
-  test_results_df["file runtime"] <- seconds_file
-  test_results_df["file runtime-2"] <- seconds_file2
+#   test_results_df["file runtime"] <- seconds_file
+#   test_results_df["file runtime-2"] <- seconds_file2
+  test_results_df <- rbind(test_results_df, data.frame(test_name = "FULL FILE CHECK", 
+                                       seconds = seconds_file2, status = "pass",
+                                       sha_val = sha_val, date_time = commit_dtime))
   rownames(test_results_df) <- NULL
   test_results_df
 }
