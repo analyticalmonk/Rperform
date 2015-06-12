@@ -17,13 +17,20 @@ get_sha <- function(commit_val) {
 }
 
 ##  -----------------------------------------------------------------------------------------
-
+#' DateTime value of a git commit object.
+#' 
+#' \code{get_sha(commit_val = )} returns the date-time value for the git commit
+#' object provided as the parameter.
+#' 
+#' @param commit_val git commit object, as returned by git2r::commits()
+#' 
+#' @seealso \code{\link[git2r]{commits}}
+#' @seealso \code{\link[POSIXct]}
 
 get_datetime <- function(commit_val) {
   stopifnot(git2r::is_commit(commit_val))
   
-  date_time <- as((commit_val@committer@when), "POSIXct")
-  date_time
+  as((commit_val@committer@when), "POSIXct")
 }
 
 ##  -----------------------------------------------------------------------------------------
