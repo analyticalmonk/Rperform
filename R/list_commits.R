@@ -313,7 +313,6 @@ mem_commit <- function(test_path, test_commit) {
   
   sha_val <- get_sha(test_commit)
   t_lines <- readLines(test_path)
-  t_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed=TRUE)
   temp_file <- tempfile()
   writeLines(t_lines, temp_file)
   target <- git2r::repository("./")
@@ -321,28 +320,33 @@ mem_commit <- function(test_path, test_commit) {
   on.exit(expr = git2r::checkout(target, "master"))
   test_results <- list()
   
-  
-  testthatQuantity <- function(test_name, code){
-    e <- parent.frame()
-    code_subs <- substitute(code)
-    run <- function(){
-      testthat:::test_code(test_name, code_subs, env=e)
-    }
-    gc()
-    memory <- as.numeric(pryr::mem_change(run()))
-    gc()
-    status <- "pass"
-    time_df <- data.frame(test_name, memory, status, sha_val)
-    test_results[[test_name]] <<- memory
-  }
+# --------------------------------------------------------------------------  
   
   devtools::load_all("./")
-#   require(testthat)
-#   pryr::mem_change(source(temp_file, local = T))
-  test_results <- do.call(rbind, test_results)
-  source(temp_file, local = T)
-  rownames(test_results) <- NULL
+  require(testthat)
+  before <- .memory.usage()
+  print(gc(reset = T))
+  source(temp_file, local = TRUE)
+  a <- matrix(5, nrow = 1024L, ncol = 1024L)
+  during <- .memory.usage()
+  print(gc(reset = T))
+  remove(a)
+  after <- .memory.usage()
+  print(gc(reset = T))
+  test_results <- rbind(before = before, during = during, after = after)
   test_results
 }
 
 ##  -----------------------------------------------------------------------------------------
+##  -----------------------------------------------------------------------------------------
+
+## Use the *nix ps program to get the memory usage of this R process.
+
+.memory.usage <- function(ps.parameter=paste("-p", Sys.getpid())){
+  cmd <- sprintf("ps %s -o pid,cmd,rss", ps.parameter)
+  ps.lines <- system(cmd, intern=TRUE)
+  stopifnot(length(ps.lines) > 1)
+  ps.table <- read.table(text=ps.lines, header=TRUE)
+  ps.table$megabytes <- ps.table$RSS/1024
+  ps.table
+}
