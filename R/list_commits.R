@@ -39,17 +39,8 @@ list_commits <- function(path = "./", num_commits = 20){
   stopifnot(is.numeric(num_commits))
   stopifnot(length(num_commits) == 1)
   num_commits <- floor(num_commits)
-#   if (!is.null(test_path)) {
-#     stopifnot(is.character(test_path))
-#     stopifnot(length(test_path) == 1)
-#   }
+
   target <- git2r::repository(path)
-#   if (!is.null(test_path)) {
-#     test_lines <- readLines(test_path)
-#     qlines <- sub("test_that(", "testthatQuantity(", test_lines, fixed=TRUE)
-#     qfile <- tempfile()
-#     writeLines(qlines, qfile)
-#   }
   
   commit_list <- git2r::commits(target, n = num_commits, reverse = T)
   sha_vec  <- character(num_commits)
@@ -62,7 +53,7 @@ list_commits <- function(path = "./", num_commits = 20){
     msg_vec[i] <- msg
   }
   
-  git2r::checkout(target, "master")
+  git2r::checkout(target, get_branch())
   
   data.frame(SHA1 = sha_vec, Summary = msg_vec, stringsAsFactors = F)
 }
@@ -120,11 +111,11 @@ time_commit <- function(test_path, test_commit) {
   writeLines(q_lines, temp_file2)
   
   target <- git2r::repository("./")
-# Need to work out this part
+# Reverting to the current branch on exit from the function
 ######################################################################  
-#   curr_version <- git2r::commits()[[1]]
+  curr_branch <- get_branch()
   git2r::checkout(test_commit)
-  on.exit(expr = git2r::checkout(target, "master"))
+  on.exit(expr = git2r::checkout(target, curr_branch))
 ######################################################################
   test_results <- list()
   
@@ -327,10 +318,8 @@ mem_commit <- function(test_path, test_commit) {
   before <- .memory.usage()
   print(gc(reset = T))
   source(temp_file, local = TRUE)
-  a <- matrix(5, nrow = 1024L, ncol = 1024L)
   during <- .memory.usage()
   print(gc(reset = T))
-  remove(a)
   after <- .memory.usage()
   print(gc(reset = T))
   test_results <- rbind(before = before, during = during, after = after)
