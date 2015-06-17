@@ -38,9 +38,11 @@ get_datetime <- function(commit_val) {
 ## Return the current git branch
 
 get_branch <- function() {
-  b_list <- system(command = "git branch", intern = TRUE)
-  b_logical <- grepl(pattern = '\\* ', x = b_list)
-  gsub(pattern = "\\* ",replacement = "", x =  b_list[b_logical])
+  repo <- repository(file.path("./"))
+  git2r::head(repo)@name
+#   b_list <- system(command = "git branch", intern = TRUE)
+#   b_logical <- grepl(pattern = '\\* ', x = b_list)
+#   gsub(pattern = "\\* ",replacement = "", x =  b_list[b_logical])
 }
 
 ##  -----------------------------------------------------------------------------------------

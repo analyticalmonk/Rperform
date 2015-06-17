@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 ^README\.Rmd$
 ^README-.*\.png$
+^\./R/mem_experiment\.R$

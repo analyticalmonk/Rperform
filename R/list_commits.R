@@ -43,19 +43,20 @@ list_commits <- function(path = "./", num_commits = 20){
   target <- git2r::repository(path)
   
   commit_list <- git2r::commits(target, n = num_commits, reverse = T)
-  sha_vec  <- character(num_commits)
-  msg_vec  <- character(num_commits)
+  sha_list  <- list()
+  msg_list  <- list()
+  date_list <- list()
   
   for (i in 1:num_commits) {
     com <- attr(commit_list[[i]], which = "sha")
     msg <- attr(commit_list[[i]], which = "summary")
-    sha_vec[i] <- com
-    msg_vec[i] <- msg
+    com_date <- as(commit_list[[i]]@committer@when, "character")
+    sha_list[i] <- com
+    msg_list[i] <- msg
+    date_list[i] <- com_date
   }
   
-  git2r::checkout(target, get_branch())
-  
-  data.frame(SHA1 = sha_vec, Summary = msg_vec, stringsAsFactors = F)
+  as.data.frame(cbind(msg_list, date_list, sha_list), stringsAsFactors = F)
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -113,9 +114,9 @@ time_commit <- function(test_path, test_commit) {
   target <- git2r::repository("./")
 # Reverting to the current branch on exit from the function
 ######################################################################  
-  curr_branch <- get_branch()
+  original_state <- git2r::head(target)
   git2r::checkout(test_commit)
-  on.exit(expr = git2r::checkout(target, curr_branch))
+  on.exit(expr = git2r::checkout(original_state))
 ######################################################################
   test_results <- list()
   
@@ -123,7 +124,7 @@ time_commit <- function(test_path, test_commit) {
 # --------------------------------------------------------------
   
   require(testthat)
-  file_time <- if(require(microbenchmark)){
+  seconds_file2 <- if(require(microbenchmark)){
     times <- microbenchmark(test = {
       source(temp_file1, local = T)
     }, times = 3)
@@ -136,7 +137,6 @@ time_commit <- function(test_path, test_commit) {
       time_vec[["elapsed"]]
     })
   }
-  seconds_file2 <- mean(file_time)
 
 # ---------------------------------------------------------------
 
@@ -152,17 +152,16 @@ time_commit <- function(test_path, test_commit) {
     seconds <- if(require(microbenchmark)){
       times <- microbenchmark(test = {
         run()
-      }, times = 1)
+      }, times = 3)
       times$time/1e9
     } else {
-      replicate(1, {
+      replicate(3, {
         time_vec <- system.time( {
           run()
         } )
         time_vec[["elapsed"]]
       })
     }
-    seconds <- mean(seconds)
     status <- "pass"
     time_df <- data.frame(test_name, seconds, status, sha_val,
                           date_time = commit_dtime)
@@ -171,9 +170,19 @@ time_commit <- function(test_path, test_commit) {
 
 # --------------------------------------------------------------------------
 
+# Code block measuring the run-time of test file as a whole
+# --------------------------------------------------------------------------
+
   seconds_file <- (microbenchmark(source(temp_file2, local = T)
                                   , times = 1))$time/1e9
-  test_results_df <- do.call(rbind, test_results)
+
+# --------------------------------------------------------------------------
+
+
+# Formatting the output
+# --------------------------------------------------------------------------
+
+test_results_df <- do.call(rbind, test_results)
 #   test_results_df["file runtime"] <- seconds_file
 #   test_results_df["file runtime-2"] <- seconds_file2
   test_results_df <- rbind(test_results_df, data.frame(test_name = basename(test_path), 
@@ -281,15 +290,19 @@ compare_branch <- function(test_path, branch_name, num_commits) {
   stopifnot(length(num_commits) == 1)
   num_commits <- floor(num_commits)
   
-  target <- git2r::repository("./")
-  git2r::checkout(target, branch_name)
-  test_results <- get_times(test_path, num_commits)
-  test_results["branch_name"] <- branch_name
-  git2r::checkout(target, "master")
-  master_result <- get_times(test_path, 1)
-  master_result["branch_name"] <- "master"
+## TO-DO --------------------------------------------------------
   
-  rbind(test_results, master_result)
+#   target <- git2r::repository("./")
+#   git2r::checkout(target, branch_name)
+#   test_results <- get_times(test_path, num_commits)
+#   test_results["branch_name"] <- branch_name
+#   git2r::checkout(target, "master")
+#   master_result <- get_times(test_path, 1)
+#   master_result["branch_name"] <- "master"
+#   
+#   rbind(test_results, master_result)
+
+## TO-DO --------------------------------------------------------
 }
 
 
@@ -307,8 +320,9 @@ mem_commit <- function(test_path, test_commit) {
   temp_file <- tempfile()
   writeLines(t_lines, temp_file)
   target <- git2r::repository("./")
+  original_state <- head(repo)
   git2r::checkout(test_commit)
-  on.exit(expr = git2r::checkout(target, "master"))
+  on.exit(expr = git2r::checkout(original_state))
   test_results <- list()
   
 # --------------------------------------------------------------------------  
