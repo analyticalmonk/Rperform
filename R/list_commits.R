@@ -334,7 +334,6 @@ mem_commit <- function(test_path, test_commit) {
   
 # --------------------------------------------------------------------------  
   
-#   devtools::load_all("./")
   require(testthat)
   .rss.profile.start(paste(test_name, ".RSS", sep = ""))
   source(temp_file, local = TRUE)

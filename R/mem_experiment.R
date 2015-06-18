@@ -1,3 +1,6 @@
+# ----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+
 .rss.profile.start <- function(rss.file){
   stopifnot(is.character(rss.file))
   stopifnot(length(rss.file) == 1)
@@ -28,6 +31,22 @@
        leak=kilobytes[length(kilobytes)]-kilobytes[1])
 }
 
+# ----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# Script for obtaining memory usage using "exec/get_mem.R"
+
+# script.R <- system.file("exec", "get_mem.R", package="Rperform")
+# Rscript <- file.path(R.home("bin"), "Rscript")
+# cmd <- paste(Rscript, script.R, "./tests/testthat/test-detect.r")
+# result.list <- list()
+# for(test.i in 1:3){
+#   system(cmd)
+#   load("mem_result.RData")
+#   result.list[[test.i]] <- mem_result
+# }
+
+# ----------------------------------------------------------------------------
+
 ## Use the *nix ps program to get the memory usage of this R process.
 # 
 # .memory.usage <- function(ps.parameter=paste("-p", Sys.getpid())){
@@ -38,4 +57,3 @@
 #   ps.table$megabytes <- ps.table$RSS/1024
 #   ps.table
 # }
-
