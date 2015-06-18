@@ -1,42 +1,41 @@
-memory.usage <- function(ps.parameter=paste("-p", Sys.getpid())){
-  cmd <- sprintf("ps %s -o pid,cmd,rss", ps.parameter)
-  ps.lines <- system(cmd, intern=TRUE)
-  stopifnot(length(ps.lines) > 1)
-  ps.table <- read.table(text=ps.lines, header=TRUE)
-  ps.table$megabytes <- ps.table$RSS/1024
-  ps.table$megabytes
-}
-
-##  -----------------------------------------------------------------------------------------
-##  -----------------------------------------------------------------------------------------
-
-mem_commit2 <- function(test_path, test_commit) {
-  stopifnot(is.character(test_path))
-  stopifnot(length(test_path) == 1)
-  stopifnot(!is.null(test_commit))
-  stopifnot(git2r::is_commit(test_commit))
-  
-  sha_val <- get_sha(test_commit)
-  t_lines <- readLines(test_path)
-#   t_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed=TRUE)
-  temp_file <- tempfile()
-  writeLines(t_lines, temp_file)
-  target <- git2r::repository("./")
-  git2r::checkout(test_commit)
-  on.exit(expr = git2r::checkout(target, "master"))
-  test_results <- list()
-  
-  devtools::load_all("./")
-  #   require(testthat)
-  #   pryr::mem_change(source(temp_file, local = T))
-  # test_results <- do.call(rbind, test_results)
-  require(testthat)
+.rss.profile.start <- function(rss.file){
+  stopifnot(is.character(rss.file))
+  stopifnot(length(rss.file) == 1)
+  sh.file <- system.file("exec", "rss.sh", package="Rperform")
+  cmd <- paste("bash", sh.file, rss.file, Sys.getpid())
   gc(reset = T)
-  source(temp_file, local = T)
-  memory <- sum(gc()[,6])
-#   rownames(test_results) <- NULL
-#   test_results
-  memory
+  system(cmd, wait=FALSE)
+  ## while({
+  ##   rss.size <- file.info(rss.file)$size
+  ##   is.na(rss.size) || rss.size == 0
+  ## }){
+  ##   ## wait for the system(cmd) to start writing to rss.file.
+  ##   cat("Waiting for rss.sh to start writing to ", rss.file, "\n")
+  ## }
+  Sys.sleep(1)
 }
 
-##  -----------------------------------------------------------------------------------------
+.rss.profile.stop <- function(rss.file){
+  stopifnot(is.character(rss.file))
+  stopifnot(length(rss.file) == 1)
+  DONE.file <- paste0(rss.file, ".DONE")
+  gc()
+  Sys.sleep(1)
+  cat("", file=DONE.file)
+  kilobytes <- scan(rss.file, what=integer(), quiet=TRUE)
+  list(kilobytes.over.time=kilobytes,
+       swap=max(kilobytes) - kilobytes[1],
+       leak=kilobytes[length(kilobytes)]-kilobytes[1])
+}
+
+## Use the *nix ps program to get the memory usage of this R process.
+# 
+# .memory.usage <- function(ps.parameter=paste("-p", Sys.getpid())){
+#   cmd <- sprintf("ps %s -o pid,cmd,rss", ps.parameter)
+#   ps.lines <- system(cmd, intern=TRUE)
+#   stopifnot(length(ps.lines) > 1)
+#   ps.table <- read.table(text=ps.lines, header=TRUE)
+#   ps.table$megabytes <- ps.table$RSS/1024
+#   ps.table
+# }
+

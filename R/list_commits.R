@@ -306,8 +306,11 @@ compare_branch <- function(test_path, branch_name, num_commits) {
 }
 
 
+
 ##  -----------------------------------------------------------------------------------------
+                                  ## MEMORY CHUNK BEGINS ##
 ##  -----------------------------------------------------------------------------------------
+
 
 mem_commit <- function(test_path, test_commit) {
   stopifnot(is.character(test_path))
@@ -316,40 +319,57 @@ mem_commit <- function(test_path, test_commit) {
   stopifnot(git2r::is_commit(test_commit))
   
   sha_val <- get_sha(test_commit)
+  commit_dtime <- get_datetime(test_commit)
+  test_name <- basename(test_path)
   t_lines <- readLines(test_path)
   temp_file <- tempfile()
   writeLines(t_lines, temp_file)
   target <- git2r::repository("./")
-  original_state <- head(repo)
+  original_state <- git2r::head(repo)
   git2r::checkout(test_commit)
   on.exit(expr = git2r::checkout(original_state))
   test_results <- list()
+  rss_list <- list()
   
 # --------------------------------------------------------------------------  
   
   devtools::load_all("./")
   require(testthat)
-  before <- .memory.usage()
-  print(gc(reset = T))
+  .rss.profile.start(paste(test_name, ".RSS", sep = ""))
   source(temp_file, local = TRUE)
-  during <- .memory.usage()
-  print(gc(reset = T))
-  after <- .memory.usage()
-  print(gc(reset = T))
-  test_results <- rbind(before = before, during = during, after = after)
+  rss_lists <- .rss.profile.stop(paste(test_name, ".RSS", sep = ""))
+
+  data.frame(test_name, swap = rss_lists$swap, leak = rss_lists$leak,
+             date_time = commit_dtime, stringsAsFactors = FALSE)
+}
+
+##  -----------------------------------------------------------------------------------------
+##  -----------------------------------------------------------------------------------------
+
+                       ## TO GET MEMORY DETAILS FOR MULTIPLE COMMITS ##
+
+get_mem <- function(test_path, num_commits) {
+  stopifnot(is.character(test_path))
+  stopifnot(length(test_path) == 1)
+  stopifnot(is.numeric(num_commits))
+  stopifnot(length(num_commits) == 1)
+  num_commits <- floor(num_commits)
+  
+  target <- git2r::repository("./")
+  commit_list <- git2r::commits(target, n = num_commits)
+  result_list <- list()
+  # Loads the functions from the repository for the package to be tested
+  devtools::load_all(file.path("./"))
+  
+  for(commit_i in seq_along(commit_list)){
+    one_commit <- commit_list[[commit_i]]
+    result_list[[commit_i]] <- mem_commit(test_path, one_commit)
+  } 
+  
+  test_results <- do.call(rbind, result_list)
   test_results
 }
 
 ##  -----------------------------------------------------------------------------------------
+
 ##  -----------------------------------------------------------------------------------------
-
-## Use the *nix ps program to get the memory usage of this R process.
-
-.memory.usage <- function(ps.parameter=paste("-p", Sys.getpid())){
-  cmd <- sprintf("ps %s -o pid,cmd,rss", ps.parameter)
-  ps.lines <- system(cmd, intern=TRUE)
-  stopifnot(length(ps.lines) > 1)
-  ps.table <- read.table(text=ps.lines, header=TRUE)
-  ps.table$megabytes <- ps.table$RSS/1024
-  ps.table
-}
