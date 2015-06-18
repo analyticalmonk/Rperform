@@ -60,6 +60,7 @@ list_commits <- function(path = "./", num_commits = 20){
 }
 
 ##  -----------------------------------------------------------------------------------------
+                                   ## TIME CHUNK BEGINS ##
 ##  -----------------------------------------------------------------------------------------
 
 #' Test file's run-time.
@@ -259,9 +260,11 @@ get_times <- function(test_path, num_commits = 20) {
 #' number of commits on the branch and the latest commit on master.
 #' 
 #' @param test_path File-path for the test file to be tested.
-#' @param branch_name Branch name against whose commits the test file is to be 
+#' @param branch_1 First Branch against whose commits the test file is to be 
 #'   tested.
-#' @param num_commits Number of commits on the branch against which the test
+#' @param branch_2 Second Branch against whose commits the test file is to be 
+#'   tested.   
+#' @param num_commits Number of commits on the first branch against which the test
 #'   file is to be tested.
 #'   
 #' @examples
@@ -281,11 +284,14 @@ get_times <- function(test_path, num_commits = 20) {
 # Given a test and branch, compare_branch returns the run-time of the test over the given
 # number of commits on the branch and the latest commit on master.
 
-compare_branch <- function(test_path, branch_name, num_commits) {
+compare_branch <- function(test_path, branch_1, branch_2 = "master",
+                           num_commits) {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
-  stopifnot(is.character(branch_name))
-  stopifnot(length(branch_name) == 1)
+  stopifnot(is.character(branch_1))
+  stopifnot(length(branch_1) == 1)
+  stopifnot(is.character(branch_2))
+  stopifnot(length(branch_2) == 1)
   stopifnot(is.numeric(num_commits))
   stopifnot(length(num_commits) == 1)
   num_commits <- floor(num_commits)
@@ -293,12 +299,15 @@ compare_branch <- function(test_path, branch_name, num_commits) {
 ## TO-DO --------------------------------------------------------
   
 #   target <- git2r::repository("./")
-#   git2r::checkout(target, branch_name)
+#   origin_state <- head(target)
+#   git2r::checkout(target, branch_1)
+#   on.exit(expr = git2r::checkout(origin_state))
+# 
 #   test_results <- get_times(test_path, num_commits)
-#   test_results["branch_name"] <- branch_name
-#   git2r::checkout(target, "master")
+#   test_results["branch_name"] <- branch_1
+#   git2r::checkout(target, branch_2)
 #   master_result <- get_times(test_path, 1)
-#   master_result["branch_name"] <- "master"
+#   master_result["branch_name"] <- branch_2
 #   
 #   rbind(test_results, master_result)
 
