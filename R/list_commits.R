@@ -318,6 +318,7 @@ mem_commit <- function(test_path, test_commit) {
   stopifnot(!is.null(test_commit))
   stopifnot(git2r::is_commit(test_commit))
   
+  target <- git2r::repository("./")
   sha_val <- get_sha(test_commit)
   commit_dtime <- get_datetime(test_commit)
   test_name <- basename(test_path)
@@ -325,7 +326,7 @@ mem_commit <- function(test_path, test_commit) {
   temp_file <- tempfile()
   writeLines(t_lines, temp_file)
   target <- git2r::repository("./")
-  original_state <- git2r::head(repo)
+  original_state <- git2r::head(target)
   git2r::checkout(test_commit)
   on.exit(expr = git2r::checkout(original_state))
   test_results <- list()
@@ -333,7 +334,7 @@ mem_commit <- function(test_path, test_commit) {
   
 # --------------------------------------------------------------------------  
   
-  devtools::load_all("./")
+#   devtools::load_all("./")
   require(testthat)
   .rss.profile.start(paste(test_name, ".RSS", sep = ""))
   source(temp_file, local = TRUE)
