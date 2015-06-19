@@ -42,7 +42,7 @@ list_commits <- function(path = "./", num_commits = 20){
 
   target <- git2r::repository(path)
   
-  commit_list <- git2r::commits(target, n = num_commits, reverse = T)
+  commit_list <- git2r::commits(target, n = num_commits)
   sha_list  <- list()
   msg_list  <- list()
   date_list <- list()
@@ -496,9 +496,11 @@ mem_compare <- function(test_path, num_commits = 5) {
   for (commit_i in 1:num_commits) {
     cmd <- paste(Rscript, script.R, test_path,
                  as.character(commit_i))
-    system(cmd)
-    load("mem_result.RData")
-    result_list[[commit_i]] <- mem_result 
+    for (test_t in 1:3) {
+      system(cmd)
+      load("mem_result.RData")
+      result_list[[paste0(commit_i, as.character(test_t))]] <- mem_result 
+    }
   }
   
   do.call(what = rbind, args = result_list)
