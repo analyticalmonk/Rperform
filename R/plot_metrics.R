@@ -33,7 +33,7 @@ plot_time <- function(test_path, num_commits) {
   time_frame <- get_times(test_path, num_commits)
 #   Will replace sha_val with the dates after figuring out how to obtain them.
   ggplot2::qplot(date_time, seconds, data = time_frame, color = test_name) +
-  ggplot2::theme(axis.text.x = element_text(angle = -90))
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90))
 }
 
 ##  -----------------------------------------------------------------------------------------

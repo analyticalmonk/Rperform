@@ -382,7 +382,7 @@ mem_commit <- function(test_path, test_commit) {
   source(temp_file, local = TRUE)
   rss_list <- .rss.profile.stop(paste(test_name, ".RSS", sep = ""))
 
-  data.frame(test_name, swap = rss_list$swap, leak = rss_list$leak,
+  data.frame(test_name, swap_mb = rss_list$swap/1000, leak_mb = rss_list$leak/1000,
              date_time = commit_dtime, stringsAsFactors = FALSE)
 }
 
