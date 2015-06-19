@@ -25,7 +25,6 @@ get_sha <- function(commit_val) {
 #' @param commit_val git commit object, as returned by git2r::commits()
 #' 
 #' @seealso \code{\link[git2r]{commits}}
-#' @seealso \code{\link[POSIXct]}
 
 get_datetime <- function(commit_val) {
   stopifnot(git2r::is_commit(commit_val))
@@ -35,10 +34,18 @@ get_datetime <- function(commit_val) {
 
 ##  -----------------------------------------------------------------------------------------
 
-## Return the current git branch
+#' Current branch name of a git repository.
+#' 
+#' \code{get_branch} returns the branch name for the git repository passed in as
+#' parameter (default being the current repository).
+#' 
+#' @seealso \code{\link[git2r]{head}}
+#' @seealso \code{\link[git2r]{repository}}
 
-get_branch <- function() {
-  repo <- repository(file.path("./"))
+## Return the current git branch of a repository
+
+get_branch <- function(dir_path = "./") {
+  repo <- repository(dir_path)
   git2r::head(repo)@name
 #   b_list <- system(command = "git branch", intern = TRUE)
 #   b_logical <- grepl(pattern = '\\* ', x = b_list)

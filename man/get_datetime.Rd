@@ -15,7 +15,5 @@ object provided as the parameter.
 }
 \seealso{
 \code{\link[git2r]{commits}}
-
-\code{\link[POSIXct]}
 }
 

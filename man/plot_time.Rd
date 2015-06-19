@@ -35,7 +35,5 @@ plot_time(test_path = t_path, n_commits = 10)
 }
 \seealso{
 \code{\link[git2r]{commits}}
-
-\code{\link[testthat]}
 }
 

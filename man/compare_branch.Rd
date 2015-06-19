@@ -4,15 +4,18 @@
 \alias{compare_branch}
 \title{Run-times across branches.}
 \usage{
-compare_branch(test_path, branch_name, num_commits)
+compare_branch(test_path, branch_1, branch_2 = "master", num_commits)
 }
 \arguments{
 \item{test_path}{File-path for the test file to be tested.}
 
-\item{branch_name}{Branch name against whose commits the test file is to be
+\item{branch_1}{First Branch against whose commits the test file is to be
 tested.}
 
-\item{num_commits}{Number of commits on the branch against which the test
+\item{branch_2}{Second Branch against whose commits the test file is to be
+tested.}
+
+\item{num_commits}{Number of commits on the first branch against which the test
   file is to be tested.}
 }
 \description{

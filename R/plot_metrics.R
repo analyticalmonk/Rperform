@@ -24,7 +24,6 @@
 #'   package being tested.
 #' 
 #' @seealso \code{\link[git2r]{commits}}
-#' @seealso \code{\link[testthat]}  
 
 ## The plot_time function, given a test-file path, plots the time taken by 
 ## individual testthat blocks against the corresponding date_time values for the

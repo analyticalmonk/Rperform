@@ -91,7 +91,7 @@ list_commits <- function(path = "./", num_commits = 20){
 #' 
 #' @seealso \code{\link[git2r]{commits}}
 
-# The commit_time function, given a test-file path, checks its run-time details
+# The time_commit function, given a test-file path, checks its run-time details
 # against the specified commit in the current git repository.
 
 time_commit <- function(test_path, test_commit) {
@@ -315,11 +315,44 @@ compare_branch <- function(test_path, branch_1, branch_2 = "master",
 }
 
 
-
 ##  -----------------------------------------------------------------------------------------
                                   ## MEMORY CHUNK BEGINS ##
 ##  -----------------------------------------------------------------------------------------
 
+#' Test-file's memory statistics.
+#' 
+#' Given a test-file's path, checks its memory metrics against the commit
+#' specified by the commit \code{object} passed as a parameter. Memory 
+#' metrics returned are the memory leaked and maximum meory swapped during
+#' its execution.
+#' 
+#' @param test_path File-path for the test file which is to be checked.
+#' @param test_commit git2r commit \code{object} corresponding to which the
+#'   memory stats are to be checked.
+#'    
+#' @examples
+#' ## Example-1
+#' # Obtain the commit object
+#' commit_list <- git2r::commits()
+#' t_commit <- commit_list[[1]]
+#' 
+#' # Specify the test-file path
+#' t_path <- "Path/to/file"
+#' 
+#' # Pass the parameters and obtain the memory stats
+#' library(Rperform)
+#' mem_commit(t_path, t_commit)
+#' 
+#' @section Warning:
+#'   Library assumes the current directory to be the root directory of the
+#'   package being tested.
+#' 
+#' @seealso \code{\link[git2r]{commits}}
+
+# The mem_commit function, given a test-file path, checks its memory details, 
+# more specifically the memory leaked and maximum memory swapped during its
+# execution. It does so against the specified commit in the current git
+# repository.
 
 mem_commit <- function(test_path, test_commit) {
   stopifnot(is.character(test_path))
@@ -358,6 +391,40 @@ mem_commit <- function(test_path, test_commit) {
 
                        ## TO GET MEMORY DETAILS FOR MULTIPLE COMMITS ##
 
+#' Test-file's memory statistics.
+#' 
+#' Given a test-file's path, checks its memory metrics against the commit 
+#' specified by the commit number passed as a parameter. Memory metrics returned
+#' are the memory leaked and maximum meory swapped during its execution. A
+#' commit number,n, would correspond to the nth commit in the commit log of the
+#' current git repository.
+#' 
+#' @param test_path File-path for the test file which is to be checked.
+#' @param commit_num commit number in the git log for the current git repository
+#'   against which the memory stats are to be checked, with the commit number
+#'   for the most recent commit being 1.
+#'    
+#' @examples
+#' ## Example-1
+#' 
+#' # Specify the test-file path
+#' t_path <- "Path/to/file"
+#' 
+#' # Pass the parameters and obtain the memory stats
+#' library(Rperform)
+#' get_mem(t_path, 3)
+#' 
+#' @section Warning:
+#'   Library assumes the current directory to be the root directory of the
+#'   package being tested.
+#' 
+#' @seealso \code{\link[git2r]{commits}}
+
+# The get_mem function, given a test-file path, checks its memory details, more
+# specifically the memory leaked and maximum memory swapped during its 
+# execution. It does so against the nth commit in the current git repository, n
+# being the commit_num parameter (with default value equal to 1).
+
 get_mem <- function(test_path, commit_num = 1) {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
@@ -384,6 +451,37 @@ get_mem <- function(test_path, commit_num = 1) {
 
 ##  -----------------------------------------------------------------------------------------
 
+#' Test-file's memory statistics for multiple commits.
+#' 
+#' Given a test-file's path, checks its memory metrics against the number of 
+#' commits specified by the parameter num_commits. Memory metrics returned are
+#' the memory leaked and maximum meory swapped during its execution.
+#' 
+#' @param test_path File-path for the test file which is to be checked.
+#' @param num_commits number of commits against all of which the memory stats
+#'   are to be checked starting from the most recent one.
+#'   
+#' @examples
+#' ## Example-1
+#' 
+#' # Specify the test-file path
+#' t_path <- "Path/to/file"
+#' 
+#' # Pass the parameters and obtain the run-time details
+#' library(Rperform)
+#' mem_commit(t_path, 5)
+#' 
+#' @section Warning:
+#'   Library assumes the current directory to be the root directory of the
+#'   package being tested.
+#' 
+#' @seealso \code{\link[git2r]{commits}}
+
+# The mem_compare function, given a test-file path, returns its memory details. 
+# Specifically it obtains the values for memory leaked and maximum memory
+# swapped during the file's execution. It does so against the specified number
+# of commits from the git log in the current git repository.
+
 mem_compare <- function(test_path, num_commits = 5) {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
@@ -403,6 +501,8 @@ mem_compare <- function(test_path, num_commits = 5) {
     result_list[[commit_i]] <- mem_result 
   }
   
-  result_list
+  do.call(what = rbind, args = result_list)
   
 }
+
+##  -----------------------------------------------------------------------------------------
