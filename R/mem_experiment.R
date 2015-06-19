@@ -4,10 +4,10 @@
 .rss.profile.start <- function(rss.file){
   stopifnot(is.character(rss.file))
   stopifnot(length(rss.file) == 1)
-  sh.file <- system.file("exec", "rss.sh", package="Rperform")
+  sh.file <- system.file("exec", "rss.sh", package = "Rperform")
   cmd <- paste("bash", sh.file, rss.file, Sys.getpid())
   gc(reset = T)
-  system(cmd, wait=FALSE)
+  system(cmd, wait = FALSE)
   ## while({
   ##   rss.size <- file.info(rss.file)$size
   ##   is.na(rss.size) || rss.size == 0
@@ -24,11 +24,11 @@
   DONE.file <- paste0(rss.file, ".DONE")
   gc()
   Sys.sleep(1)
-  cat("", file=DONE.file)
-  kilobytes <- scan(rss.file, what=integer(), quiet=TRUE)
-  list(kilobytes.over.time=kilobytes,
-       swap=max(kilobytes) - kilobytes[1],
-       leak=kilobytes[length(kilobytes)]-kilobytes[1])
+  cat("", file = DONE.file)
+  kilobytes <- scan(rss.file, what = integer(), quiet = TRUE)
+  list(kilobytes.over.time = kilobytes,
+       swap = max(kilobytes) - kilobytes[1],
+       leak = kilobytes[length(kilobytes)]-kilobytes[1])
 }
 
 # ----------------------------------------------------------------------------

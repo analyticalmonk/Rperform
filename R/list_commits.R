@@ -334,6 +334,7 @@ mem_commit <- function(test_path, test_commit) {
   t_lines <- readLines(test_path)
   temp_file <- tempfile()
   writeLines(t_lines, temp_file)
+  
   target <- git2r::repository("./")
   original_state <- git2r::head(target)
   git2r::checkout(test_commit)
@@ -346,9 +347,9 @@ mem_commit <- function(test_path, test_commit) {
   require(testthat)
   .rss.profile.start(paste(test_name, ".RSS", sep = ""))
   source(temp_file, local = TRUE)
-  rss_lists <- .rss.profile.stop(paste(test_name, ".RSS", sep = ""))
+  rss_list <- .rss.profile.stop(paste(test_name, ".RSS", sep = ""))
 
-  data.frame(test_name, swap = rss_lists$swap, leak = rss_lists$leak,
+  data.frame(test_name, swap = rss_list$swap, leak = rss_list$leak,
              date_time = commit_dtime, stringsAsFactors = FALSE)
 }
 
@@ -357,28 +358,51 @@ mem_commit <- function(test_path, test_commit) {
 
                        ## TO GET MEMORY DETAILS FOR MULTIPLE COMMITS ##
 
-get_mem <- function(test_path, num_commits) {
+get_mem <- function(test_path, commit_num = 1) {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
-  stopifnot(is.numeric(num_commits))
-  stopifnot(length(num_commits) == 1)
-  num_commits <- floor(num_commits)
+  stopifnot(is.numeric(commit_num))
+  stopifnot(length(commit_num) == 1)
+  commit_num <- floor(commit_num)
   
   target <- git2r::repository("./")
-  commit_list <- git2r::commits(target, n = num_commits)
+  target_commit <- git2r::commits(target)[[commit_num]]
   result_list <- list()
   # Loads the functions from the repository for the package to be tested
   devtools::load_all(file.path("./"))
   
-  for(commit_i in seq_along(commit_list)){
-    one_commit <- commit_list[[commit_i]]
-    result_list[[commit_i]] <- mem_commit(test_path, one_commit)
-  } 
+#   for(commit_i in seq_along(commit_list)){
+#     one_commit <- commit_list[[commit_i]]
+#     result_list[[commit_i]] <- mem_commit(test_path, one_commit)
+#   } 
   
-  test_results <- do.call(rbind, result_list)
+  test_results <- mem_commit(test_path, target_commit)
   test_results
 }
 
 ##  -----------------------------------------------------------------------------------------
 
 ##  -----------------------------------------------------------------------------------------
+
+mem_compare <- function(test_path, num_commits = 5) {
+  stopifnot(is.character(test_path))
+  stopifnot(length(test_path) == 1)
+  stopifnot(is.numeric(num_commits))
+  stopifnot(length(num_commits) == 1)
+  num_commits <- floor(num_commits)
+  
+  script.R <- system.file("exec", "get_mem.R", package="Rperform")
+  Rscript <- file.path(R.home("bin"), "Rscript")
+  result_list <- list()
+  
+  for (commit_i in 1:num_commits) {
+    cmd <- paste(Rscript, script.R, test_path,
+                 as.character(commit_i))
+    system(cmd)
+    load("mem_result.RData")
+    result_list[[commit_i]] <- mem_result 
+  }
+  
+  result_list
+  
+}
