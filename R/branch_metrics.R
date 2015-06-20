@@ -157,9 +157,9 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
   branch1_df <- time_branch(test_path = test_path, branch = branch1,
                             num_commits = same_commit$cnum_b1)
   branch2_df <- time_branch(test_path = test_path, branch = branch2,
-                            num_commits = same_commit$cum_b2)
+                            num_commits = same_commit$cnum_b2)
 
-  rbind(branch1, branch2)
+  rbind(branch1_df, branch2_df)
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -171,7 +171,7 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
   stopifnot(length(branch2) == 1)
   
   # Git operations
-  target <- git2r::repository()
+  target <- git2r::repository(file.path("./"))
   original_state <- git2r::head(target)
   on.exit(expr = git2r::checkout(original_state))
   git2r::checkout(object = target, branch = branch1)
@@ -179,14 +179,8 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
   git2r::checkout(object = target, branch = branch2)
   commitlist2 <- git2r::commits(target)
   
-  dtime_list1 <- list()
-  dtime_list2 <- list()
-  for (commit_i in seq(commitlist1)) {
-    dtime_list1[[commit_i]] <- get_datetime(commit_val = commitlist1[[commit_i]])
-  }
-  for (commit_i in seq(commitlist2)) {
-    dtime_list2[[commit_i]] <- get_datetime(commit_val = commitlist2[[commit_i]])
-  }
+  dtime_list1 <- lapply(commitlist1, FUN = get_datetime)
+  dtime_list2 <- lapply(commitlist2, FUN = get_datetime)
   
   for (c1 in seq(dtime_list1)) {
     search_result <- .b_search(dtime_list2, dtime_list1[[c1]],

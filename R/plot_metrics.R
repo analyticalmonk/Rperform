@@ -169,3 +169,14 @@ plot_directory <- function(test_dir, num_commits = 5) {
 }
 
 ##  -----------------------------------------------------------------------------------------
+##  -----------------------------------------------------------------------------------------
+
+plot_btimes <- function(test_path, branch1, branch2 = "master") {
+  btimes_df <- compare_brancht(test_path = test_path, branch1 = branch1,
+                               branch2 = branch2)
+  
+  ggplot2::qplot(x = date_time, y = seconds, data = btimes_df, color = test_name) + 
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90))
+}
+
+##  -----------------------------------------------------------------------------------------
