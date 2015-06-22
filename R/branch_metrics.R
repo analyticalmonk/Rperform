@@ -1,15 +1,13 @@
 ##  -----------------------------------------------------------------------------------------
 
-#' Run-times across branches.
+#' Run-times of a file on the given branch.
 #' 
 #' Given a test-file and branch, returns the run-time of the file over the given
-#' number of commits on the branch and the latest commit on master.
+#' number of commits on the branch.
 #' 
 #' @param test_path File-path for the test file to be tested.
-#' @param branch_1 First Branch against whose commits the test file is to be 
-#'   tested.
-#' @param branch_2 Second Branch against whose commits the test file is to be 
-#'   tested.   
+#' @param branch First Branch against whose commits the test file is to be 
+#'   tested (with master being the default).   
 #' @param num_commits Number of commits on the first branch against which the test
 #'   file is to be tested.
 #'   
@@ -19,16 +17,15 @@
 #'
 #' # Load the library and pass the parameters to the function
 #' library(Rperform)
-#' compare_branch(test_path = t_path, branch_name = "helper", num_commits = 10)
+#' time_branch(test_path = t_path, branch_name = "helper", num_commits = 10)
 #' 
 #' @section Warning:
 #'   Library assumes the current directory to be the root directory of the
 #'   package being tested.
-#' 
-#' @seealso \code{\link[git2r]{commits}}
+#'   
 
-# Given a test and branch, compare_branch returns the run-time of the test over the given
-# number of commits on the branch and the latest commit on master.
+# Given a test and branch, compare_branch returns the run-time of the test over
+# the given number of commits on the branch and the latest commit on master.
 
 time_branch <- function(test_path, branch = "master", num_commits = 5) {
   stopifnot(is.character(test_path))
@@ -112,9 +109,12 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
       test_results[[test_name]] <<- time_df
     }
     
-    # --------------------------------------------------------------------------
     
     source(file = temp_file2, local = T)
+#     seconds_file2 <- {
+#       times <- microbenchmark(times = 1, source(file = temp_file2, local = T))
+#       times$time/1e9
+#     }
     
     # Formatting the output
     # --------------------------------------------------------------------------
@@ -131,7 +131,6 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
                                         seconds = seconds_file, status = "pass",
                                         branch = branch, date_time = commit_dtime))
     rownames(test_results_df) <- NULL
-    test_results_df
   }
   ## TO-DO --------------------------------------------------------
   
@@ -140,6 +139,30 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
 
 ##  -----------------------------------------------------------------------------------------
 ##  -----------------------------------------------------------------------------------------
+#' Run-times across branches.
+#' 
+#' Given a test-file and two branches, returns the run-times of the file over
+#' the two branches against the first commit till the latest commit common to
+#' both of them.
+#' 
+#' @param test_path File-path for the test file to be tested.
+#' @param branch_1 First Branch against whose commits the test file is to be 
+#'   tested.
+#' @param branch_2 Second Branch against whose commits the test file is to be 
+#'   tested.   
+#'   
+#' @examples
+#' # Set the file-path
+#' t_path <- "Path/to/file"
+#'
+#' # Load the library and pass the parameters to the function
+#' library(Rperform)
+#' compare_brancht(test_path = t_path, branch1 = "helper", branch2 = "master")
+#' 
+#' @section Warning:
+#'   Library assumes the current directory to be the root directory of the
+#'   package being tested.
+#' 
 
 compare_brancht <- function(test_path, branch1, branch2 = "master") {
   stopifnot(is.character(test_path))
@@ -203,7 +226,9 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
 
 .b_search <- function(search_list, search_target, start, end) {
   mid_val <- as.integer((end + start) / 2)
-  if (search_list[[mid_val]] == search_target) {
+  if (mid_val < 1) {
+    info_df <- data.frame(status= F, sequence = mid_val)
+  } else if (search_list[[mid_val]] == search_target) {
     info_df <- data.frame(status = T, sequence = mid_val)
     return(info_df)
   } else if (search_target < search_list[[mid_val]]) {
