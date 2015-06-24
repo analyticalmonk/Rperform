@@ -31,69 +31,76 @@
 
 plot_time <- function(test_path, num_commits) {
   time_frame <- get_times(test_path, num_commits)
-  ggplot2::qplot(date_time, seconds, data = time_frame, color = test_name) +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90))
+  ggplot2::qplot(msg_val, seconds, data = time_frame, color = test_name) + 
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+    ggplot2::scale_x_discrete(limits = rev(levels(time_frame$msg_val)))
+  # In the above 3 lines code, the first line creates the basic qplot. The 
+  # second and third lines display the x-axis labels at 90 degrees to the 
+  # horizontal and correct the order of message labels on the x -axis,
+  # respectively.
+  
 }
 
 ##  -----------------------------------------------------------------------------------------
 ##  -----------------------------------------------------------------------------------------
 
 plot_mem <- function(test_path, num_commits) {
-    # Multiple plot function
-    #
-    # ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
-    # - cols:   Number of columns in layout
-    # - layout: A matrix specifying the layout. If present, 'cols' is ignored.
-    #
-    # If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
-    # then plot 1 will go in the upper left, 2 will go in the upper right, and
-    # 3 will go all the way across the bottom.
-    #
-    multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-      library(grid)
+    
+  ## Multiple plot function
+  #---------------------------------------------------------------------------------
+  # ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+  # - cols:   Number of columns in layout
+  # - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+  #
+  # If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+  # then plot 1 will go in the upper left, 2 will go in the upper right, and
+  # 3 will go all the way across the bottom.
+  #
+  multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+    library(grid)
+    
+    # Make a list from the ... arguments and plotlist
+    plots <- c(list(...), plotlist)
+    
+    numPlots = length(plots)
+    
+    # If layout is NULL, then use 'cols' to determine layout
+    if (is.null(layout)) {
+      # Make the panel
+      # ncol: Number of columns of plots
+      # nrow: Number of rows needed, calculated from # of cols
+      layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                       ncol = cols, nrow = ceiling(numPlots/cols))
+    }
+    
+    if (numPlots==1) {
+      print(plots[[1]])
       
-      # Make a list from the ... arguments and plotlist
-      plots <- c(list(...), plotlist)
+    } else {
+      # Set up the page
+      grid.newpage()
+      pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
       
-      numPlots = length(plots)
-      
-      # If layout is NULL, then use 'cols' to determine layout
-      if (is.null(layout)) {
-        # Make the panel
-        # ncol: Number of columns of plots
-        # nrow: Number of rows needed, calculated from # of cols
-        layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
-                         ncol = cols, nrow = ceiling(numPlots/cols))
-      }
-      
-      if (numPlots==1) {
-        print(plots[[1]])
+      # Make each plot, in the correct location
+      for (i in 1:numPlots) {
+        # Get the i,j matrix positions of the regions that contain this subplot
+        matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
         
-      } else {
-        # Set up the page
-        grid.newpage()
-        pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
-        
-        # Make each plot, in the correct location
-        for (i in 1:numPlots) {
-          # Get the i,j matrix positions of the regions that contain this subplot
-          matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-          
-          print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
-                                          layout.pos.col = matchidx$col))
-        }
+        print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                        layout.pos.col = matchidx$col))
       }
     }
+  }
   
-  
+  #---------------------------------------------------------------------------------
   
   mem_frame <- mem_compare(test_path, num_commits)
-  swap_plot <- ggplot2::qplot(date_time, swap_mb, data = mem_frame, 
-                              color = as.character(date_time)) +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90))
-  leak_plot <- ggplot2::qplot(date_time, leak_mb, data = mem_frame,
-                              color = as.character(date_time)) +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90))
+  swap_plot <- ggplot2::qplot(msg_val, swap_mb, data = mem_frame) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+    ggplot2::scale_x_discrete(limits = rev(levels(mem_frame$msg)))
+  leak_plot <- ggplot2::qplot(msg_val, leak_mb, data = mem_frame) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+    ggplot2::scale_x_discrete(limits = rev(levels(mem_frame$msg)))
   
   file_plots <- list(swap_plot, leak_plot)
   multiplot(plotlist = file_plots)

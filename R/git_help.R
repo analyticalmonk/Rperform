@@ -34,6 +34,26 @@ get_datetime <- function(commit_val) {
 
 ##  -----------------------------------------------------------------------------------------
 
+#' Message summary of a git commit object.
+#' 
+#' \code{get_sha(commit_val = )} returns the summary of the message for the git
+#' commit object provided as the parameter.
+#' 
+#' @param commit_val git commit object, as returned by git2r::commits()
+#' 
+#' @seealso \code{\link[git2r]{commits}}
+
+# The get_sha function, given a git commit object returns a character vector which is the
+# message's summary for the given commit.
+
+get_msg <- function(commit_val) {
+  stopifnot(git2r::is_commit(commit_val))
+  
+  base::substr(commit_val@summary, start = 1, stop = 15)  
+}
+
+##  -----------------------------------------------------------------------------------------
+
 #' Current branch name of a git repository.
 #' 
 #' \code{get_branch} returns the branch name for the git repository passed in as

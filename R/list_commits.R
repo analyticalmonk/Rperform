@@ -103,6 +103,7 @@ time_commit <- function(test_path, test_commit) {
 
   # Get the meta-information from the commit
   sha_val <- get_sha(test_commit)
+  msg_val <- get_msg(test_commit)
   commit_dtime <- get_datetime(test_commit)
   # Create the tempfiles
   t_lines <- readLines(test_path)
@@ -164,7 +165,7 @@ time_commit <- function(test_path, test_commit) {
       })
     }
     status <- "pass"
-    time_df <- data.frame(test_name, seconds, status, sha_val,
+    time_df <- data.frame(test_name, seconds, status, msg_val,
                           date_time = commit_dtime)
     test_results[[test_name]] <<- time_df
   }
@@ -188,7 +189,7 @@ test_results_df <- do.call(rbind, test_results)
 #   test_results_df["file runtime-2"] <- seconds_file2
   test_results_df <- rbind(test_results_df, data.frame(test_name = basename(test_path), 
                                        seconds = seconds_file2, status = "pass",
-                                       sha_val = sha_val, date_time = commit_dtime))
+                                       msg_val = msg_val, date_time = commit_dtime))
   rownames(test_results_df) <- NULL
   test_results_df
 }
@@ -297,30 +298,61 @@ mem_commit <- function(test_path, test_commit) {
   stopifnot(!is.null(test_commit))
   stopifnot(git2r::is_commit(test_commit))
   
+  ## Creating the tempfiles
   target <- git2r::repository("./")
   sha_val <- get_sha(test_commit)
+  msg_val <- get_msg(test_commit)
   commit_dtime <- get_datetime(test_commit)
-  test_name <- basename(test_path)
   t_lines <- readLines(test_path)
-  temp_file <- tempfile()
-  writeLines(t_lines, temp_file)
+  q_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed=TRUE)
+  temp_file_original <- tempfile()
+  temp_file_subbed   <- tempfile()
+  writeLines(t_lines, temp_file_original)
+  writeLines(q_lines, temp_file_subbed)
   
+  ## Git operations
   target <- git2r::repository("./")
   original_state <- git2r::head(target)
   git2r::checkout(test_commit)
   on.exit(expr = git2r::checkout(original_state))
   test_results <- list()
+  testthat_rss_list <- list()
   rss_list <- list()
   
-# --------------------------------------------------------------------------  
-  
+  ## Obtaining the memory metrics for testthat blocks
   require(testthat)
-  .rss.profile.start(paste(test_name, ".RSS", sep = ""))
-  source(temp_file, local = TRUE)
-  rss_list <- .rss.profile.stop(paste(test_name, ".RSS", sep = ""))
-
-  data.frame(test_name, swap_mb = rss_list$swap/1000, leak_mb = rss_list$leak/1000,
-             date_time = commit_dtime, stringsAsFactors = FALSE)
+#   testthatQuantity <- function(test_name, code){
+#     e <- parent.frame()
+#     code_subs <- substitute(code)
+#     run <- function(){
+#       testthat:::test_code(test_name, code_subs, env=e)
+#     }
+#     testthat_rss_list <- {
+#         .rss.profile.start(paste0(test_name, ".RSS"))
+#         run()
+#         .rss.profile.stop(paste0(test_name, ".RSS"))
+#     }
+#     testthat_mem_df <- data.frame(test_name, swap_mb = testthat_rss_list$swap/1000, 
+#                           leak_mb = testthat_rss_list$leak/1000,
+#                           msg_val = msg_val, date_time = commit_dtime)
+#     test_results[[test_name]] <<- testthat_mem_df
+#   }
+  
+#   source(temp_file_subbed, local = TRUE)
+  
+  ## Obtaining the memory metrics for entire file 
+  file_name <- basename(test_path)
+  .rss.profile.start(paste0(file_name, ".RSS"))
+  source(temp_file_original, local = TRUE)
+  rss_list <- .rss.profile.stop(paste0(file_name, ".RSS"))
+  # Check /R/mem_experiment.R for source code for the above functions
+  
+#   testthat_df <- do.call(rbind, test_results)
+#   mem_df <- rbind(testthat_df, data.frame(test_name, swap_mb = rss_list$swap/1000, 
+#                                      leak_mb = rss_list$leak/1000, msg_val = msg_val, 
+#                                      date_time = commit_dtime))
+  data.frame(file_name, swap_mb = rss_list$swap/1000, leak_mb = rss_list$leak/1000,
+             msg_val = msg_val, date_time = commit_dtime)
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -427,6 +459,7 @@ mem_compare <- function(test_path, num_commits = 5) {
   num_commits <- floor(num_commits)
   
   script.R <- system.file("exec", "get_mem.R", package="Rperform")
+  # Check out the code for above script in /exec/get_mem.R
   Rscript <- file.path(R.home("bin"), "Rscript")
   result_list <- list()
   
