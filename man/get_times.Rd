@@ -27,14 +27,14 @@ the value is for.
 \examples{
 ## Example-1
 
+# Set the current directory to the git repository concerned.
+setwd("./Path/to/repository")
+
 # Specify the test-file path
 t_path <- "Path/to/file"
 
 # Pass the parameters and obtain the run-time details against 10 commits
 library(Rperform)
 time_commit(test_path = t_path, n_commits = 10)
-}
-\seealso{
-\code{\link[git2r]{commits}}
 }
 

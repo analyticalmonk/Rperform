@@ -25,6 +25,10 @@ its execution.
 }
 \examples{
 ## Example-1
+
+# Set the current directory to the git repository concerned.
+setwd("./Path/to/repository")
+
 # Obtain the commit object
 commit_list <- git2r::commits()
 t_commit <- commit_list[[1]]

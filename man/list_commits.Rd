@@ -23,8 +23,8 @@ the SHA1 values and summary of the last n commits in the repo.
 \examples{
 ## Example-1
 
-# Changed to the directory containing the git repository
-setwd(path)
+# Set the current directory to the git repository concerned.
+setwd("./Path/to/repository")
 
 # Obtained details of the last 10 commits in the repository
 list_commits(num_commits = 10)

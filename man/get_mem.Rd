@@ -28,14 +28,14 @@ current git repository.
 \examples{
 ## Example-1
 
+# Set the current directory to the git repository concerned.
+setwd("./Path/to/repository")
+
 # Specify the test-file path
 t_path <- "Path/to/file"
 
 # Pass the parameters and obtain the memory stats
 library(Rperform)
 get_mem(t_path, 3)
-}
-\seealso{
-\code{\link[git2r]{commits}}
 }
 

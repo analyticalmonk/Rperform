@@ -12,9 +12,9 @@
 #' 
 #' ## Example-1
 #' 
-#' # Changed to the directory containing the git repository
-#' setwd(path)
-#' 
+#' # Set the current directory to the git repository concerned.
+#' setwd("./Path/to/repository")
+#'  
 #' # Obtained details of the last 10 commits in the repository
 #' list_commits(num_commits = 10)
 #' 
@@ -74,6 +74,10 @@ list_commits <- function(path = "./", num_commits = 20){
 #'    
 #' @examples
 #' ## Example-1
+#' 
+#' # Set the current directory to the git repository concerned.
+#' setwd("./Path/to/repository")
+#' 
 #' # Obtain the commit object
 #' commit_list <- git2r::commits()
 #' t_commit <- commit_list[[1]]
@@ -213,6 +217,9 @@ test_results_df <- do.call(rbind, test_results)
 #' @examples
 #' ## Example-1
 #' 
+#' # Set the current directory to the git repository concerned.
+#' setwd("./Path/to/repository")
+#' 
 #' # Specify the test-file path
 #' t_path <- "Path/to/file"
 #' 
@@ -224,7 +231,6 @@ test_results_df <- do.call(rbind, test_results)
 #'   Library assumes the current directory to be the root directory of the
 #'   package being tested.
 #' 
-#' @seealso \code{\link[git2r]{commits}} 
 
 # The get_time function, given a test-file path, checks its run-time against the
 # specified number of commits in the current git repository and returns a
@@ -270,6 +276,10 @@ get_times <- function(test_path, num_commits = 20) {
 #'    
 #' @examples
 #' ## Example-1
+#' 
+#' # Set the current directory to the git repository concerned.
+#' setwd("./Path/to/repository")
+#' 
 #' # Obtain the commit object
 #' commit_list <- git2r::commits()
 #' t_commit <- commit_list[[1]]
@@ -376,6 +386,9 @@ mem_commit <- function(test_path, test_commit) {
 #' @examples
 #' ## Example-1
 #' 
+#' # Set the current directory to the git repository concerned.
+#' setwd("./Path/to/repository")
+#' 
 #' # Specify the test-file path
 #' t_path <- "Path/to/file"
 #' 
@@ -386,8 +399,7 @@ mem_commit <- function(test_path, test_commit) {
 #' @section Warning:
 #'   Library assumes the current directory to be the root directory of the
 #'   package being tested.
-#' 
-#' @seealso \code{\link[git2r]{commits}}
+#'
 
 # The get_mem function, given a test-file path, checks its memory details, more
 # specifically the memory leaked and maximum memory swapped during its 
@@ -433,6 +445,9 @@ get_mem <- function(test_path, commit_num = 1) {
 #' @examples
 #' ## Example-1
 #' 
+#' # Set the current directory to the git repository concerned.
+#' setwd("./Path/to/repository")
+#' 
 #' # Specify the test-file path
 #' t_path <- "Path/to/file"
 #' 
@@ -444,7 +459,6 @@ get_mem <- function(test_path, commit_num = 1) {
 #'   Library assumes the current directory to be the root directory of the
 #'   package being tested.
 #' 
-#' @seealso \code{\link[git2r]{commits}}
 
 # The mem_compare function, given a test-file path, returns its memory details. 
 # Specifically it obtains the values for memory leaked and maximum memory

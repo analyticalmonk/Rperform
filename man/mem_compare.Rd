@@ -25,14 +25,14 @@ the memory leaked and maximum meory swapped during its execution.
 \examples{
 ## Example-1
 
+# Set the current directory to the git repository concerned.
+setwd("./Path/to/repository")
+
 # Specify the test-file path
 t_path <- "Path/to/file"
 
 # Pass the parameters and obtain the run-time details
 library(Rperform)
 mem_commit(t_path, 5)
-}
-\seealso{
-\code{\link[git2r]{commits}}
 }
 

@@ -21,25 +21,63 @@ devtools::install_github("da-ta-vinci21/Rperform")
 Examples
 --------
 
-The following example illustrates the use of the <em>Rpeform::get_times()</em> function on the git repository
+<b>IMPORTANT</b>: The Rperform package requires you to set the current directory to the concerned 
+git repository before using the functions.
+
+```r
+> setwd(dir = "Path/to/repo")
+```
+
+The following example illustrates the use of the `Rperform::plot_time()` function on the git repository
 of the package [stringr](https://github.com/tdhock/stringr).
 
 ```r
 > setwd("./stringr")
-> get_times(test_path = "./tests/testthat/test-split.r", num_commits = 1)
+> library(Rperform)
+> get_times(test_path = "./tests/testthat/test-extract.r", num_commits = 10)
+```
+![time plot](images/Rplot_time.jpeg)
 
-test_name                                                seconds status
-1                         special cases are correct 0.0009759963   pass
-2                   str_split functions as expected 0.0015615240   pass
-3 vectors give correct results dealt with correctly 0.0021526630   pass
-4      n sets maximum number of splits in str_split 0.0031284990   pass
-5  n sets exact number of splits in str_split_fixed 0.0027357150   pass
-                                   sha_val file runtime
-1 a0f03f53ecb1f391a575cd645990e437faa724c0   0.01218899
-2 a0f03f53ecb1f391a575cd645990e437faa724c0   0.01218899
-3 a0f03f53ecb1f391a575cd645990e437faa724c0   0.01218899
-4 a0f03f53ecb1f391a575cd645990e437faa724c0   0.01218899
-5 a0f03f53ecb1f391a575cd645990e437faa724c0   0.01218899
+The following example illustrates the use of the `Rperform::get_times()` and `Rperform::mem_compare()` functions on the git repository
+of the package [stringr](https://github.com/tdhock/stringr).
+
+```r
+> setwd("./stringr")
+> library(Rperform)
+> get_times(test_path = "./tests/testthat/test-dup.r", num_commits = 1)
+
+                          test_name     seconds status         msg_val           date_time
+1           basic duplication works 0.001473012   pass Can now use CRA 2015-01-08 14:09:43
+2           basic duplication works 0.001223264   pass Can now use CRA 2015-01-08 14:09:43
+3           basic duplication works 0.001202065   pass Can now use CRA 2015-01-08 14:09:43
+4  0 duplicates equals empty string 0.000881198   pass Can now use CRA 2015-01-08 14:09:43
+5  0 duplicates equals empty string 0.000658565   pass Can now use CRA 2015-01-08 14:09:43
+6  0 duplicates equals empty string 0.000634038   pass Can now use CRA 2015-01-08 14:09:43
+7                        test-dup.r 0.002933802   pass Can now use CRA 2015-01-08 14:09:43
+8                        test-dup.r 0.002597354   pass Can now use CRA 2015-01-08 14:09:43
+9                        test-dup.r 0.002556732   pass Can now use CRA 2015-01-08 14:09:43
+10          basic duplication works 0.001568654   pass Require latest  2015-01-08 14:03:37
+11          basic duplication works 0.001233763   pass Require latest  2015-01-08 14:03:37
+12          basic duplication works 0.001195581   pass Require latest  2015-01-08 14:03:37
+13 0 duplicates equals empty string 0.000915303   pass Require latest  2015-01-08 14:03:37
+14 0 duplicates equals empty string 0.000678676   pass Require latest  2015-01-08 14:03:37
+15 0 duplicates equals empty string 0.000643948   pass Require latest  2015-01-08 14:03:37
+16                       test-dup.r 0.003009679   pass Require latest  2015-01-08 14:03:37
+17                       test-dup.r 0.002569843   pass Require latest  2015-01-08 14:03:37
+18                       test-dup.r 0.002566603   pass Require latest  2015-01-08 14:03:37
+
+```
+
+```r
+> Rperform::mem_compare(test_path = "./tests/testthat/test-dup.r", num_commits = 2)
+
+    file_name swap_mb leak_mb         msg_val           date_time
+11 test-dup.r   0.096   0.096 Can now use CRA 2015-01-08 14:09:43
+12 test-dup.r   0.104   0.104 Can now use CRA 2015-01-08 14:09:43
+13 test-dup.r   0.104   0.104 Can now use CRA 2015-01-08 14:09:43
+21 test-dup.r   0.096   0.096 Require latest  2015-01-08 14:03:37
+22 test-dup.r   0.104   0.104 Require latest  2015-01-08 14:03:37
+23 test-dup.r   0.096   0.096 Require latest  2015-01-08 14:03:37
 ```
 
 ---

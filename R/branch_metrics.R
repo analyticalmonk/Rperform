@@ -12,6 +12,10 @@
 #'   file is to be tested.
 #'   
 #' @examples
+#' 
+#' # Set the current directory to the git repository concerned.
+#' setwd("./Path/to/repository")
+#' 
 #' # Set the file-path
 #' t_path <- "Path/to/file"
 #'
@@ -152,6 +156,10 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
 #'   tested.   
 #'   
 #' @examples
+#' 
+#' # Set the current directory to the git repository concerned.
+#' setwd("./Path/to/repository")
+#' 
 #' # Set the file-path
 #' t_path <- "Path/to/file"
 #'
@@ -185,7 +193,9 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
   rbind(branch1_df, branch2_df)
 }
 
-##  -----------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------
+## Function to find the latest common commit given two branches of a repository
+## ----------------------------------------------------------------------------  
 
 .common_commit <- function(branch1, branch2) {
   stopifnot(is.character(branch1))

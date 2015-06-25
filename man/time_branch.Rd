@@ -25,6 +25,9 @@ number of commits on the branch.
   package being tested.
 }
 \examples{
+# Set the current directory to the git repository concerned.
+setwd("./Path/to/repository")
+
 # Set the file-path
 t_path <- "Path/to/file"
 
