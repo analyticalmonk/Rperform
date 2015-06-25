@@ -63,7 +63,8 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
   for (commit_i in seq(commit_list)) {
     
 #     sha_val <- get_sha(commit_list[[commit_i]])
-    commit_dtime <- get_datetime(commit_list[[commit_i]])
+    commit_msg <- get_msg(commit_val = commit_list[[commit_i]])
+    commit_dtime <- get_datetime(commit_val = commit_list[[commit_i]])
       
     # Code block measuring the run-time for the test file as a whole
     # --------------------------------------------------------------
@@ -109,7 +110,7 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
       }
       status <- "pass"
       time_df <- data.frame(test_name, seconds, status, branch = branch,
-                            date_time = commit_dtime)
+                            message = commit_msg, date_time = commit_dtime)
       test_results[[test_name]] <<- time_df
     }
     
@@ -133,10 +134,11 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
     test_results_df <- 
       rbind(test_results_df, data.frame(test_name = basename(test_path), 
                                         seconds = seconds_file, status = "pass",
-                                        branch = branch, date_time = commit_dtime))
+                                        branch = branch, message = commit_msg, 
+                                        date_time = commit_dtime))
     rownames(test_results_df) <- NULL
   }
-  ## TO-DO --------------------------------------------------------
+  ## -----------------------------------------------------------------------
   
   test_results_df
 }
@@ -145,15 +147,14 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
 ##  -----------------------------------------------------------------------------------------
 #' Run-times across branches.
 #' 
-#' Given a test-file and two branches, returns the run-times of the file over
-#' the two branches against the first commit till the latest commit common to
-#' both of them.
+#' Given a test-file and two branches, returns the run-times of the file against
+#' the first commit till the latest common commit in branch1, and against the
+#' latest commit in branch2.
 #' 
 #' @param test_path File-path for the test file to be tested.
-#' @param branch_1 First Branch against whose commits the test file is to be 
+#' @param branch_1 Branch against whose commits the test file is to be 
 #'   tested.
-#' @param branch_2 Second Branch against whose commits the test file is to be 
-#'   tested.   
+#' @param branch_2 Branch into which branch1 is supposedly to be merged.  
 #'   
 #' @examples
 #' 
@@ -188,7 +189,7 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
   branch1_df <- time_branch(test_path = test_path, branch = branch1,
                             num_commits = same_commit$cnum_b1)
   branch2_df <- time_branch(test_path = test_path, branch = branch2,
-                            num_commits = same_commit$cnum_b2)
+                            num_commits = 1)
 
   rbind(branch1_df, branch2_df)
 }
@@ -226,6 +227,7 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
   }
   
   info_df <- data.frame(common_datetime = dtime_list1[[commit1]],
+                        common_message = get_msg(commitlist1[[commit1]]),
                         cnum_b1 = commit1, cnum_b2 = commit2)
   info_df
 }

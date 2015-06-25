@@ -1,7 +1,7 @@
 Rperform
 --------
 
-Rperform is an R package that makes it easy for R package developers to track quantitative performance metrics of their code, over time. <b>It focuses on providing changes brought over in the package’s performance metrics over subsequent development versions, most importantly relating to time and memory.</b>
+Rperform is an R package that makes it easy for R package developers to track quantitative performance metrics of their code, over time. <b>It focuses on providing changes brought over in the package’s performance metrics over subsequent development versions and across git branches, most importantly relating to time and memory.</b>
 <em>The project is under development, as a part of the [Google Summer of Code 2015](https://github.com/rstats-gsoc/gsoc2015/wiki/Test-timings-on-Travis) program.</em>
 
 Installation
