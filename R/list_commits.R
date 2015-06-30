@@ -329,40 +329,43 @@ mem_commit <- function(test_path, test_commit) {
   testthat_rss_list <- list()
   rss_list <- list()
   
-  ## Obtaining the memory metrics for testthat blocks
+  ## Function for obtaining the memory metrics for testthat blocks
   require(testthat)
-#   testthatQuantity <- function(test_name, code){
-#     e <- parent.frame()
-#     code_subs <- substitute(code)
-#     run <- function(){
-#       testthat:::test_code(test_name, code_subs, env=e)
-#     }
-#     testthat_rss_list <- {
-#         .rss.profile.start(paste0(test_name, ".RSS"))
-#         run()
-#         .rss.profile.stop(paste0(test_name, ".RSS"))
-#     }
-#     testthat_mem_df <- data.frame(test_name, swap_mb = testthat_rss_list$swap/1000, 
-#                           leak_mb = testthat_rss_list$leak/1000,
-#                           msg_val = msg_val, date_time = commit_dtime)
-#     test_results[[test_name]] <<- testthat_mem_df
-#   }
+  testthatQuantity <- function(test_name, code){
+    e <- parent.frame()
+    code_subs <- substitute(code)
+    run <- function(){
+      testthat:::test_code(test_name, code_subs, env=e)
+    }
+    new_name <- gsub(pattern = " ", replacement = "", x = test_name)
+    testthat_rss_list <- {
+        .rss.profile.start(paste0(new_name, ".RSS"))
+        run()
+        .rss.profile.stop(paste0(new_name, ".RSS"))
+    }
+    testthat_mem_df <- data.frame(test_name, swap_mb = testthat_rss_list$swap/1000, 
+                          leak_mb = testthat_rss_list$leak/1000,
+                          msg_val = msg_val, date_time = commit_dtime)
+    test_results[[test_name]] <<- testthat_mem_df
+  }
   
 #   source(temp_file_subbed, local = TRUE)
   
-  ## Obtaining the memory metrics for entire file 
+  ## Obtaining the memory metrics for the file 
   file_name <- basename(test_path)
   .rss.profile.start(paste0(file_name, ".RSS"))
-  source(temp_file_original, local = TRUE)
+  source(temp_file_subbed, local = TRUE)
   rss_list <- .rss.profile.stop(paste0(file_name, ".RSS"))
   # Check /R/mem_experiment.R for source code for the above functions
   
-#   testthat_df <- do.call(rbind, test_results)
-#   mem_df <- rbind(testthat_df, data.frame(test_name, swap_mb = rss_list$swap/1000, 
-#                                      leak_mb = rss_list$leak/1000, msg_val = msg_val, 
-#                                      date_time = commit_dtime))
-  data.frame(file_name, swap_mb = rss_list$swap/1000, leak_mb = rss_list$leak/1000,
-             msg_val = msg_val, date_time = commit_dtime)
+  testthat_df <- do.call(rbind, test_results)
+  mem_df <- rbind(testthat_df, data.frame(test_name = file_name, swap_mb = rss_list$swap/1000, 
+                                     leak_mb = rss_list$leak/1000, msg_val = msg_val, 
+                                     date_time = commit_dtime))
+  rownames(mem_df) <- NULL
+  mem_df
+#   data.frame(file_name, swap_mb = rss_list$swap/1000, leak_mb = rss_list$leak/1000,
+#              msg_val = msg_val, date_time = commit_dtime)
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -418,11 +421,6 @@ get_mem <- function(test_path, commit_num = 1) {
   result_list <- list()
   # Loads the functions from the repository for the package to be tested
   devtools::load_all(file.path("./"))
-  
-#   for(commit_i in seq_along(commit_list)){
-#     one_commit <- commit_list[[commit_i]]
-#     result_list[[commit_i]] <- mem_commit(test_path, one_commit)
-#   } 
   
   test_results <- mem_commit(test_path, target_commit)
   test_results
