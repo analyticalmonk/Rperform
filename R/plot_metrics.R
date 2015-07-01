@@ -81,61 +81,12 @@ plot_time <- function(test_path, num_commits = 5) {
 # individual testthat blocks against the corresponding commit message values for
 # the given number of commits.
 
-plot_mem <- function(test_path, num_commits = 5) {
-    
-  ## Multiple plot function
-  #--- Source code obtained courtesy Winston Chang from:
-  # http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/ ---
-  #---------------------------------------------------------------------------------
-  # ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
-  # - cols:   Number of columns in layout
-  # - layout: A matrix specifying the layout. If present, 'cols' is ignored.
-  #
-  # If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
-  # then plot 1 will go in the upper left, 2 will go in the upper right, and
-  # 3 will go all the way across the bottom.
-  #
-  multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-    library(grid)
-    
-    # Make a list from the ... arguments and plotlist
-    plots <- c(list(...), plotlist)
-    
-    numPlots = length(plots)
-    
-    # If layout is NULL, then use 'cols' to determine layout
-    if (is.null(layout)) {
-      # Make the panel
-      # ncol: Number of columns of plots
-      # nrow: Number of rows needed, calculated from # of cols
-      layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
-                       ncol = cols, nrow = ceiling(numPlots/cols))
-    }
-    
-    if (numPlots==1) {
-      print(plots[[1]])
-      
-    } else {
-      # Set up the page
-      grid.newpage()
-      pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
-      
-      # Make each plot, in the correct location
-      for (i in 1:numPlots) {
-        # Get the i,j matrix positions of the regions that contain this subplot
-        matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-        
-        print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
-                                        layout.pos.col = matchidx$col))
-      }
-    }
-  }
-  
-  #---------------------------------------------------------------------------------
+plot_mem <- function(test_path, num_commits = 5) {  
   
   mem_frame <- mem_compare(test_path, num_commits)
   
-  swap_plot <- ggplot2::qplot(msg_val, swap_mb, data = mem_frame) +
+  swap_plot <- ggplot2::qplot(msg_val, swap_mb, data = mem_frame,
+                              color = test_name) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
     ggplot2::scale_x_discrete(limits = rev(levels(mem_frame$msg)))
   # In the above 3 lines code, the first line creates the basic qplot. The 
@@ -143,13 +94,14 @@ plot_mem <- function(test_path, num_commits = 5) {
   # horizontal and correct the order of message labels on the x -axis,
   # respectively.
   
-  leak_plot <- ggplot2::qplot(msg_val, leak_mb, data = mem_frame) +
+  leak_plot <- ggplot2::qplot(msg_val, leak_mb, data = mem_frame,
+                              color = test_name) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
     ggplot2::scale_x_discrete(limits = rev(levels(mem_frame$msg)))
   # Same explanation as above.
   
   file_plots <- list(swap_plot, leak_plot)
-  multiplot(plotlist = file_plots)
+  .multiplot(plotlist = file_plots)
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -208,51 +160,6 @@ plot_btimes <- function(test_path, branch1, branch2 = "master") {
 ## repository directory.
 
 .plot_directory <- function(test_dir, num_commits = 5) {
-  #   # Multiple plot function
-  #   #
-  #   # ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
-  #   # - cols:   Number of columns in layout
-  #   # - layout: A matrix specifying the layout. If present, 'cols' is ignored.
-  #   #
-  #   # If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
-  #   # then plot 1 will go in the upper left, 2 will go in the upper right, and
-  #   # 3 will go all the way across the bottom.
-  #   #
-  #   multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-  #     library(grid)
-  #     
-  #     # Make a list from the ... arguments and plotlist
-  #     plots <- c(list(...), plotlist)
-  #     
-  #     numPlots = length(plots)
-  #     
-  #     # If layout is NULL, then use 'cols' to determine layout
-  #     if (is.null(layout)) {
-  #       # Make the panel
-  #       # ncol: Number of columns of plots
-  #       # nrow: Number of rows needed, calculated from # of cols
-  #       layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
-  #                        ncol = cols, nrow = ceiling(numPlots/cols))
-  #     }
-  #     
-  #     if (numPlots==1) {
-  #       print(plots[[1]])
-  #       
-  #     } else {
-  #       # Set up the page
-  #       grid.newpage()
-  #       pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
-  #       
-  #       # Make each plot, in the correct location
-  #       for (i in 1:numPlots) {
-  #         # Get the i,j matrix positions of the regions that contain this subplot
-  #         matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-  #         
-  #         print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
-  #                                         layout.pos.col = matchidx$col))
-  #       }
-  #     }
-  #   }
   
   file_names <- list.files(test_dir)
   for (file_i in seq_along(file_names)) {
@@ -263,7 +170,57 @@ plot_btimes <- function(test_path, branch1, branch2 = "master") {
     dev.off()
   }
   
-  #   multiplot(plotlist = file_plots, col = 3)
+  #   .multiplot(plotlist = file_plots, col = 3)
 }
 
 ##  -----------------------------------------------------------------------------------------
+## Multiple plot function
+#--- Source code obtained courtesy Winston Chang from:
+# http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/ ---
+#---------------------------------------------------------------------------------
+# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+# - cols:   Number of columns in layout
+# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+#
+# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+# then plot 1 will go in the upper left, 2 will go in the upper right, and
+# 3 will go all the way across the bottom.
+#
+.multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+  
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  
+  numPlots = length(plots)
+  
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+    
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+#---------------------------------------------------------------------------------
+

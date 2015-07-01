@@ -3,13 +3,15 @@ Type: Package
 Title: Rperform helps R package developers keep track of the quantitative metrics of their packages over various
 	development versions
 Version: 0.0.0.9000
-License: GPL-3
 Date: 2015-05-29
 Author: Akash Tandon (da-ta-vinci21 on GitHub), Toby Dylan Hocking
 Maintainer: Akash Tandon <akashtndn.acm@gmail.com>
-Description: More about what it does (maybe more than one line)
+Description: Rperform is an R package that makes it easy for R package developers to track quantitative
+  performance metrics of their code, over time. It focuses on providing changes brought over in the 
+  package’s performance metrics over subsequent development versions and across git branches, 
+  most importantly relating to time and memory.
 BugReports: https://github.com/da-ta-vinci21/Rperform/issues
-License: What license is it under?
+License: GPL-3
 Imports: git2r (>= 0.10.1),
     ggplot2 (>= 1.0.1),
     testthat (>= 0.10.0)

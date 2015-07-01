@@ -63,7 +63,7 @@ img {
 
 <div id="rperform" class="section level2">
 <h2>Rperform</h2>
-<p>Rperform is an R package that makes it easy for R package developers to track quantitative performance metrics of their code, over time. <b>It focuses on providing changes brought over in the package’s performance metrics over subsequent development versions, most importantly relating to time and memory.</b> <em>The project is under development, as a part of the <a href="https://github.com/rstats-gsoc/gsoc2015/wiki/Test-timings-on-Travis">Google Summer of Code 2015</a> program.</em></p>
+<p>Rperform is an R package that makes it easy for R package developers to track quantitative performance metrics of their code, over time. <b>It focuses on providing changes brought over in the package’s performance metrics over subsequent development versions and across git branches, most importantly relating to time and memory.</b> <em>The project is under development, as a part of the <a href="https://github.com/rstats-gsoc/gsoc2015/wiki/Test-timings-on-Travis">Google Summer of Code 2015</a> program.</em></p>
 </div>
 <div id="installation" class="section level2">
 <h2>Installation</h2>
@@ -107,15 +107,27 @@ install_github(&quot;da-ta-vinci21/Rperform&quot;)</code></pre>
 17                       test-dup.r 0.002569843   pass Require latest  2015-01-08 14:03:37
 18                       test-dup.r 0.002566603   pass Require latest  2015-01-08 14:03:37
 </code></pre>
-<pre class="r"><code>&gt; Rperform::mem_compare(test_path = &quot;./tests/testthat/test-dup.r&quot;, num_commits = 2)
+<pre class="r"><code>&gt; Rperform::mem_compare(test_path = &quot;./tests/testthat/test-join.r&quot;, num_commits = 2)
 
-    file_name swap_mb leak_mb         msg_val           date_time
-11 test-dup.r   0.096   0.096 Can now use CRA 2015-01-08 14:09:43
-12 test-dup.r   0.104   0.104 Can now use CRA 2015-01-08 14:09:43
-13 test-dup.r   0.104   0.104 Can now use CRA 2015-01-08 14:09:43
-21 test-dup.r   0.096   0.096 Require latest  2015-01-08 14:03:37
-22 test-dup.r   0.104   0.104 Require latest  2015-01-08 14:03:37
-23 test-dup.r   0.096   0.096 Require latest  2015-01-08 14:03:37</code></pre>
+             test_name swap_mb leak_mb         msg_val           date_time
+11.1  basic case works   0.040   0.040 Can now use CRA 2015-01-08 14:09:43
+11.2 NULLs are dropped   0.028   0.028 Can now use CRA 2015-01-08 14:09:43
+11.3       test-join.r   0.124   0.124 Can now use CRA 2015-01-08 14:09:43
+12.1  basic case works   0.040   0.040 Can now use CRA 2015-01-08 14:09:43
+12.2 NULLs are dropped   0.028   0.028 Can now use CRA 2015-01-08 14:09:43
+12.3       test-join.r   0.128   0.128 Can now use CRA 2015-01-08 14:09:43
+13.1  basic case works   0.040   0.040 Can now use CRA 2015-01-08 14:09:43
+13.2 NULLs are dropped   0.028   0.028 Can now use CRA 2015-01-08 14:09:43
+13.3       test-join.r   0.128   0.128 Can now use CRA 2015-01-08 14:09:43
+21.1  basic case works   0.040   0.040 Require latest  2015-01-08 14:03:37
+21.2 NULLs are dropped   0.028   0.028 Require latest  2015-01-08 14:03:37
+21.3       test-join.r   0.132   0.132 Require latest  2015-01-08 14:03:37
+22.1  basic case works   0.040   0.040 Require latest  2015-01-08 14:03:37
+22.2 NULLs are dropped   0.028   0.028 Require latest  2015-01-08 14:03:37
+22.3       test-join.r   0.132   0.132 Require latest  2015-01-08 14:03:37
+23.1  basic case works   0.040   0.040 Require latest  2015-01-08 14:03:37
+23.2 NULLs are dropped   0.028   0.028 Require latest  2015-01-08 14:03:37
+23.3       test-join.r   0.132   0.132 Require latest  2015-01-08 14:03:37 </code></pre>
 <hr />
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 </div>

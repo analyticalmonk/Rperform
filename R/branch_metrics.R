@@ -1,4 +1,6 @@
 ##  -----------------------------------------------------------------------------------------
+##                                TIME CHUNK BEGINS
+##  -----------------------------------------------------------------------------------------
 
 #' Run-times of a file on the given branch.
 #' 
@@ -144,7 +146,6 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
 }
 
 ##  -----------------------------------------------------------------------------------------
-##  -----------------------------------------------------------------------------------------
 #' Run-times across branches.
 #' 
 #' Given a test-file and two branches, returns the run-times of the file against
@@ -194,6 +195,73 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
   rbind(branch1_df, branch2_df)
 }
 
+##  -----------------------------------------------------------------------------------------
+##                                MEMORY CHUNK BEGINS
+##  -----------------------------------------------------------------------------------------
+
+#' Memory metrics across branches.
+#' 
+#' Given a test-file and two branches, returns the memory metrics of the file
+#' against the first commit till the latest common commit in branch1, and
+#' against the latest commit in branch2. Memory metrics returned are the memory
+#' leaked and maximum meory swapped during its execution.
+#' 
+#' @param test_path File-path for the test file to be tested.
+#' @param branch_1 Branch against whose commits the test file is to be 
+#'   tested.
+#' @param branch_2 Branch into which branch1 is supposedly to be merged.  
+#'   
+#' @examples
+#' 
+#' # Set the current directory to the git repository concerned.
+#' setwd("./Path/to/repository")
+#' 
+#' # Set the file-path
+#' t_path <- "Path/to/file"
+#'
+#' # Load the library and pass the parameters to the function
+#' library(Rperform)
+#' compare_branchm(test_path = t_path, branch1 = "helper", branch2 = "master")
+#' 
+#' @section Warning:
+#'   Library assumes the current directory to be the root directory of the
+#'   package being tested.
+#'
+
+compare_branchm <- function(test_path, branch1, branch2 = "master") {
+  stopifnot(is.character(test_path))
+  stopifnot(length(test_path) == 1)
+  stopifnot(is.character(branch1))
+  stopifnot(length(branch1) == 1)
+  stopifnot(is.character(branch2))
+  stopifnot(length(branch2) == 1)
+  
+  target <- git2r::repository("./")
+  original_state <- git2r::head(target)
+  same_commit <- .common_commit(branch1, branch2)
+  #                  same_commit
+  # ---------------------------------------------
+  #      common_datetime, cnum_b1, cnum_b2
+  
+  # For branch1
+  git2r::checkout(target, branch1)
+  branch1_df <- mem_compare(test_path = test_path, num_commits = same_commit$cnum_b1)
+  branch1_df$branch <- rep(branch1, times = nrow(branch1_df))
+  git2r::checkout(original_state)
+  
+  # For branch2
+  git2r::checkout(target, branch2)
+  branch2_df <- mem_compare(test_path = test_path, num_commits = 1)
+  branch2_df$branch <- "master"
+  git2r::checkout(original_state)
+  
+  system("rm *RSS*")
+  system("rm mem_result.RData")
+  rbind(branch1_df, branch2_df)
+}
+
+##  -----------------------------------------------------------------------------------------
+
 ## -----------------------------------------------------------------------------------------
 ## Function to find the latest common commit given two branches of a repository
 ## ----------------------------------------------------------------------------  
@@ -231,6 +299,8 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
                         cnum_b1 = commit1, cnum_b2 = commit2)
   info_df
 }
+
+##  -----------------------------------------------------------------------------------------
 
 ##  -----------------------------------------------------------------------------------------
 ## Customized implementation of Binary Search

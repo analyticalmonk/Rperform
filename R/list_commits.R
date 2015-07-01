@@ -358,6 +358,7 @@ mem_commit <- function(test_path, test_commit) {
   rss_list <- .rss.profile.stop(paste0(file_name, ".RSS"))
   # Check /R/mem_experiment.R for source code for the above functions
   
+  #Formatting the result dataframe
   testthat_df <- do.call(rbind, test_results)
   mem_df <- rbind(testthat_df, data.frame(test_name = file_name, swap_mb = rss_list$swap/1000, 
                                      leak_mb = rss_list$leak/1000, msg_val = msg_val, 
@@ -485,6 +486,8 @@ mem_compare <- function(test_path, num_commits = 5) {
     }
   }
   
+  system("rm *RSS*")
+  system("rm mem_result.RData")
   do.call(what = rbind, args = result_list)
   
 }
