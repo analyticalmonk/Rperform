@@ -32,6 +32,11 @@
 ## for the given number of commits.
 
 plot_time <- function(test_path, num_commits = 5) {
+  stopifnot(is.character(test_path))
+  stopifnot(length(test_path) == 1)
+  stopifnot(is.numeric(num_commits))
+  num_commits <- floor(num_commits)
+  
   time_frame <- get_times(test_path, num_commits)
   ggplot2::qplot(msg_val, seconds, data = time_frame, color = test_name) + 
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
@@ -81,7 +86,11 @@ plot_time <- function(test_path, num_commits = 5) {
 # individual testthat blocks against the corresponding commit message values for
 # the given number of commits.
 
-plot_mem <- function(test_path, num_commits = 5) {  
+plot_mem <- function(test_path, num_commits = 5) {
+  stopifnot(is.character(test_path))
+  stopifnot(length(test_path) == 1)
+  stopifnot(is.numeric(num_commits))
+  num_commits <- floor(num_commits)
   
   mem_frame <- mem_compare(test_path, num_commits)
   
@@ -128,13 +137,20 @@ plot_mem <- function(test_path, num_commits = 5) {
 #'
 #' # Load the library and pass the parameters to the function
 #' library(Rperform)
-#' compare_brancht(test_path = t_path, branch1 = "helper", branch2 = "master")
+#' plot_btimes(test_path = t_path, branch1 = "helper", branch2 = "master")
 #' 
 #' @section Warning:
 #'   Library assumes the current directory to be the root directory of the
 #'   package being tested.
 #' 
 plot_btimes <- function(test_path, branch1, branch2 = "master") {
+  stopifnot(is.character(test_path))
+  stopifnot(length(test_path) == 1)
+  stopifnot(is.character(branch1))
+  stopifnot(length(branch1) == 1)
+  stopifnot(is.character(branch2))
+  stopifnot(length(branch2) == 1)
+  
   btimes_df <- compare_brancht(test_path = test_path, branch1 = branch1,
                                branch2 = branch2)
   common_commitdf <- (.common_commit(branch1, branch2))
@@ -152,6 +168,63 @@ plot_btimes <- function(test_path, branch1, branch2 = "master") {
 
 ##  -----------------------------------------------------------------------------------------
 ##  -----------------------------------------------------------------------------------------
+
+#' Plot run-times across branches.
+#' 
+#' Given a test-file and two branches, plots the memory metrics of the file 
+#' against the first commit till the latest common commit in branch1, and 
+#' against the latest commit in branch2. The memory metrics plotted are the 
+#' memory leaked and maximum swapped memory during execution. The vertical line 
+#' divides the commits from the two branches with the ones from branch1 on the 
+#' left side.
+#' 
+#' @param test_path File-path for the test file to be tested.
+#' @param branch_1 Branch against whose commits the test file is to be 
+#'   tested.
+#' @param branch_2 Branch into which branch1 is supposedly to be merged.  
+#'   
+#' @examples
+#' 
+#' # Set the current directory to the git repository concerned.
+#' setwd("./Path/to/repository")
+#' 
+#' # Set the file-path
+#' t_path <- "Path/to/file"
+#'
+#' # Load the library and pass the parameters to the function
+#' library(Rperform)
+#' plot_bmemory(test_path = t_path, branch1 = "helper", branch2 = "master")
+#' 
+#' @section Warning:
+#'   Library assumes the current directory to be the root directory of the
+#'   package being tested.
+#' 
+plot_bmemory <- function(test_path, branch1, branch2 = "master") {
+  stopifnot(is.character(test_path))
+  stopifnot(length(test_path) == 1)
+  stopifnot(is.character(branch1))
+  stopifnot(length(branch1) == 1)
+  stopifnot(is.character(branch2))
+  stopifnot(length(branch2) == 1)
+  
+  bmem_df <- compare_branchm(test_path = test_path, branch1 = branch1,
+                               branch2 = branch2)
+  common_commitdf <- (.common_commit(branch1, branch2))
+  
+  ggplot2::qplot(x = message, y = seconds, data = bmem_df, color = test_name) + 
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90))+
+    ggplot2::scale_x_discrete(limits = rev(levels(bmem_df$msg_val))) +
+    ggplot2::geom_vline(ggplot2::aes(xintercept = common_commitdf$cnum_b1 + 0.5))
+  # In the above 4 lines code, the first line creates the basic qplot. The 
+  # second and third lines display the x-axis labels at 90 degrees to the 
+  # horizontal and correct the order of message labels on the x -axis, 
+  # respectively. The fourth line of code divides the commits from the two
+  # different branches by a vertical line.
+}
+
+##  -----------------------------------------------------------------------------------------
+##  -----------------------------------------------------------------------------------------
+
 
 ## The plot_directory function, given a test-directory path, plots the time 
 ## taken by all the test files present inside the directory (including those of 
