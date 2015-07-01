@@ -211,15 +211,26 @@ plot_bmemory <- function(test_path, branch1, branch2 = "master") {
                                branch2 = branch2)
   common_commitdf <- (.common_commit(branch1, branch2))
   
-  ggplot2::qplot(x = message, y = seconds, data = bmem_df, color = test_name) + 
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90))+
-    ggplot2::scale_x_discrete(limits = rev(levels(bmem_df$msg_val))) +
+  swap_plot <- ggplot2::qplot(msg_val, swap_mb, data = bmem_df,
+                              color = test_name) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+    ggplot2::scale_x_discrete(limits = rev(levels(bmem_df$msg))) +
     ggplot2::geom_vline(ggplot2::aes(xintercept = common_commitdf$cnum_b1 + 0.5))
   # In the above 4 lines code, the first line creates the basic qplot. The 
   # second and third lines display the x-axis labels at 90 degrees to the 
   # horizontal and correct the order of message labels on the x -axis, 
   # respectively. The fourth line of code divides the commits from the two
   # different branches by a vertical line.
+  
+  leak_plot <- ggplot2::qplot(msg_val, leak_mb, data = bmem_df,
+                              color = test_name) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+    ggplot2::scale_x_discrete(limits = rev(levels(bmem_df$msg))) +
+    ggplot2::geom_vline(ggplot2::aes(xintercept = common_commitdf$cnum_b1 + 0.5))
+  # Same explanation as above.
+  
+  file_plots <- list(swap_plot, leak_plot)
+  .multiplot(plotlist = file_plots)
 }
 
 ##  -----------------------------------------------------------------------------------------

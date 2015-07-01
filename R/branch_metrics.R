@@ -255,8 +255,6 @@ compare_branchm <- function(test_path, branch1, branch2 = "master") {
   branch2_df$branch <- "master"
   git2r::checkout(original_state)
   
-  system("rm *RSS*")
-  system("rm mem_result.RData")
   rbind(branch1_df, branch2_df)
 }
 
