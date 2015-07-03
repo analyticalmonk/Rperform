@@ -112,10 +112,10 @@ time_commit <- function(test_path, test_commit) {
   # Create the tempfiles
   t_lines <- readLines(test_path)
   q_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed=TRUE)
-  temp_file1 <- tempfile()
-  temp_file2 <- tempfile()
-  writeLines(t_lines, temp_file1)
-  writeLines(q_lines, temp_file2)
+  temp_file_original <- tempfile()
+  temp_file_subbed <- tempfile()
+  writeLines(t_lines, temp_file_original)
+  writeLines(q_lines, temp_file_subbed)
   
   target <- git2r::repository("./")
 # Reverting to the current branch on exit from the function
@@ -130,18 +130,29 @@ time_commit <- function(test_path, test_commit) {
 # --------------------------------------------------------------
   
   require(testthat)
-  seconds_file2 <- if(require(microbenchmark)){
-    times <- microbenchmark(test = {
-      source(temp_file1, local = T)
-    }, times = 3)
-    times$time/1e9
+  seconds_file <- tryCatch(expr = {
+      if(require(microbenchmark)){
+        times <- microbenchmark(test = {
+          base::source(temp_file_original, local = T)
+        }, times = 3)
+        times$time/1e9
+      } else {
+        replicate(3, {
+          time_vec <- system.time( {
+            source(temp_file_original, local = T)
+          } )
+          time_vec[["elapsed"]]
+        })
+      }
+    },
+    error = function(e){
+      NA
+    }
+  )
+  if(is.na(seconds_file)){
+    file_status <- "fail"
   } else {
-    replicate(3, {
-      time_vec <- system.time( {
-        source(temp_file1, local = T)
-      } )
-      time_vec[["elapsed"]]
-    })
+    file_status <- "pass"
   }
 
 # ---------------------------------------------------------------
@@ -155,20 +166,30 @@ time_commit <- function(test_path, test_commit) {
     run <- function(){
       testthat:::test_code(test_name, code_subs, env=e)
     }
-    seconds <- if(require(microbenchmark)){
-      times <- microbenchmark(test = {
-        run()
-      }, times = 3)
-      times$time/1e9
+    seconds <- tryCatch(expr = {
+        if(require(microbenchmark)){
+          times <- microbenchmark(test = {
+            run()
+          }, times = 3)
+          times$time/1e9
+        } else {
+          replicate(3, {
+            time_vec <- system.time( {
+              run()
+            } )
+            time_vec[["elapsed"]]
+          })
+        }
+      },
+      error = function(e){
+        NA
+      }
+    )
+    if(is.na(seconds)){
+      status <- "fail"
     } else {
-      replicate(3, {
-        time_vec <- system.time( {
-          run()
-        } )
-        time_vec[["elapsed"]]
-      })
+      status <- "pass"
     }
-    status <- "pass"
     time_df <- data.frame(test_name, seconds, status, msg_val,
                           date_time = commit_dtime)
     test_results[[test_name]] <<- time_df
@@ -178,9 +199,8 @@ time_commit <- function(test_path, test_commit) {
 
 # Code block measuring the run-time of test file as a whole
 # --------------------------------------------------------------------------
-
-  seconds_file <- (microbenchmark(source(temp_file2, local = T)
-                                  , times = 1))$time/1e9
+# 
+  source(temp_file_subbed, local = T)
 
 # --------------------------------------------------------------------------
 
@@ -188,14 +208,15 @@ time_commit <- function(test_path, test_commit) {
 # Formatting the output
 # --------------------------------------------------------------------------
 
-test_results_df <- do.call(rbind, test_results)
+  test_results_df <- do.call(rbind, test_results)
 #   test_results_df["file runtime"] <- seconds_file
 #   test_results_df["file runtime-2"] <- seconds_file2
   test_results_df <- rbind(test_results_df, data.frame(test_name = basename(test_path), 
-                                       seconds = seconds_file2, status = "pass",
+                                       seconds = seconds_file, status = file_status,
                                        msg_val = msg_val, date_time = commit_dtime))
   rownames(test_results_df) <- NULL
   test_results_df
+
 }
 
 ##  -----------------------------------------------------------------------------------------
