@@ -53,10 +53,10 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
   # Creating the tempfiles
   t_lines <- readLines(test_path)
   q_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed = TRUE)
-  temp_file1 <- tempfile()
-  temp_file2 <- tempfile()
-  writeLines(t_lines, temp_file1)
-  writeLines(q_lines, temp_file2)
+  temp_file_original <- tempfile()
+  temp_file_subbed <- tempfile()
+  writeLines(t_lines, temp_file_original)
+  writeLines(q_lines, temp_file_subbed)
   
   devtools::load_all(file.path("./"))
   test_results <- list()
@@ -72,20 +72,30 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
     # --------------------------------------------------------------
     
     require(testthat)
-    seconds_file <- if(require(microbenchmark)){
-      times <- microbenchmark(test = {
-        source(temp_file1, local = T)
-      }, times = 3)
-      times$time/1e9
-    } else {
-      replicate(3, {
-        time_vec <- system.time( {
-          source(temp_file1, local = T)
-        } )
-        time_vec[["elapsed"]]
-      })
+    seconds_file <- tryCatch(expr = {
+      if(require(microbenchmark)){
+        times <- microbenchmark(test = {
+          base::source(temp_file_original, local = T)
+        }, times = 3)
+        times$time/1e9
+      } else {
+        replicate(3, {
+          time_vec <- system.time( {
+            source(temp_file_original, local = T)
+          } )
+          time_vec[["elapsed"]]
+        })
+      }
+    },
+    error = function(e){
+      NA
     }
-    
+    )
+    if(is.na(seconds_file)){
+      file_status <- "fail"
+    } else {
+      file_status <- "pass"
+    }    
     # ---------------------------------------------------------------
     
     # Code block measuring the run-time of the testthat code blocks (if present)
@@ -97,29 +107,39 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
       run <- function(){
         testthat:::test_code(test_name, code_subs, env=e)
       }
-      seconds <- if(require(microbenchmark)){
-        times <- microbenchmark(test = {
-          run()
-        }, times = 3)
-        times$time/1e9
-      } else {
-        replicate(3, {
-          time_vec <- system.time( {
+      seconds <- tryCatch(expr = {
+        if(require(microbenchmark)){
+          times <- microbenchmark(test = {
             run()
-          } )
-          time_vec[["elapsed"]]
-        })
+          }, times = 3)
+          times$time/1e9
+        } else {
+          replicate(3, {
+            time_vec <- system.time( {
+              run()
+            } )
+            time_vec[["elapsed"]]
+          })
+        }
+      },
+      error = function(e){
+        NA
       }
-      status <- "pass"
+      )
+      if(is.na(seconds)){
+        status <- "fail"
+      } else {
+        status <- "pass"
+      }
       time_df <- data.frame(test_name, seconds, status, branch = branch,
                             message = commit_msg, date_time = commit_dtime)
       test_results[[test_name]] <<- time_df
     }
     
     
-    source(file = temp_file2, local = T)
+    source(file = temp_file_subbed, local = T)
 #     seconds_file2 <- {
-#       times <- microbenchmark(times = 1, source(file = temp_file2, local = T))
+#       times <- microbenchmark(times = 1, source(file = temp_file_subbed, local = T))
 #       times$time/1e9
 #     }
     

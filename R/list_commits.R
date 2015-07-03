@@ -130,6 +130,9 @@ time_commit <- function(test_path, test_commit) {
 # --------------------------------------------------------------
   
   require(testthat)
+# We have used tryCatch so that execution doesn't stop in case of an error
+# in the test file. Rather we modify the values in the result data frame
+# (time as NA, status as 'fail') to let the user know of the error.
   seconds_file <- tryCatch(expr = {
       if(require(microbenchmark)){
         times <- microbenchmark(test = {
@@ -166,6 +169,9 @@ time_commit <- function(test_path, test_commit) {
     run <- function(){
       testthat:::test_code(test_name, code_subs, env=e)
     }
+    # We have used tryCatch so that execution doesn't stop in case of an error
+    # in a testthat block. Rather we modify the values in the result data frame
+    # (time as NA, status as 'fail') to let the user know of the error.
     seconds <- tryCatch(expr = {
         if(require(microbenchmark)){
           times <- microbenchmark(test = {
@@ -359,11 +365,26 @@ mem_commit <- function(test_path, test_commit) {
       testthat:::test_code(test_name, code_subs, env=e)
     }
     new_name <- gsub(pattern = " ", replacement = "", x = test_name)
-    testthat_rss_list <- {
+    
+    # We have used tryCatch so that execution doesn't stop in case of an error
+    # in a testthat block. Rather we modify the values in the result data frame
+    # (memories as NA, status as 'fail') to let the user know of the error. 
+    testthat_rss_list <- 
+      tryCatch(expr = {
         .rss.profile.start(paste0(new_name, ".RSS"))
         run()
         .rss.profile.stop(paste0(new_name, ".RSS"))
-    }
+      },
+      error = function(e){
+        # The below line is required in order to stop the ps process which was started
+        # by .rss.profile.start earlier. In case of an error, the .rss.profile.stop
+        # function in the above code-block won't be executed resulting in an infinite
+        # loop. (Check out /R/mem_experiment.R for better understanding.)
+        .rss.profile.stop(paste0(new_name, ".RSS"))
+        
+        list(swap = NA, leak = NA)  
+      }
+      )
     testthat_mem_df <- data.frame(test_name, swap_mb = testthat_rss_list$swap/1000, 
                           leak_mb = testthat_rss_list$leak/1000,
                           msg_val = msg_val, date_time = commit_dtime)
@@ -374,10 +395,17 @@ mem_commit <- function(test_path, test_commit) {
   
   ## Obtaining the memory metrics for the file 
   file_name <- basename(test_path)
-  .rss.profile.start(paste0(file_name, ".RSS"))
-  source(temp_file_subbed, local = TRUE)
-  rss_list <- .rss.profile.stop(paste0(file_name, ".RSS"))
-  # Check /R/mem_experiment.R for source code for the above functions
+  rss_list <- 
+  tryCatch(expr = {
+    .rss.profile.start(paste0(file_name, ".RSS"))
+    source(temp_file_subbed, local = TRUE)
+    .rss.profile.stop(paste0(file_name, ".RSS"))
+  },
+  error = function(e) {
+    list(leak = NA, swap = NA)
+  }
+  )
+  # Check /R/mem_experiment.R for source code for the functions .rss.profile.*
   
   #Formatting the result dataframe
   testthat_df <- do.call(rbind, test_results)
