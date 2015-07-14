@@ -110,7 +110,7 @@ plot_mem <- function(test_path, num_commits = 5) {
   # Same explanation as above.
   
   file_plots <- list(swap_plot, leak_plot)
-  .multiplot(plotlist = file_plots)
+  suppressWarnings(.multiplot(plotlist = file_plots))
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -230,12 +230,41 @@ plot_bmemory <- function(test_path, branch1, branch2 = "master") {
   # Same explanation as above.
   
   file_plots <- list(swap_plot, leak_plot)
-  .multiplot(plotlist = file_plots)
+  # To hide the warning messages from being displayed
+  suppressWarnings(.multiplot(plotlist = file_plots))
 }
 
 ##  -----------------------------------------------------------------------------------------
 ##  -----------------------------------------------------------------------------------------
 
+#' Plot memory and time statistics across versions for all files in a given directory.
+#' 
+#' Given a directory path, plot the memory and time usage statistics of all files 
+#' in the directory against the commit message summaries of the specified number 
+#' of commits in the current git repository. 
+#'
+#' 
+#' @param test_dir Directory containing the test-files which are to be used.
+#' @param num_commits Number of commits (versions) against which the files are to
+#'   be tested, with default being 5.
+#'   
+#' @examples
+#' ## Example-1
+#' 
+#' # Set the current directory to the git repository concerned.
+#' setwd("./Path/to/repository")
+#' 
+#' # Specify the directory containing the test files
+#' d_path <- "Path/to/directory"
+#' 
+#' # Pass the parameters and obtain the memory usage details against 10 commits
+#' library(Rperform)
+#' plot_directory(test_dir = d_path, n_commits = 10)
+#' 
+#' @section WARNING:
+#'   Library assumes the current directory to be the root directory of the
+#'   package being tested.
+#' 
 
 ## The plot_directory function, given a test-directory path, plots the time 
 ## taken by all the test files present inside the directory (including those of 
@@ -243,14 +272,33 @@ plot_bmemory <- function(test_path, branch1, branch2 = "master") {
 ## given number of commits. It stores the plots as png files in the root
 ## repository directory.
 
-.plot_directory <- function(test_dir, num_commits = 5) {
+plot_directory <- function(test_dir, num_commits = 5) {
   
   file_names <- list.files(test_dir)
+  if (!dir.exists("Rperform_Graphs")) {
+    dir.create(path = "./Rperform_Graphs")
+  } else {
+    system(command = "rm -rf ./Rperform_Graphs")
+    dir.create(path = "./Rperform_Graphs")
+  }
+  on.exit(expr = setwd("./../"))
+  
   for (file_i in seq_along(file_names)) {
-    png(file = sub(x = file_names[[file_i]], pattern = "*.[rR]", 
-                   replacement = ""))
-    print(plot_time(test_path = file.path(test_dir, file_names[[file_i]])
-                    , num_commits = 5))
+    png(file = sub(x = file_names[[file_i]], pattern = "*.[rR]$", 
+                   replacement = "_time.png"))
+    tplot_file <- plot_time(test_path = file.path(test_dir, file_names[[file_i]])
+                           , num_commits = num_commits)
+    setwd("./Rperform_Graphs")
+    print(tplot_file)
+    setwd("./../")
+    dev.off()
+    png(file = sub(x = file_names[[file_i]], pattern = "*.[rR]$", 
+                   replacement = "_mem.png"))
+    mplot_file <- plot_mem(test_path = file.path(test_dir, file_names[[file_i]]),
+                           num_commits = num_commits)
+    setwd("./Rperform_Graphs")
+    print(tplot_file)
+    setwd("./../")
     dev.off()
   }
   
