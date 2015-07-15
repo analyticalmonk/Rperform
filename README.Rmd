@@ -1,7 +1,7 @@
 Rperform
 --------
 
-Rperform is an R package that makes it easy for R package developers to track quantitative performance metrics of their code, over time. <b>It focuses on providing changes brought over in the package’s performance metrics over subsequent development versions and across git branches, most importantly relating to time and memory.</b>
+Rperform is an R package that makes it easy for R package developers to track quantitative performance metrics of their code, over time. <b>It focuses on providing changes, related to time and memory, brought over in the package’s performance metrics over subsequent development versions and across git branches.</b>
 <em>The project is under development, as a part of the [Google Summer of Code 2015](https://github.com/rstats-gsoc/gsoc2015/wiki/Test-timings-on-Travis) program.</em>
 
 Installation
@@ -34,62 +34,62 @@ of the package [stringr](https://github.com/tdhock/stringr).
 ```r
 > setwd("./stringr")
 > library(Rperform)
-> get_times(test_path = "./tests/testthat/test-extract.r", num_commits = 10)
+> plot_time(test_path = "./tests/testthat/test-extract.r", num_commits = 10)
 ```
 ![time plot](images/Rplot_time.jpeg)
 
-The following example illustrates the use of the `Rperform::get_times()` and `Rperform::mem_compare()` functions on the git repository
+The following example illustrates the use of the `Rperform::time_compare()` and `Rperform::mem_compare()` functions on the git repository
 of the package [stringr](https://github.com/tdhock/stringr).
 
 ```r
 > setwd("./stringr")
 > library(Rperform)
-> get_times(test_path = "./tests/testthat/test-dup.r", num_commits = 1)
+> time_compare(test_path = "./tests/testthat/test-dup.r", num_commits = 2)
 
-                          test_name     seconds status         msg_val           date_time
-1           basic duplication works 0.001473012   pass Can now use CRA 2015-01-08 14:09:43
-2           basic duplication works 0.001223264   pass Can now use CRA 2015-01-08 14:09:43
-3           basic duplication works 0.001202065   pass Can now use CRA 2015-01-08 14:09:43
-4  0 duplicates equals empty string 0.000881198   pass Can now use CRA 2015-01-08 14:09:43
-5  0 duplicates equals empty string 0.000658565   pass Can now use CRA 2015-01-08 14:09:43
-6  0 duplicates equals empty string 0.000634038   pass Can now use CRA 2015-01-08 14:09:43
-7                        test-dup.r 0.002933802   pass Can now use CRA 2015-01-08 14:09:43
-8                        test-dup.r 0.002597354   pass Can now use CRA 2015-01-08 14:09:43
-9                        test-dup.r 0.002556732   pass Can now use CRA 2015-01-08 14:09:43
-10          basic duplication works 0.001568654   pass Require latest  2015-01-08 14:03:37
-11          basic duplication works 0.001233763   pass Require latest  2015-01-08 14:03:37
-12          basic duplication works 0.001195581   pass Require latest  2015-01-08 14:03:37
-13 0 duplicates equals empty string 0.000915303   pass Require latest  2015-01-08 14:03:37
-14 0 duplicates equals empty string 0.000678676   pass Require latest  2015-01-08 14:03:37
-15 0 duplicates equals empty string 0.000643948   pass Require latest  2015-01-08 14:03:37
-16                       test-dup.r 0.003009679   pass Require latest  2015-01-08 14:03:37
-17                       test-dup.r 0.002569843   pass Require latest  2015-01-08 14:03:37
-18                       test-dup.r 0.002566603   pass Require latest  2015-01-08 14:03:37
-
+                          test_name metric_name status  metric_val         msg_val           date_time
+1           basic duplication works        time   pass 0.001797014 Can now use CRA 2015-01-08 14:09:43
+2           basic duplication works        time   pass 0.001539050 Can now use CRA 2015-01-08 14:09:43
+3           basic duplication works        time   pass 0.001545034 Can now use CRA 2015-01-08 14:09:43
+4  0 duplicates equals empty string        time   pass 0.001019430 Can now use CRA 2015-01-08 14:09:43
+5  0 duplicates equals empty string        time   pass 0.000784386 Can now use CRA 2015-01-08 14:09:43
+6  0 duplicates equals empty string        time   pass 0.000766279 Can now use CRA 2015-01-08 14:09:43
+7                        test-dup.r        time   pass 0.003555478 Can now use CRA 2015-01-08 14:09:43
+8                        test-dup.r        time   pass 0.003118946 Can now use CRA 2015-01-08 14:09:43
+9                        test-dup.r        time   pass 0.003106017 Can now use CRA 2015-01-08 14:09:43
+10          basic duplication works        time   pass 0.001780849 Require latest  2015-01-08 14:03:37
+11          basic duplication works        time   pass 0.001545568 Require latest  2015-01-08 14:03:37
+12          basic duplication works        time   pass 0.001517300 Require latest  2015-01-08 14:03:37
+13 0 duplicates equals empty string        time   pass 0.001028882 Require latest  2015-01-08 14:03:37
+14 0 duplicates equals empty string        time   pass 0.000783847 Require latest  2015-01-08 14:03:37
+15 0 duplicates equals empty string        time   pass 0.000771520 Require latest  2015-01-08 14:03:37
+16                       test-dup.r        time   pass 0.003436051 Require latest  2015-01-08 14:03:37
+17                       test-dup.r        time   pass 0.003130397 Require latest  2015-01-08 14:03:37
+18                       test-dup.r        time   pass 0.003082713 Require latest  2015-01-08 14:03:37
+> 
 ```
 
 ```r
-> Rperform::mem_compare(test_path = "./tests/testthat/test-join.r", num_commits = 2)
+> Rperform::mem_compare(test_path = "./tests/testthat/test-join.r", num_commits = 1)
 
-             test_name swap_mb leak_mb         msg_val           date_time
-11.1  basic case works   0.040   0.040 Can now use CRA 2015-01-08 14:09:43
-11.2 NULLs are dropped   0.028   0.028 Can now use CRA 2015-01-08 14:09:43
-11.3       test-join.r   0.124   0.124 Can now use CRA 2015-01-08 14:09:43
-12.1  basic case works   0.040   0.040 Can now use CRA 2015-01-08 14:09:43
-12.2 NULLs are dropped   0.028   0.028 Can now use CRA 2015-01-08 14:09:43
-12.3       test-join.r   0.128   0.128 Can now use CRA 2015-01-08 14:09:43
-13.1  basic case works   0.040   0.040 Can now use CRA 2015-01-08 14:09:43
-13.2 NULLs are dropped   0.028   0.028 Can now use CRA 2015-01-08 14:09:43
-13.3       test-join.r   0.128   0.128 Can now use CRA 2015-01-08 14:09:43
-21.1  basic case works   0.040   0.040 Require latest  2015-01-08 14:03:37
-21.2 NULLs are dropped   0.028   0.028 Require latest  2015-01-08 14:03:37
-21.3       test-join.r   0.132   0.132 Require latest  2015-01-08 14:03:37
-22.1  basic case works   0.040   0.040 Require latest  2015-01-08 14:03:37
-22.2 NULLs are dropped   0.028   0.028 Require latest  2015-01-08 14:03:37
-22.3       test-join.r   0.132   0.132 Require latest  2015-01-08 14:03:37
-23.1  basic case works   0.040   0.040 Require latest  2015-01-08 14:03:37
-23.2 NULLs are dropped   0.028   0.028 Require latest  2015-01-08 14:03:37
-23.3       test-join.r   0.132   0.132 Require latest  2015-01-08 14:03:37 
+             test_name metric_name status metric_val         msg_val           date_time
+11.1  basic case works     swap_mb   pass      0.040 Can now use CRA 2015-01-08 14:09:43
+11.2  basic case works     leak_mb   pass      0.040 Can now use CRA 2015-01-08 14:09:43
+11.3 NULLs are dropped     swap_mb   pass      0.044 Can now use CRA 2015-01-08 14:09:43
+11.4 NULLs are dropped     leak_mb   pass      0.044 Can now use CRA 2015-01-08 14:09:43
+11.5       test-join.r     swap_mb   pass      0.148 Can now use CRA 2015-01-08 14:09:43
+11.6       test-join.r     leak_mb   pass      0.148 Can now use CRA 2015-01-08 14:09:43
+12.1  basic case works     swap_mb   pass      0.040 Can now use CRA 2015-01-08 14:09:43
+12.2  basic case works     leak_mb   pass      0.040 Can now use CRA 2015-01-08 14:09:43
+12.3 NULLs are dropped     swap_mb   pass      0.044 Can now use CRA 2015-01-08 14:09:43
+12.4 NULLs are dropped     leak_mb   pass      0.044 Can now use CRA 2015-01-08 14:09:43
+12.5       test-join.r     swap_mb   pass      0.144 Can now use CRA 2015-01-08 14:09:43
+12.6       test-join.r     leak_mb   pass      0.144 Can now use CRA 2015-01-08 14:09:43
+13.1  basic case works     swap_mb   pass      0.040 Can now use CRA 2015-01-08 14:09:43
+13.2  basic case works     leak_mb   pass      0.040 Can now use CRA 2015-01-08 14:09:43
+13.3 NULLs are dropped     swap_mb   pass      0.048 Can now use CRA 2015-01-08 14:09:43
+13.4 NULLs are dropped     leak_mb   pass      0.048 Can now use CRA 2015-01-08 14:09:43
+13.5       test-join.r     swap_mb   pass      0.148 Can now use CRA 2015-01-08 14:09:43
+13.6       test-join.r     leak_mb   pass      0.148 Can now use CRA 2015-01-08 14:09:43
 ```
 
 ---
