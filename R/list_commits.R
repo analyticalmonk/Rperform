@@ -130,6 +130,7 @@ time_commit <- function(test_path, test_commit) {
 # --------------------------------------------------------------
   
   require(testthat)
+  file_status = "pass"
 # We have used tryCatch so that execution doesn't stop in case of an error
 # in the test file. Rather we modify the values in the result data frame
 # (time as NA, status as 'fail') to let the user know of the error.
@@ -149,14 +150,10 @@ time_commit <- function(test_path, test_commit) {
       }
     },
     error = function(e){
+      file_status = "fail"
       NA
     }
   )
-  if(is.na(seconds_file)){
-    file_status <- "fail"
-  } else {
-    file_status <- "pass"
-  }
 
 # ---------------------------------------------------------------
 
@@ -169,6 +166,7 @@ time_commit <- function(test_path, test_commit) {
     run <- function(){
       testthat:::test_code(test_name, code_subs, env=e)
     }
+    status = "pass"
     # We have used tryCatch so that execution doesn't stop in case of an error
     # in a testthat block. Rather we modify the values in the result data frame
     # (time as NA, status as 'fail') to let the user know of the error.
@@ -188,16 +186,13 @@ time_commit <- function(test_path, test_commit) {
         }
       },
       error = function(e){
+        status = "fail"
         NA
       }
     )
-    if(is.na(seconds)){
-      status <- "fail"
-    } else {
-      status <- "pass"
-    }
-    time_df <- data.frame(test_name, seconds, status, msg_val,
-                          date_time = commit_dtime)
+
+    time_df <- data.frame(test_name, metric_name = "time", status, 
+                          metric_val = seconds, msg_val, date_time = commit_dtime)
     test_results[[test_name]] <<- time_df
   }
 
@@ -218,8 +213,9 @@ time_commit <- function(test_path, test_commit) {
 #   test_results_df["file runtime"] <- seconds_file
 #   test_results_df["file runtime-2"] <- seconds_file2
   test_results_df <- rbind(test_results_df, data.frame(test_name = basename(test_path), 
-                                       seconds = seconds_file, status = file_status,
-                                       msg_val = msg_val, date_time = commit_dtime))
+                                       metric_name = "time", status = file_status,
+                                       metric_val = seconds_file, msg_val = msg_val, 
+                                       date_time = commit_dtime))
   rownames(test_results_df) <- NULL
   test_results_df
 
@@ -252,19 +248,19 @@ time_commit <- function(test_path, test_commit) {
 #' 
 #' # Pass the parameters and obtain the run-time details against 10 commits
 #' library(Rperform)
-#' time_commit(test_path = t_path, n_commits = 10)
+#' time_compare(test_path = t_path, n_commits = 10)
 #' 
 #' @section Warning:
 #'   Library assumes the current directory to be the root directory of the
 #'   package being tested.
 #' 
 
-# The get_time function, given a test-file path, checks its run-time against the
+# The time_compare function, given a test-file path, checks its run-time against the
 # specified number of commits in the current git repository and returns a
 # data-frame comprised of the test name, status of test run, time (if
 # successful) and SHA1 value corresponding to the commit the value is for.
 
-get_times <- function(test_path, num_commits = 20) {
+time_compare <- function(test_path, num_commits = 20) {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
   stopifnot(is.numeric(num_commits))
@@ -366,6 +362,7 @@ mem_commit <- function(test_path, test_commit) {
     }
     new_name <- gsub(pattern = " ", replacement = "", x = test_name)
     
+    test_status <- "pass"
     # We have used tryCatch so that execution doesn't stop in case of an error
     # in a testthat block. Rather we modify the values in the result data frame
     # (memories as NA, status as 'fail') to let the user know of the error. 
@@ -382,19 +379,26 @@ mem_commit <- function(test_path, test_commit) {
         # loop. (Check out /R/mem_experiment.R for better understanding.)
         .rss.profile.stop(paste0(new_name, ".RSS"))
         
-        list(swap = NA, leak = NA)  
+        test_status <- "fail"  
+        list(swap = NA, leak = NA)
       }
       )
-    testthat_mem_df <- data.frame(test_name, swap_mb = testthat_rss_list$swap/1000, 
-                          leak_mb = testthat_rss_list$leak/1000,
-                          msg_val = msg_val, date_time = commit_dtime)
-    test_results[[test_name]] <<- testthat_mem_df
+    
+    testthat_swap_df <- data.frame(test_name, metric_name = "swap_mb", status = test_status,
+                                   metric_val = testthat_rss_list$swap/1000, 
+                                   msg_val = msg_val, date_time = commit_dtime)
+    testthat_leak_df <- data.frame(test_name, metric_name = "leak_mb", status = test_status,
+                                   metric_val = testthat_rss_list$leak/1000, 
+                                   msg_val = msg_val, date_time = commit_dtime)
+    
+    test_results[[test_name]] <<- rbind(testthat_swap_df, testthat_leak_df)
   }
   
 #   source(temp_file_subbed, local = TRUE)
   
   ## Obtaining the memory metrics for the file 
   file_name <- basename(test_path)
+  file_status <- "pass"
   rss_list <- 
   tryCatch(expr = {
     .rss.profile.start(paste0(file_name, ".RSS"))
@@ -402,16 +406,23 @@ mem_commit <- function(test_path, test_commit) {
     .rss.profile.stop(paste0(file_name, ".RSS"))
   },
   error = function(e) {
-    list(leak = NA, swap = NA)
+    file_status <- "fail"
+    list(swap = NA, leak = NA)
   }
   )
-  # Check /R/mem_experiment.R for source code for the functions .rss.profile.*
-  
+  # Check /R/mem_experiment.R for source code for the functions .rss.profile.*  
+
+  testfile_swap_df <- data.frame(test_name = file_name, metric_name = "swap_mb",
+                                 status = file_status, metric_val = rss_list$swap/1000, 
+                                 msg_val = msg_val, date_time = commit_dtime)
+  testfile_leak_df <- data.frame(test_name = file_name, metric_name = "leak_mb",
+                                 status = file_status, metric_val = rss_list$leak/1000, 
+                                 msg_val = msg_val, date_time = commit_dtime)
+
   #Formatting the result dataframe
+  testfile_df <- rbind(testfile_swap_df, testfile_leak_df)
   testthat_df <- do.call(rbind, test_results)
-  mem_df <- rbind(testthat_df, data.frame(test_name = file_name, swap_mb = rss_list$swap/1000, 
-                                     leak_mb = rss_list$leak/1000, msg_val = msg_val, 
-                                     date_time = commit_dtime))
+  mem_df <- rbind(testthat_df, testfile_df)
   rownames(mem_df) <- NULL
   mem_df
 #   data.frame(file_name, swap_mb = rss_list$swap/1000, leak_mb = rss_list$leak/1000,
