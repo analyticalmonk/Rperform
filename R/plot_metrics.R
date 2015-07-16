@@ -62,11 +62,14 @@ plot_time <- function(test_path, num_commits = 5, save_data = FALSE) {
   # Plot the metric data
   ggplot2::qplot(msg_val, metric_val, data = time_frame, color = test_name) + 
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
-    ggplot2::scale_x_discrete(limits = rev(levels(time_frame$msg_val)))
+    ggplot2::scale_x_discrete(limits = rev(levels(time_frame$msg_val))) +
   # In the above 3 lines code, the first line creates the basic qplot. The 
   # second and third lines display the x-axis labels at 90 degrees to the 
   # horizontal and correct the order of message labels on the x -axis,
   # respectively.
+    ggplot2::xlab("Commit message") +
+    ggplot2::ylab("Time (in seconds)") +
+    ggplot2::ggtitle(label = "Variation in runtime across Git versions")
   
 }
 
@@ -136,12 +139,15 @@ plot_mem <- function(test_path, num_commits = 5, save_data = FALSE) {
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90),
                    strip.text.x = ggplot2::element_text(size = 10, face = "bold")) +
     ggplot2::scale_x_discrete(limits = rev(levels(mem_frame$msg))) + 
-    ggplot2::facet_grid(. ~ metric_name)
+    ggplot2::facet_grid(. ~ metric_name) +
   # In the above 4 lines of code, the first line creates the basic qplot. The 
   # second and third lines display the x-axis labels at 90 degrees to the 
   # horizontal and correct the order of message labels on the x -axis,
   # respectively. The fourth line creates a facet grid so as to seperate
   # the plots for the swap and leak memory metrics.
+    ggplot2::ylab(label = "Memory (in mb)") +
+    ggplot2::xlab(label = "Commit messages") +
+    ggplot2::ggtitle(label = "Variation in memory metrics acros Git versions")
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -200,7 +206,7 @@ plot_btimes <- function(test_path, branch1, branch2 = "master") {
 ##  -----------------------------------------------------------------------------------------
 ##  -----------------------------------------------------------------------------------------
 
-#' Plot run-times across branches.
+#' Plot memory metrics across branches.
 #' 
 #' Given a test-file and two branches, plots the memory metrics of the file 
 #' against the first commit till the latest common commit in branch1, and 

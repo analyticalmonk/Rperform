@@ -28,15 +28,19 @@ git repository before using the functions.
 > setwd(dir = "Path/to/repo")
 ```
 
-The following example illustrates the use of the `Rperform::plot_time()` function on the git repository
-of the package [stringr](https://github.com/tdhock/stringr).
+The following examples illustrates the use of the `Rperform::plot_time()` and `Rperform::plot_mem()` functions on the git repository of the package [stringr](https://github.com/tdhock/stringr).
 
 ```r
 > setwd("./stringr")
 > library(Rperform)
-> plot_time(test_path = "./tests/testthat/test-extract.r", num_commits = 10)
+> plot_time(test_path = "./tests/testthat/test-extract.r", num_commits = 10, save_data = FALSE)
 ```
 ![time plot](images/Rplot_time.jpeg)
+
+```r
+> Rperform::plot_mem(test_path = "./tests/testthat/test-dup.r", num_commits = 4, save_data = F)
+```
+![memory plot](images/Rplot_mem.jpeg)
 
 The following example illustrates the use of the `Rperform::time_compare()` and `Rperform::mem_compare()` functions on the git repository
 of the package [stringr](https://github.com/tdhock/stringr).
