@@ -4,19 +4,24 @@
 \alias{plot_time}
 \title{Plot run-time across versions.}
 \usage{
-plot_time(test_path, num_commits = 5)
+plot_time(test_path, num_commits = 5, save_data = FALSE)
 }
 \arguments{
 \item{test_path}{File-path of the test-file which is to be used for run-time
 comparisons.}
 
 \item{num_commits}{Number of commits (versions) against which the file is to
-  be tested, with default being 5.}
+be tested, with default being 5.}
+
+\item{save_data}{If set to TRUE, the data frame containing the time metrics
+  information is stored.}
 }
 \description{
 Given a test-file path, plot the run-time of entire file and individual
 testthat blocks against the commit message summaries of the specified number
-of commits in the current git repository.
+of commits in the current git repository. If the parameter save_data is set
+to true, it also stores the corresponding data frame in an RData file in a
+folder 'Rperform_Data' in the current directory.
 }
 \section{WARNING}{
 
@@ -34,6 +39,6 @@ t_path <- "Path/to/file"
 
 # Pass the parameters and obtain the run-time details against 10 commits
 library(Rperform)
-plot_time(test_path = t_path, n_commits = 10)
+plot_time(test_path = t_path, n_commits = 10, save_data = F)
 }
 

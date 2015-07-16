@@ -4,14 +4,17 @@
 \alias{plot_mem}
 \title{Plot memory statistics across versions.}
 \usage{
-plot_mem(test_path, num_commits = 5)
+plot_mem(test_path, num_commits = 5, save_data = FALSE)
 }
 \arguments{
 \item{test_path}{File-path of the test-file which is to be used for run-time
 comparisons.}
 
 \item{num_commits}{Number of commits (versions) against which the file is to
-  be tested, with default being 5.}
+be tested, with default being 5.}
+
+\item{save_data}{If set to TRUE, the data frame containing the memory metrics
+  is stored.}
 }
 \description{
 Given a test-file path, plot the memory usage statistics of entire file

@@ -4,13 +4,16 @@
 \alias{plot_directory}
 \title{Plot memory and time statistics across versions for all files in a given directory.}
 \usage{
-plot_directory(test_dir, num_commits = 5)
+plot_directory(test_dir, num_commits = 5, save_data = FALSE)
 }
 \arguments{
 \item{test_dir}{Directory containing the test-files which are to be used.}
 
 \item{num_commits}{Number of commits (versions) against which the files are to
-  be tested, with default being 5.}
+be tested, with default being 5.}
+
+\item{save_data}{If set to TRUE, the metrics data is saved in a folder 'Rperform_Data'
+  in the current directory.}
 }
 \description{
 Given a directory path, plot the memory and time usage statistics of all files
