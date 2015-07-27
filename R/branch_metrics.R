@@ -30,8 +30,8 @@
 #'   package being tested.
 #'   
 
-# Given a test and branch, compare_branch returns the run-time of the test over
-# the given number of commits on the branch and the latest commit on master.
+# Given a test and branch, time_branch returns the run-time of the test over
+# the given number of commits on the specified branch.
 
 time_branch <- function(test_path, branch = "master", num_commits = 5) {
   stopifnot(is.character(test_path))
@@ -131,8 +131,9 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
       } else {
         status <- "pass"
       }
-      time_df <- data.frame(test_name, seconds, status, branch = branch,
-                            message = commit_msg, date_time = commit_dtime)
+      time_df <- data.frame(test_name, metric_name = "seconds", status, 
+                            metric_val = seconds, message = commit_msg, 
+                            date_time = commit_dtime, branch = branch)
       test_results[[test_name]] <<- time_df
     }
     
@@ -155,9 +156,9 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
     }
     test_results_df <- 
       rbind(test_results_df, data.frame(test_name = basename(test_path), 
-                                        seconds = seconds_file, status = "pass",
-                                        branch = branch, message = commit_msg, 
-                                        date_time = commit_dtime))
+                                        metric_name = "seconds", status = file_status,
+                                        metric_val = seconds_file, message = commit_msg, 
+                                        date_time = commit_dtime,  branch = branch))
     rownames(test_results_df) <- NULL
   }
   ## -----------------------------------------------------------------------

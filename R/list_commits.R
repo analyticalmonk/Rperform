@@ -192,7 +192,8 @@ time_commit <- function(test_path, test_commit) {
     )
 
     time_df <- data.frame(test_name, metric_name = "time", status, 
-                          metric_val = seconds, msg_val, date_time = commit_dtime)
+                          metric_val = seconds, message = msg_val, 
+                          date_time = commit_dtime)
     test_results[[test_name]] <<- time_df
   }
 
@@ -214,7 +215,7 @@ time_commit <- function(test_path, test_commit) {
 #   test_results_df["file runtime-2"] <- seconds_file2
   test_results_df <- rbind(test_results_df, data.frame(test_name = basename(test_path), 
                                        metric_name = "time", status = file_status,
-                                       metric_val = seconds_file, msg_val = msg_val, 
+                                       metric_val = seconds_file, message = msg_val, 
                                        date_time = commit_dtime))
   rownames(test_results_df) <- NULL
   test_results_df
@@ -386,10 +387,10 @@ mem_commit <- function(test_path, test_commit) {
     
     testthat_swap_df <- data.frame(test_name, metric_name = "swap_mb", status = test_status,
                                    metric_val = testthat_rss_list$swap/1000, 
-                                   msg_val = msg_val, date_time = commit_dtime)
+                                   message = msg_val, date_time = commit_dtime)
     testthat_leak_df <- data.frame(test_name, metric_name = "leak_mb", status = test_status,
                                    metric_val = testthat_rss_list$leak/1000, 
-                                   msg_val = msg_val, date_time = commit_dtime)
+                                   message = msg_val, date_time = commit_dtime)
     
     test_results[[test_name]] <<- rbind(testthat_swap_df, testthat_leak_df)
   }
@@ -414,10 +415,10 @@ mem_commit <- function(test_path, test_commit) {
 
   testfile_swap_df <- data.frame(test_name = file_name, metric_name = "swap_mb",
                                  status = file_status, metric_val = rss_list$swap/1000, 
-                                 msg_val = msg_val, date_time = commit_dtime)
+                                 message = msg_val, date_time = commit_dtime)
   testfile_leak_df <- data.frame(test_name = file_name, metric_name = "leak_mb",
                                  status = file_status, metric_val = rss_list$leak/1000, 
-                                 msg_val = msg_val, date_time = commit_dtime)
+                                 message = msg_val, date_time = commit_dtime)
 
   #Formatting the result dataframe
   testfile_df <- rbind(testfile_swap_df, testfile_leak_df)

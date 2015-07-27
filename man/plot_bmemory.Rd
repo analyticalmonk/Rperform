@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_metrics.R
 \name{plot_bmemory}
 \alias{plot_bmemory}
-\title{Plot run-times across branches.}
+\title{Plot memory metrics across branches.}
 \usage{
 plot_bmemory(test_path, branch1, branch2 = "master")
 }

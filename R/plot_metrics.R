@@ -60,9 +60,9 @@ plot_time <- function(test_path, num_commits = 5, save_data = FALSE) {
   }
   
   # Plot the metric data
-  ggplot2::qplot(msg_val, metric_val, data = time_frame, color = test_name) + 
+  ggplot2::qplot(message, metric_val, data = time_frame, color = test_name) + 
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
-    ggplot2::scale_x_discrete(limits = rev(levels(time_frame$msg_val))) +
+    ggplot2::scale_x_discrete(limits = rev(levels(time_frame$message))) +
   # In the above 3 lines code, the first line creates the basic qplot. The 
   # second and third lines display the x-axis labels at 90 degrees to the 
   # horizontal and correct the order of message labels on the x -axis,
@@ -135,10 +135,10 @@ plot_mem <- function(test_path, num_commits = 5, save_data = FALSE) {
                                                            x = basename(test_path))))
   }  
   
-  ggplot2::qplot(msg_val, metric_val, data = mem_frame, color = test_name) +
+  ggplot2::qplot(message, metric_val, data = mem_frame, color = test_name) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90),
                    strip.text.x = ggplot2::element_text(size = 10, face = "bold")) +
-    ggplot2::scale_x_discrete(limits = rev(levels(mem_frame$msg))) + 
+    ggplot2::scale_x_discrete(limits = rev(levels(mem_frame$message))) + 
     ggplot2::facet_grid(. ~ metric_name) +
   # In the above 4 lines of code, the first line creates the basic qplot. The 
   # second and third lines display the x-axis labels at 90 degrees to the 
@@ -192,15 +192,18 @@ plot_btimes <- function(test_path, branch1, branch2 = "master") {
                                branch2 = branch2)
   common_commitdf <- (.common_commit(branch1, branch2))
   
-  ggplot2::qplot(x = message, y = seconds, data = btimes_df, color = test_name) + 
+  ggplot2::qplot(x = message, y = metric_val, data = btimes_df, color = test_name) + 
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90))+
-    ggplot2::scale_x_discrete(limits = rev(levels(btimes_df$msg_val))) +
-    ggplot2::geom_vline(ggplot2::aes(xintercept = common_commitdf$cnum_b1 + 0.5))
+    ggplot2::scale_x_discrete(limits = rev(levels(btimes_df$message))) +
+    ggplot2::geom_vline(ggplot2::aes(xintercept = common_commitdf$cnum_b1 + 0.5, size = 2)) +
   # In the above 4 lines code, the first line creates the basic qplot. The 
   # second and third lines display the x-axis labels at 90 degrees to the 
   # horizontal and correct the order of message labels on the x -axis, 
   # respectively. The fourth line of code divides the commits from the two
   # different branches by a vertical line.
+    ggplot2::ylab(label = "Time (in seconds)") +
+    ggplot2::xlab(label = "Commit messages") +
+    ggplot2::ggtitle(label = "Variation in time metrics acros Git branches")
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -248,27 +251,23 @@ plot_bmemory <- function(test_path, branch1, branch2 = "master") {
                                branch2 = branch2)
   common_commitdf <- (.common_commit(branch1, branch2))
   
-  swap_plot <- ggplot2::qplot(msg_val, swap_mb, data = bmem_df,
-                              color = test_name) +
+  ggplot2::qplot(message, metric_val, data = bmem_df, color = test_name) +
+    ggplot2::facet_grid(. ~ metric_name) + 
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
-    ggplot2::scale_x_discrete(limits = rev(levels(bmem_df$msg))) +
-    ggplot2::geom_vline(ggplot2::aes(xintercept = common_commitdf$cnum_b1 + 0.5))
+    ggplot2::scale_x_discrete(limits = rev(levels(bmem_df$message))) +
+    ggplot2::geom_vline(ggplot2::aes(xintercept = common_commitdf$cnum_b1 + 0.5, size = 2)) +
   # In the above 4 lines code, the first line creates the basic qplot. The 
   # second and third lines display the x-axis labels at 90 degrees to the 
   # horizontal and correct the order of message labels on the x -axis, 
   # respectively. The fourth line of code divides the commits from the two
   # different branches by a vertical line.
+    ggplot2::ylab(label = "Memory (in mb)") +
+    ggplot2::xlab(label = "Commit messages") +
+    ggplot2::ggtitle(label = "Variation in memory metrics acros Git branches")
   
-  leak_plot <- ggplot2::qplot(msg_val, leak_mb, data = bmem_df,
-                              color = test_name) +
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
-    ggplot2::scale_x_discrete(limits = rev(levels(bmem_df$msg))) +
-    ggplot2::geom_vline(ggplot2::aes(xintercept = common_commitdf$cnum_b1 + 0.5))
-  # Same explanation as above.
-  
-  file_plots <- list(swap_plot, leak_plot)
-  # To hide the warning messages from being displayed
-  suppressWarnings(.multiplot(plotlist = file_plots))
+#   file_plots <- list(swap_plot, leak_plot)
+#   # To hide the warning messages from being displayed
+#   suppressWarnings(.multiplot(plotlist = file_plots))
 }
 
 ##  -----------------------------------------------------------------------------------------
