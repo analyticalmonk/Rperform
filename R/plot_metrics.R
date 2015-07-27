@@ -153,13 +153,46 @@ plot_mem <- function(test_path, num_commits = 5, save_data = FALSE) {
 ##  -----------------------------------------------------------------------------------------
 ##  -----------------------------------------------------------------------------------------
 
-plot_html <- function(){
-  if(!file.exists("index.Rmd")){
-    file.create("index.Rmd")
+#' Plot time and memory metrics of all test files on a webpage
+#' 
+#' It plots the time and memory metrics for all the tests present in the specified
+#' directory of the current git repository on a webpage.
+#' 
+#' @param test_directory Path of the directory containing the test files.
+#' @param out_file Name of the output webpage.
+#' 
+#' @examples
+#' ## Example-1
+#' 
+#' # Set to the git repository in consideration.
+#' setwd("path/to/repo")
+#' 
+#' # Load the package and run the function
+#' library(Rperform)
+#' plot_html(test_directory = "path/to/tests", out_file = "output.Rmd")
+#' 
+#' @section WARNING:
+#'   Library assumes the current directory to be the root directory of the
+#'   package being tested.
+#'   
+
+plot_html <- function(test_directory = "tests/testthat", output_name = "index"){
+  stopifnot(is.character(test_directory))
+  stopifnot(is.character(output_name))
+  stopifnot(length(test_directory) == 1)
+  stopifnot(length(output_name) == 1)
+  
+  out_file <- paste0(output_name, ".Rmd")
+  
+  if(!file.exists(out_file)){
+    file.create(out_file)
   }
-  writeLines("---\ntitle: \"plot\"\noutput: html_document\n---\n\n```{r, echo = F}\nRperform::plot_directory(\"tests/testthat\")\n```", 
-             con = "test_index.Rmd")
-  knitr::knit2html(input = "index.Rmd", output = "index.html")
+  
+  line_p1 <- "---\ntitle: \"plot\"\noutput: html_document\n---\n\n```{r, echo = F}\nRperform::plot_directory(\""
+  line_p3 <- "\")\n```"
+  file_lines <- paste0(line_p1, test_directory, line_p3)
+  writeLines( file_lines, con = out_file)
+  knitr::knit2html(input = out_file, output = paste0(output_name, ".html"))
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -325,12 +358,12 @@ plot_bmemory <- function(test_path, branch1, branch2 = "master") {
 plot_directory <- function(test_dir, num_commits = 5, save_data = FALSE) {
   
   file_names <- list.files(test_dir)
-  if (!dir.exists("Rperform_Graphs")) {
-    dir.create(path = "./Rperform_Graphs")
-  } else {
-    unlink(x = "Rperform_Graphs", recursive = T, force = T)
-    dir.create(path = "./Rperform_Graphs")
-  }
+#   if (!dir.exists("Rperform_Graphs")) {
+#     dir.create(path = "./Rperform_Graphs")
+#   } else {
+#     unlink(x = "Rperform_Graphs", recursive = T, force = T)
+#     dir.create(path = "./Rperform_Graphs")
+#   }
   
   # For each file, plots for both time and space metrics are plotted and stored
   # in the folder Rperform_Graphs in png format
@@ -338,8 +371,8 @@ plot_directory <- function(test_dir, num_commits = 5, save_data = FALSE) {
     # Time metrics
     tplot_file <- plot_time(test_path = file.path(test_dir, file_names[[file_i]])
                            , num_commits = num_commits, save_data = save_data)
-    png_tfile <- file.path("Rperform_Graphs", sub(pattern = "*.[rR]$", replacement = "_time.png",
-                                                 x = file_names[[file_i]]))
+#     png_tfile <- file.path("Rperform_Graphs", sub(pattern = "*.[rR]$", replacement = "_time.png",
+#                                                  x = file_names[[file_i]]))
 #     png(filename = png_tfile)
     print(tplot_file)
 #     dev.off()
@@ -347,8 +380,8 @@ plot_directory <- function(test_dir, num_commits = 5, save_data = FALSE) {
     #Memory metrics
     mplot_file <- plot_mem(test_path = file.path(test_dir, file_names[[file_i]]),
                            num_commits = num_commits, save_data = save_data)
-    png_mfile <- file.path("Rperform_Graphs", sub(pattern = "*.[rR]$", replacement = "_mem.png",
-                                                  x = file_names[[file_i]]))
+#     png_mfile <- file.path("Rperform_Graphs", sub(pattern = "*.[rR]$", replacement = "_mem.png",
+#                                                   x = file_names[[file_i]]))
 #     png(filename = png_mfile)
     print(mplot_file)
 #     dev.off()
