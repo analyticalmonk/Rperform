@@ -152,6 +152,18 @@ plot_mem <- function(test_path, num_commits = 5, save_data = FALSE) {
 
 ##  -----------------------------------------------------------------------------------------
 ##  -----------------------------------------------------------------------------------------
+
+plot_html <- function(){
+  if(!file.exists("index.Rmd")){
+    file.create("index.Rmd")
+  }
+  writeLines("---\ntitle: \"plot\"\noutput: html_document\n---\n\n```{r, echo = F}\nRperform::plot_directory(\"tests/testthat\")\n```", 
+             con = "test_index.Rmd")
+  knitr::knit2html(input = "index.Rmd", output = "index.html")
+}
+
+##  -----------------------------------------------------------------------------------------
+##  -----------------------------------------------------------------------------------------
 #' Plot run-times across branches.
 #' 
 #' Given a test-file and two branches, plots the run-times of the file against 
@@ -328,18 +340,18 @@ plot_directory <- function(test_dir, num_commits = 5, save_data = FALSE) {
                            , num_commits = num_commits, save_data = save_data)
     png_tfile <- file.path("Rperform_Graphs", sub(pattern = "*.[rR]$", replacement = "_time.png",
                                                  x = file_names[[file_i]]))
-    png(filename = png_tfile)
+#     png(filename = png_tfile)
     print(tplot_file)
-    dev.off()
+#     dev.off()
     
     #Memory metrics
     mplot_file <- plot_mem(test_path = file.path(test_dir, file_names[[file_i]]),
                            num_commits = num_commits, save_data = save_data)
     png_mfile <- file.path("Rperform_Graphs", sub(pattern = "*.[rR]$", replacement = "_mem.png",
                                                   x = file_names[[file_i]]))
-    png(filename = png_mfile)
+#     png(filename = png_mfile)
     print(mplot_file)
-    dev.off()
+#     dev.off()
   }
 }
 
