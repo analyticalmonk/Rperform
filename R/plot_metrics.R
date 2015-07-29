@@ -351,40 +351,57 @@ plot_bmemory <- function(test_path, branch1, branch2 = "master") {
 
 ## The plot_directory function, given a test-directory path, plots the time 
 ## taken by all the test files present inside the directory (including those of 
-## the individual testthat blocks) against the corresponding sha_values for the 
-## given number of commits. It stores the plots as png files in the root
-## repository directory.
+## the individual testthat blocks) against the corresponding commit messages for
+## the given number of commits. 
 
 plot_directory <- function(test_dir, num_commits = 5, save_data = FALSE) {
   
   file_names <- list.files(test_dir)
-#   if (!dir.exists("Rperform_Graphs")) {
-#     dir.create(path = "./Rperform_Graphs")
-#   } else {
-#     unlink(x = "Rperform_Graphs", recursive = T, force = T)
-#     dir.create(path = "./Rperform_Graphs")
-#   }
   
   # For each file, plots for both time and space metrics are plotted and stored
   # in the folder Rperform_Graphs in png format
   for (file_i in seq_along(file_names)) {
-    # Time metrics
-    tplot_file <- plot_time(test_path = file.path(test_dir, file_names[[file_i]])
-                           , num_commits = num_commits, save_data = save_data)
-#     png_tfile <- file.path("Rperform_Graphs", sub(pattern = "*.[rR]$", replacement = "_time.png",
-#                                                  x = file_names[[file_i]]))
-#     png(filename = png_tfile)
-    print(tplot_file)
-#     dev.off()
     
-    #Memory metrics
-    mplot_file <- plot_mem(test_path = file.path(test_dir, file_names[[file_i]]),
-                           num_commits = num_commits, save_data = save_data)
-#     png_mfile <- file.path("Rperform_Graphs", sub(pattern = "*.[rR]$", replacement = "_mem.png",
-#                                                   x = file_names[[file_i]]))
-#     png(filename = png_mfile)
-    print(mplot_file)
-#     dev.off()
+    # Obtain the metrics data
+    time_frame <- time_compare(test_path = file.path(test_dir, file_names[[file_i]]),
+                               num_commits = num_commits)
+    mem_frame <- mem_compare(test_path = file.path(test_dir, file_names[[file_i]]),
+                             num_commits = num_commits)
+    
+    metric_frame <- rbind(time_frame, mem_frame)
+    
+    # Print and plot the file
+    plot_file <- ggplot2::qplot(data = metric_frame, x = message, y = metric_val, color = test_name) +
+      ggplot2::facet_grid(metric_name ~ ., scales = "free") +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+      ggplot2::scale_x_discrete(limits = rev(levels(metric_frame$message))) +
+      ggplot2::xlab(label = "Commit messages") + 
+      ggplot2::ggtitle("Variation in metrics across Git versions")
+    
+    print(plot_file)
+    
+    # Store the metrics data if save_data is TRUE
+    if (save_data){  
+      # Create a directory for storing the metric data
+      if (!dir.exists("./Rperform_Data")){
+        dir.create(path = "./Rperform_Data")
+      }
+    
+      
+      # Store the metric data
+      save(time_frame, file = file.path("Rperform_Data", sub(pattern = "*.[rR]$", 
+                                                             replacement = "_time.RData",
+                                                             x = basename(test_path))))
+      
+      save(time_frame, file = file.path("Rperform_Data", sub(pattern = "*.[rR]$", 
+                                                             replacement = "_mem.RData",
+                                                             x = basename(test_path))))
+      
+    }
+    
+    
+    remove(time_frame, mem_frame)
+      
   }
 }
 

@@ -191,7 +191,7 @@ time_commit <- function(test_path, test_commit) {
       }
     )
 
-    time_df <- data.frame(test_name, metric_name = "time", status, 
+    time_df <- data.frame(test_name, metric_name = "seconds", status, 
                           metric_val = seconds, message = msg_val, 
                           date_time = commit_dtime)
     test_results[[test_name]] <<- time_df
@@ -214,7 +214,7 @@ time_commit <- function(test_path, test_commit) {
 #   test_results_df["file runtime"] <- seconds_file
 #   test_results_df["file runtime-2"] <- seconds_file2
   test_results_df <- rbind(test_results_df, data.frame(test_name = basename(test_path), 
-                                       metric_name = "time", status = file_status,
+                                       metric_name = "seconds", status = file_status,
                                        metric_val = seconds_file, message = msg_val, 
                                        date_time = commit_dtime))
   rownames(test_results_df) <- NULL
@@ -261,7 +261,7 @@ time_commit <- function(test_path, test_commit) {
 # data-frame comprised of the test name, status of test run, time (if
 # successful) and SHA1 value corresponding to the commit the value is for.
 
-time_compare <- function(test_path, num_commits = 20) {
+time_compare <- function(test_path, num_commits = 10) {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
   stopifnot(is.numeric(num_commits))
@@ -525,7 +525,7 @@ get_mem <- function(test_path, commit_num = 1) {
 # swapped during the file's execution. It does so against the specified number
 # of commits from the git log in the current git repository.
 
-mem_compare <- function(test_path, num_commits = 5) {
+mem_compare <- function(test_path, num_commits = 10) {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
   stopifnot(is.numeric(num_commits))
