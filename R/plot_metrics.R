@@ -188,7 +188,7 @@ plot_html <- function(test_directory = "tests/testthat", output_name = "index"){
     file.create(out_file)
   }
   
-  line_p1 <- "---\ntitle: \"plot\"\noutput: html_document\n---\n\n```{r, echo = F}\nRperform::plot_directory(\""
+  line_p1 <- "---\ntitle: \"plot\"\noutput: html_document\n---\n\n```{r}\nRperform::plot_directory(\""
   line_p3 <- "\")\n```"
   file_lines <- paste0(line_p1, test_directory, line_p3)
   writeLines( file_lines, con = out_file)
