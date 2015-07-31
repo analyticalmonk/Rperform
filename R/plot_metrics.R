@@ -48,15 +48,10 @@ plot_time <- function(test_path, num_commits = 5, save_data = FALSE) {
   
   # Store the metrics data if save_data is TRUE
   if (save_data){  
-    # Create a directory for storing the metric data
-    if (!dir.exists("./Rperform_Data")){
-      dir.create(path = "./Rperform_Data")
-    }
     
     # Store the metric data
-    save(time_frame, file = file.path("Rperform_Data", sub(pattern = "*.[rR]$", 
-                                                           replacement = "_time.RData",
-                                                           x = basename(test_path))))
+    .save_data(time_frame, pattern = "*.[rR]$", replacement = "_time.RData",
+               replace_string = basename(test_path))
   }
   
   # Plot the metric data
@@ -124,15 +119,10 @@ plot_mem <- function(test_path, num_commits = 5, save_data = FALSE) {
   
   # Store the metrics data if save_data is TRUE
   if (save_data){  
-    # Create a directory for storing the metric data
-    if (!dir.exists("./Rperform_Data")){
-      dir.create(path = "./Rperform_Data")
-    }
     
     # Store the metric data
-    save(mem_frame, file = file.path("Rperform_Data", sub(pattern = "*.[rR]$", 
-                                                           replacement = "_mem.RData",
-                                                           x = basename(test_path))))
+    .save_data(mem_frame, pattern = "*.[rR]$", replacement = "_mem.RData",
+               replace_string = basename(test_path))
   }  
   
   ggplot2::qplot(message, metric_val, data = mem_frame, color = test_name) +
@@ -169,14 +159,14 @@ plot_mem <- function(test_path, num_commits = 5, save_data = FALSE) {
 #' 
 #' # Load the package and run the function
 #' library(Rperform)
-#' plot_html(test_directory = "path/to/tests", out_file = "output.Rmd")
+#' plot_webpage(test_directory = "path/to/tests", out_file = "output.Rmd")
 #' 
 #' @section WARNING:
 #'   Library assumes the current directory to be the root directory of the
 #'   package being tested.
 #'   
 
-plot_html <- function(test_directory = "tests/testthat", output_name = "index"){
+plot_webpage <- function(test_directory = "tests/testthat", output_name = "index"){
   stopifnot(is.character(test_directory))
   stopifnot(is.character(output_name))
   stopifnot(length(test_directory) == 1)
@@ -382,26 +372,38 @@ plot_directory <- function(test_dir, num_commits = 5, save_data = FALSE) {
     
     # Store the metrics data if save_data is TRUE
     if (save_data){  
-      # Create a directory for storing the metric data
-      if (!dir.exists("./Rperform_Data")){
-        dir.create(path = "./Rperform_Data")
-      }
-    
-      
       # Store the metric data
-      save(time_frame, file = file.path("Rperform_Data", sub(pattern = "*.[rR]$", 
-                                                             replacement = "_time.RData",
-                                                             x = basename(test_path))))
       
-      save(time_frame, file = file.path("Rperform_Data", sub(pattern = "*.[rR]$", 
-                                                             replacement = "_mem.RData",
-                                                             x = basename(test_path))))
+      .save_data(time_frame, pattern = "*.[rR]$", replacement = "_time.RData",
+                 replace_string = basename(test_path))
       
-    }
-    
-    
-    remove(time_frame, mem_frame)
-      
+      .save_data(mem_frame, pattern = "*.[rR]$", replacement = "_mem.RData",
+                 replace_string = basename(test_path))
+    }      
+  }
+}
+
+##  -----------------------------------------------------------------------------------------
+##  -----------------------------------------------------------------------------------------
+
+.save_data <- function(metric_frame, pattern = "*.[rR]$", replacement, replace_string = test_path) {
+  
+  # Create a directory for storing the metric data
+  if (!dir.exists("./Rperform_Data")){
+    dir.create(path = "./Rperform_Data")
+  }
+  
+  if(grepl(pattern = "time", x = replacement) > 0) {
+    time_frame <- metric_frame
+    save(time_frame, file = file.path("Rperform_Data", sub(pattern = pattern,
+                                                             replacement = replacement,
+                                                             x = basename(replace_string))))
+  }
+  else if(grepl(pattern = "mem", x = replacement) > 0){
+    mem_frame <- metric_frame
+    save(mem_frame, file = file.path("Rperform_Data", sub(pattern = pattern,
+                                                             replacement = replacement,
+                                                             x = basename(replace_string))))
   }
 }
 
