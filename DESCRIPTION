@@ -3,7 +3,7 @@ Type: Package
 Title: Rperform helps R package developers keep track of the quantitative metrics of their packages over various
 	development versions
 Version: 0.0.0.9000
-License: License: What license is it under?
+License: GPL-3
 Date: 2015-05-29
 Author: Akash Tandon (da-ta-vinci21 on GitHub), Toby Dylan Hocking
 Maintainer: Akash Tandon <akashtndn.acm@gmail.com>

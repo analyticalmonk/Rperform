@@ -236,7 +236,7 @@ time_commit <- function(test_path, test_commit) {
 #' @param test_path File-path of the test-file which is to be used for run-time
 #'   comparisons.
 #' @param num_commits Number of commits (versions) against which the file is to
-#'   be tested, with default being 20.
+#'   be tested, with default being 10.
 #'   
 #' @examples
 #' ## Example-1
@@ -249,7 +249,7 @@ time_commit <- function(test_path, test_commit) {
 #' 
 #' # Pass the parameters and obtain the run-time details against 10 commits
 #' library(Rperform)
-#' time_compare(test_path = t_path, n_commits = 10)
+#' time_compare(test_path = t_path, num_commits = 10)
 #' 
 #' @section Warning:
 #'   Library assumes the current directory to be the root directory of the
@@ -495,8 +495,9 @@ get_mem <- function(test_path, commit_num = 1) {
 #' Test-file's memory statistics for multiple commits.
 #' 
 #' Given a test-file's path, checks its memory metrics against the number of 
-#' commits specified by the parameter num_commits. Memory metrics returned are
-#' the memory leaked and maximum meory swapped during its execution.
+#' commits specified by the parameter num_commits with default being 10. Memory
+#' metrics returned are the memory leaked and maximum meory swapped during its
+#' execution.
 #' 
 #' @param test_path File-path for the test file which is to be checked.
 #' @param num_commits number of commits against all of which the memory stats
@@ -513,7 +514,7 @@ get_mem <- function(test_path, commit_num = 1) {
 #' 
 #' # Pass the parameters and obtain the run-time details
 #' library(Rperform)
-#' mem_commit(t_path, 5)
+#' mem_compare(t_path, 10)
 #' 
 #' @section Warning:
 #'   Library assumes the current directory to be the root directory of the
