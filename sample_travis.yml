@@ -1,0 +1,16 @@
+language: r
+sudo: required
+r_github_packages:
+  - da-ta-vinci21/Rperform
+  - yihui/knitr
+
+env:
+  global:
+  - secure: "enter_your_github_access_token_here"
+
+
+before_install:
+  - chmod 755 ./.push_gh_pages.sh
+
+after_success:
+  - ./.push_gh_pages.sh
