@@ -1,3 +1,25 @@
+
+plot_metrics <- function(test_path, metric = "time", num_commits = 5, save_data = FALSE) {
+  stopifnot(is.character(test_path))
+  stopifnot(length(test_path) == 1)
+  stopifnot(is.character(metric))
+  stopifnot(length(metric) == 1)
+  stopifnot(is.numeric(num_commits))
+  stopifnot(length(num_commits) == 1)
+  stopifnot(is.logical(save_data))
+  stopifnot(length(save_data) == 1)
+  
+  if (metric == "time") {
+    .plot_time(test_path, num_commits, save_data)
+  }
+  else if (metric == "mem") {
+    .plot_mem(test_path, num_commits, save_data)
+  }
+}
+
+##  -----------------------------------------------------------------------------------------
+##  -----------------------------------------------------------------------------------------
+
 #' Plot run-time across versions.
 #' 
 #' Given a test-file path, plot the run-time of entire file and individual 
@@ -37,14 +59,14 @@
 ## it also stores the corresponding data frame in an RData file in a folder 
 ## 'Rperform_Data' in the current directory.
 
-plot_time <- function(test_path, num_commits = 5, save_data = FALSE) {
+.plot_time <- function(test_path, num_commits = 5, save_data = FALSE) {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
   stopifnot(is.numeric(num_commits))
   num_commits <- floor(num_commits)
   
   # Obtain the metrics data
-  time_frame <- time_compare(test_path, num_commits)
+  suppressMessages(time_frame <- time_compare(test_path, num_commits))
   
   # Store the metrics data if save_data is TRUE
   if (save_data){  
@@ -55,7 +77,9 @@ plot_time <- function(test_path, num_commits = 5, save_data = FALSE) {
   }
   
   # Plot the metric data
-  ggplot2::qplot(message, metric_val, data = time_frame, color = test_name) + 
+  ggplot2::qplot(message, metric_val, data = time_frame) +
+    ggplot2::facet_grid(facets =  test_name ~ ., scales = "free") +
+    ggplot2::geom_point(color = "blue") + 
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
     ggplot2::scale_x_discrete(limits = rev(levels(time_frame$message))) +
   # In the above 3 lines code, the first line creates the basic qplot. The 
@@ -108,14 +132,14 @@ plot_time <- function(test_path, num_commits = 5, save_data = FALSE) {
 # individual testthat blocks against the corresponding commit message values for
 # the given number of commits.
 
-plot_mem <- function(test_path, num_commits = 5, save_data = FALSE) {
+.plot_mem <- function(test_path, num_commits = 5, save_data = FALSE) {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
   stopifnot(is.numeric(num_commits))
   num_commits <- floor(num_commits)
   
   # Obtain the metrics data
-  mem_frame <- mem_compare(test_path, num_commits)
+  suppressMessages(mem_frame <- mem_compare(test_path, num_commits))
   
   # Store the metrics data if save_data is TRUE
   if (save_data){  
@@ -125,11 +149,11 @@ plot_mem <- function(test_path, num_commits = 5, save_data = FALSE) {
                replace_string = basename(test_path))
   }  
   
-  ggplot2::qplot(message, metric_val, data = mem_frame, color = test_name) +
+  ggplot2::qplot(message, metric_val, data = mem_frame, color = metric_name) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90),
                    strip.text.x = ggplot2::element_text(size = 10, face = "bold")) +
     ggplot2::scale_x_discrete(limits = rev(levels(mem_frame$message))) + 
-    ggplot2::facet_grid(. ~ metric_name) +
+    ggplot2::facet_grid(test_name ~ metric_name, scales = "free") +
   # In the above 4 lines of code, the first line creates the basic qplot. The 
   # second and third lines display the x-axis labels at 90 degrees to the 
   # horizontal and correct the order of message labels on the x -axis,
@@ -353,10 +377,11 @@ plot_directory <- function(test_dir, num_commits = 5, save_data = FALSE) {
   for (file_i in seq_along(file_names)) {
     
     # Obtain the metrics data
-    time_frame <- time_compare(test_path = file.path(test_dir, file_names[[file_i]]),
-                               num_commits = num_commits)
-    mem_frame <- mem_compare(test_path = file.path(test_dir, file_names[[file_i]]),
-                             num_commits = num_commits)
+    suppressWarnings(mem_frame <- mem_compare(test_path = file.path(test_dir, file_names[[file_i]]),
+                                              num_commits = num_commits))
+    
+    suppressWarnings(time_frame <- time_compare(test_path = file.path(test_dir, file_names[[file_i]]),
+                                                num_commits = num_commits))
     
     metric_frame <- rbind(time_frame, mem_frame)
     
