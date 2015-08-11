@@ -44,7 +44,7 @@
 #'   package being tested.
 #' 
 
-plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE) {
+plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, save_plots = TRUE) {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
   stopifnot(is.character(metric))
@@ -55,25 +55,35 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE) 
   stopifnot(length(save_data) == 1)
   
   if (metric == "time") {
-    .plot_time(test_path, num_commits, save_data)
+    .plot_time(test_path, num_commits, save_data, save_plots)
   }
   else if (metric == "memory") {
-    .plot_mem(test_path, num_commits, save_data)
+    .plot_mem(test_path, num_commits, save_data, save_plots)
   }
   else if (metric == "memtime") {
-    .plot_time(test_path, num_commits, save_data)
-    .plot_mem(test_path, num_commits, save_data)
+    .plot_time(test_path, num_commits, save_data, save_plots)
+    .plot_mem(test_path, num_commits, save_data, save_plots)
   }
   else if (metric == "testMetrics") {
-    .plot_testMetrics(test_path, num_commits, save_data)
+    .plot_testMetrics(test_path, num_commits, save_data, save_plots)
   }
 }
 
 ##  -----------------------------------------------------------------------------------------
 
-.plot_testMetrics <- function(test_path, num_commits = 5, save_data = FALSE) {
+.plot_testMetrics <- function(test_path, num_commits = 5, save_data = FALSE, save_plots) {
   mem_data <- mem_compare(test_path, num_commits)
   suppressMessages(time_data <- time_compare(test_path, num_commits))
+  
+  # Store the metrics data if save_data is TRUE
+  if (save_data){  
+    
+    # Store the metric data
+    .save_data(time_data, pattern = "*.[rR]$", replacement = "_time.RData",
+               replace_string = basename(test_path))
+    .save_data(mem_data, pattern = "*.[rR]$", replacement = "_mem.RData",
+               replace_string = basename(test_path))
+  }
   
   metric_data <- rbind(time_data, mem_data)
   t_names <- levels(metric_data$test_name)
@@ -94,23 +104,29 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE) 
       ggplot2::ylab("Metric value") +
       ggplot2::ggtitle(label = paste0("Variation in metrics for ", t_names[num]))
     
-
-    if (!dir.exists("./Rperform_testMetrics")){
-      dir.create(path = "./Rperform_testMetrics")
-    }
     
-    curr_name <- gsub(pattern = " ", replacement = "_", x = t_names[num])
-    curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
-    png.file <- file.path("Rperform_testMetrics", paste0("Test_", curr_name, ".png"))
-    png(filename = png.file, width = 1024, height = 768, units = "px")
-    print(test_plot)
-    dev.off()
+    if (save_plots == TRUE) {
+      if (!dir.exists("./Rperform_testMetrics")){
+        dir.create(path = "./Rperform_testMetrics")
+      }
+      
+      curr_name <- gsub(pattern = " ", replacement = "_", x = t_names[num])
+      curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
+      png.file <- file.path("Rperform_testMetrics", paste0("Test_", curr_name, ".png"))
+      png(filename = png.file, width = 1024, height = 768, units = "px")
+      print(test_plot)
+      dev.off()
+    }
+    else {
+      print(test_plot)
+    }
+  
   }
 }
 
 ##  -----------------------------------------------------------------------------------------
 
-.plot_time <- function(test_path, num_commits = 5, save_data = FALSE) {
+.plot_time <- function(test_path, num_commits = 5, save_data = FALSE, save_plots) {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
   stopifnot(is.numeric(num_commits))
@@ -127,25 +143,42 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE) 
                replace_string = basename(test_path))
   }
   
+  curr_name <- gsub(pattern = " ", replacement = "_", x = basename(test_path))
+  curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
+  
   # Plot the metric data
-  ggplot2::qplot(message, metric_val, data = time_data) +
+  test_plot <- ggplot2::qplot(message, metric_val, data = time_data) +
     ggplot2::facet_grid(facets =  test_name ~ ., scales = "free") +
     ggplot2::geom_point(color = "blue") + 
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
     ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
-  # In the above 3 lines code, the first line creates the basic qplot. The 
-  # second and third lines display the x-axis labels at 90 degrees to the 
-  # horizontal and correct the order of message labels on the x -axis,
-  # respectively.
+    # In the above 3 lines code, the first line creates the basic qplot. The 
+    # second and third lines display the x-axis labels at 90 degrees to the 
+    # horizontal and correct the order of message labels on the x -axis,
+    # respectively.
     ggplot2::xlab("Commit message") +
     ggplot2::ylab("Time (in seconds)") +
-    ggplot2::ggtitle(label = "Variation in runtime across Git versions")
+    ggplot2::ggtitle(label = paste0("Variation in time metrics for ", curr_name))
+                     
+  if (save_plots == TRUE) {
+    if (!dir.exists("./Rperform_timeMetrics")){
+      dir.create(path = "./Rperform_timeMetrics")
+    }
+    
+    png.file <- file.path("Rperform_timeMetrics", paste0("Test_", curr_name, ".png"))
+    png(filename = png.file, width = 1024, height = 768, units = "px")
+    print(test_plot)
+    dev.off()
+  }
+  else {
+    print(test_plot)
+  }
   
 }
 
 ##  -----------------------------------------------------------------------------------------
 
-.plot_mem <- function(test_path, num_commits = 5, save_data = FALSE) {
+.plot_mem <- function(test_path, num_commits = 5, save_data = FALSE, save_plots) {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
   stopifnot(is.numeric(num_commits))
@@ -162,20 +195,40 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE) 
                replace_string = basename(test_path))
   }  
   
-  ggplot2::qplot(message, metric_val, data = mem_data) +
+  curr_name <- gsub(pattern = " ", replacement = "_", x = basename(test_path))
+  curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
+  
+  test_plot <- ggplot2::qplot(message, metric_val, data = mem_data) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90),
                    strip.text.x = ggplot2::element_text(size = 10, face = "bold")) +
     ggplot2::scale_x_discrete(limits = rev(levels(mem_data$message))) + 
     ggplot2::facet_grid(test_name ~ metric_name, scales = "free") +
-  # In the above 4 lines of code, the first line creates the basic qplot. The 
-  # second and third lines display the x-axis labels at 90 degrees to the 
-  # horizontal and correct the order of message labels on the x -axis,
-  # respectively. The fourth line creates a facet grid so as to seperate
-  # the plots for the swap and leak memory metrics.
+    # In the above 4 lines of code, the first line creates the basic qplot. The 
+    # second and third lines display the x-axis labels at 90 degrees to the 
+    # horizontal and correct the order of message labels on the x -axis,
+    # respectively. The fourth line creates a facet grid so as to seperate
+    # the plots for the swap and leak memory metrics.
     ggplot2::geom_point(color = "blue") +
     ggplot2::ylab(label = "Memory (in mb)") +
     ggplot2::xlab(label = "Commit messages") +
-    ggplot2::ggtitle(label = "Variation in memory metrics acros Git versions")
+    ggplot2::ggtitle(label = paste0("Variation in memory metrics for ", curr_name))
+  
+  if (save_plots == TRUE) {
+    if (!dir.exists("./Rperform_memoryMetrics")){
+      dir.create(path = "./Rperform_memoryMetrics")
+    }
+    
+    curr_name <- gsub(pattern = " ", replacement = "_", x = t_names[num])
+    curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
+    png.file <- file.path("Rperform_memoryMetrics", paste0("Test_", curr_name, ".png"))
+    png(filename = png.file, width = 1024, height = 768, units = "px")
+    print(test_plot)
+    dev.off()
+  }
+  else {
+    print(test_plot)
+  }
+  
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -204,11 +257,14 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE) 
 #'   package being tested.
 #'   
 
-plot_webpage <- function(test_directory = "tests/testthat", output_name = "index"){
+plot_webpage <- function(test_directory = "tests/testthat", metric = "testMetrics",
+                         output_name = "index"){
   stopifnot(is.character(test_directory))
   stopifnot(is.character(output_name))
+  stopifnot(is.character(metric))
   stopifnot(length(test_directory) == 1)
   stopifnot(length(output_name) == 1)
+  stopifnot(length(metric) == 1)
   
   out_file <- paste0(output_name, ".Rmd")
   
@@ -217,10 +273,76 @@ plot_webpage <- function(test_directory = "tests/testthat", output_name = "index
   }
   
   line_p1 <- "---\ntitle: \"plot\"\noutput: html_document\n---\n\n```{r}\nRperform::plot_directory(\""
-  line_p3 <- "\")\n```"
-  file_lines <- paste0(line_p1, test_directory, line_p3)
-  writeLines( file_lines, con = out_file)
+  line_p3 <- "\", metric = \"" 
+  line_p5 <- "\", save_plots = FALSE)\n```"
+  file_lines <- paste0(line_p1, test_directory, line_p3, metric, line_p5)
+  writeLines(file_lines, con = out_file)
   knitr::knit2html(input = out_file, output = paste0(output_name, ".html"))
+}
+
+##  -----------------------------------------------------------------------------------------
+##  -----------------------------------------------------------------------------------------
+
+#' Plot memory and time statistics across versions for all files in a given directory.
+#' 
+#' Given a directory path, plot the memory and time usage statistics of all files 
+#' in the directory against the commit message summaries of the specified number 
+#' of commits in the current git repository. 
+#'
+#' 
+#' @param test_dir Directory containing the test-files which are to be used.
+#' @param num_commits Number of commits (versions) against which the files are to
+#'   be tested, with default being 5.
+#' @param save_data If set to TRUE, the metrics data is saved in a folder 'Rperform_Data'
+#'   in the current directory.
+#'
+#' @examples
+#' ## Example-1
+#' 
+#' # Set the current directory to the git repository concerned.
+#' setwd("./Path/to/repository")
+#' 
+#' # Specify the directory containing the test files
+#' d_path <- "Path/to/directory"
+#' 
+#' # Pass the parameters and obtain the memory usage details against 10 commits
+#' library(Rperform)
+#' plot_directory(test_dir = d_path, n_commits = 10)
+#' 
+#' @section WARNING:
+#'   Library assumes the current directory to be the root directory of the
+#'   package being tested.
+#' 
+
+## The plot_directory function, given a test-directory path, plots the time 
+## taken by all the test files present inside the directory (including those of 
+## the individual testthat blocks) against the corresponding commit messages for
+## the given number of commits. 
+
+plot_directory <- function(test_dir, metric = "testMetrics", num_commits = 5, save_data = FALSE, 
+                           save_plots = TRUE) {
+  stopifnot(is.character(test_dir))
+  stopifnot(is.character(metric))
+  stopifnot(is.numeric(num_commits))
+  stopifnot(is.logical(save_data))
+  stopifnot(is.logical(save_plots))
+  stopifnot(length(test_dir) == 1)
+  stopifnot(length(metric) == 1)
+  stopifnot(length(save_data) == 1)
+  stopifnot(length(save_plots) == 1)
+  
+  file_names <- list.files(test_dir)
+  
+  # For each file, plots for both time and space metrics are plotted and stored
+  # in the folder Rperform_Graphs in png format
+  for (file_i in seq_along(file_names)) {
+    
+    # Print the plots as per the metric parameter.
+    plot_metrics(test_path = file.path(test_dir, file_names[file_i]), 
+                 metric = metric, num_commits = num_commits,
+                 save_data = save_data, save_plots = save_plots)
+    
+  }
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -341,85 +463,6 @@ plot_bmemory <- function(test_path, branch1, branch2 = "master") {
 #   file_plots <- list(swap_plot, leak_plot)
 #   # To hide the warning messages from being displayed
 #   suppressWarnings(.multiplot(plotlist = file_plots))
-}
-
-##  -----------------------------------------------------------------------------------------
-##  -----------------------------------------------------------------------------------------
-
-#' Plot memory and time statistics across versions for all files in a given directory.
-#' 
-#' Given a directory path, plot the memory and time usage statistics of all files 
-#' in the directory against the commit message summaries of the specified number 
-#' of commits in the current git repository. 
-#'
-#' 
-#' @param test_dir Directory containing the test-files which are to be used.
-#' @param num_commits Number of commits (versions) against which the files are to
-#'   be tested, with default being 5.
-#' @param save_data If set to TRUE, the metrics data is saved in a folder 'Rperform_Data'
-#'   in the current directory.
-#'
-#' @examples
-#' ## Example-1
-#' 
-#' # Set the current directory to the git repository concerned.
-#' setwd("./Path/to/repository")
-#' 
-#' # Specify the directory containing the test files
-#' d_path <- "Path/to/directory"
-#' 
-#' # Pass the parameters and obtain the memory usage details against 10 commits
-#' library(Rperform)
-#' plot_directory(test_dir = d_path, n_commits = 10)
-#' 
-#' @section WARNING:
-#'   Library assumes the current directory to be the root directory of the
-#'   package being tested.
-#' 
-
-## The plot_directory function, given a test-directory path, plots the time 
-## taken by all the test files present inside the directory (including those of 
-## the individual testthat blocks) against the corresponding commit messages for
-## the given number of commits. 
-
-plot_directory <- function(test_dir, num_commits = 5, save_data = FALSE) {
-  
-  file_names <- list.files(test_dir)
-  
-  # For each file, plots for both time and space metrics are plotted and stored
-  # in the folder Rperform_Graphs in png format
-  for (file_i in seq_along(file_names)) {
-    
-    # Obtain the metrics data
-    suppressWarnings(mem_frame <- mem_compare(test_path = file.path(test_dir, file_names[[file_i]]),
-                                              num_commits = num_commits))
-    
-    suppressWarnings(time_frame <- time_compare(test_path = file.path(test_dir, file_names[[file_i]]),
-                                                num_commits = num_commits))
-    
-    metric_frame <- rbind(time_frame, mem_frame)
-    
-    # Print and plot the file
-    plot_file <- ggplot2::qplot(data = metric_frame, x = message, y = metric_val, color = test_name) +
-      ggplot2::facet_grid(metric_name ~ ., scales = "free") +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
-      ggplot2::scale_x_discrete(limits = rev(levels(metric_frame$message))) +
-      ggplot2::xlab(label = "Commit messages") + 
-      ggplot2::ggtitle("Variation in metrics across Git versions")
-    
-    print(plot_file)
-    
-    # Store the metrics data if save_data is TRUE
-    if (save_data){  
-      # Store the metric data
-      
-      .save_data(time_frame, pattern = "*.[rR]$", replacement = "_time.RData",
-                 replace_string = basename(test_path))
-      
-      .save_data(mem_frame, pattern = "*.[rR]$", replacement = "_mem.RData",
-                 replace_string = basename(test_path))
-    }      
-  }
 }
 
 ##  -----------------------------------------------------------------------------------------
