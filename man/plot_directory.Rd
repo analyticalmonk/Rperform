@@ -2,18 +2,25 @@
 % Please edit documentation in R/plot_metrics.R
 \name{plot_directory}
 \alias{plot_directory}
-\title{Plot memory and time statistics across versions for all files in a given directory.}
+\title{Plot metrics across versions for all files in a given directory.}
 \usage{
-plot_directory(test_dir, num_commits = 5, save_data = FALSE)
+plot_directory(test_directory, metric = "testMetrics", num_commits = 5,
+  save_data = FALSE, save_plots = TRUE)
 }
 \arguments{
-\item{test_dir}{Directory containing the test-files which are to be used.}
+\item{metric}{Type of plot(s) desired. (See examples below for more details)}
 
 \item{num_commits}{Number of commits (versions) against which the files are to
 be tested, with default being 5.}
 
 \item{save_data}{If set to TRUE, the metrics data is saved in a folder 'Rperform_Data'
-  in the current directory.}
+in the current directory.}
+
+\item{save_plots}{If set to TRUE, the plots generated are stored in the
+  'Rperform_plots' directory in the root of the repo rather than being
+  printed.}
+
+\item{test_dir}{Directory containing the test-files which are to be used.}
 }
 \description{
 Given a directory path, plot the memory and time usage statistics of all files
@@ -26,16 +33,27 @@ of commits in the current git repository.
   package being tested.
 }
 \examples{
+# Set to the git repository in consideration.
+setwd("path/to/repo")
+d_path <- "path/to/tests"
+
+# Load the library
+library(Rperform)
+
 ## Example-1
 
-# Set the current directory to the git repository concerned.
-setwd("./Path/to/repository")
+# Pass the parameters and obtain the run-time followed by memory details against 10 commits.
+plot_directory(test_directory = d_path, metric = "time", num_commits = 10,
+               save_data = F, save_plots = T)
+plot_directory(test_directory = d_path, metric = "memory", num_commits = 10,
+               save_data = F, save_plots = T)
 
-# Specify the directory containing the test files
-d_path <- "Path/to/directory"
+## Example-2
 
-# Pass the parameters and obtain the memory usage details against 10 commits
-library(Rperform)
-plot_directory(test_dir = d_path, n_commits = 10)
+# Obtain both memory and time metrics for each individual testthat block
+# inside a file and the file itself ,and save the resulting plot as well as
+# data.
+plot_directory(d_path, metric = "testMetrics", num_commits = 5, save_data = F,
+               save_plots = T)
 }
 

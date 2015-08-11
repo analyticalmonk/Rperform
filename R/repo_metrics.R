@@ -27,8 +27,6 @@
 #' @section Warning:
 #'   Library assumes the current directory to be the root directory of the
 #'   package being tested.
-#' 
-#' @seealso \code{\link[git2r]{commits}}
 
 # The list_commits function, given a repository path and number of commits (n), returns
 # a data frame containing the SHA1 values and summary of the last n commits in the repo.
@@ -197,11 +195,6 @@ time_commit <- function(test_path, test_commit) {
     test_results[[test_name]] <<- time_df
   }
 
-# --------------------------------------------------------------------------
-
-# Code block measuring the run-time of test file as a whole
-# --------------------------------------------------------------------------
-# 
   source(temp_file_subbed, local = T)
 
 # --------------------------------------------------------------------------
@@ -256,10 +249,11 @@ time_commit <- function(test_path, test_commit) {
 #'   package being tested.
 #' 
 
-# The time_compare function, given a test-file path, checks its run-time against the
-# specified number of commits in the current git repository and returns a
-# data-frame comprised of the test name, status of test run, time (if
-# successful) and SHA1 value corresponding to the commit the value is for.
+# The time_compare function, given a test-file path, checks its run-time against
+# the specified number of commits in the current git repository and returns a 
+# data-frame comprised of the test name, status of test run, runtime in seconds
+# (if successful), datetime and message corresponding to the commit the value is
+# for.
 
 time_compare <- function(test_path, num_commits = 10) {
   stopifnot(is.character(test_path))
@@ -291,7 +285,7 @@ time_compare <- function(test_path, num_commits = 10) {
 #' 
 #' Given a test-file's path, checks its memory metrics against the commit
 #' specified by the commit \code{object} passed as a parameter. Memory 
-#' metrics returned are the memory leaked and maximum meory swapped during
+#' metrics returned are the memory leaked and maximum memory swapped during
 #' its execution.
 #' 
 #' @param test_path File-path for the test file which is to be checked.

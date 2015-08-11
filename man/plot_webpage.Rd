@@ -2,17 +2,21 @@
 % Please edit documentation in R/plot_metrics.R
 \name{plot_webpage}
 \alias{plot_webpage}
-\title{Plot time and memory metrics of all test files on a webpage}
+\title{Plot the specified metrics of all test files in a specified directory on a
+webpage.}
 \usage{
-plot_webpage(test_directory = "tests/testthat", output_name = "index")
+plot_webpage(test_directory = "tests/testthat", metric = "testMetrics",
+  output_name = "index")
 }
 \arguments{
 \item{test_directory}{Path of the directory containing the test files.}
 
-\item{out_file}{Name of the output webpage.}
+\item{metric}{Type of plot(s) desired. (See examples below for more details)}
+
+\item{out_file}{Name of the output .html file.}
 }
 \description{
-It plots the time and memory metrics for all the tests present in the specified
+It plots specified metrics for all the tests present in the specified
 directory of the current git repository on a webpage.
 }
 \section{WARNING}{
@@ -21,13 +25,24 @@ directory of the current git repository on a webpage.
   package being tested.
 }
 \examples{
-## Example-1
-
 # Set to the git repository in consideration.
 setwd("path/to/repo")
+d_path <- "path/to/tests"
 
-# Load the package and run the function
+# Load the library
 library(Rperform)
-plot_webpage(test_directory = "path/to/tests", out_file = "output.Rmd")
+
+## Example-1
+
+# Pass the parameters and obtain the run-time followed by memory details against 10 commits
+# on two seperate webpages (html files).
+plot_webpage(test_directory = d_path, metric = "time", output_name = "timePage")
+plot_metrics(test_directory = d_path, metric = "memory", output_name = "memPage")
+
+## Example-2
+
+# Obtain both memory and time metrics for each individual testthat block
+# inside a file and the file itself.
+plot_webpage(d_path, metric = "testMetrics", output_name = "testMetricsPage")
 }
 

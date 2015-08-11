@@ -12,8 +12,12 @@
 #' @param metric Type of plot(s) desired. (See examples below for more details)
 #' @param num_commits Number of commits (versions) against which the file is to
 #'   be tested, with default being 5.
-#' @param save_data If set to TRUE, the data frame containing the time metrics
-#'   information is stored.
+#' @param save_data If set to TRUE, the data frame containing the time metrics 
+#'   information is stored in the 'Rperform_Data' directory in the root of the
+#'   repo.
+#' @param save_plots If set to TRUE, the plots generated are stored in the
+#'   'Rperform_plots' directory in the root of the repo rather than being
+#'   printed.
 #'   
 #' @examples
 #' 
@@ -234,23 +238,37 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
 ##  -----------------------------------------------------------------------------------------
 ##  -----------------------------------------------------------------------------------------
 
-#' Plot time and memory metrics of all test files on a webpage
+#' Plot the specified metrics of all test files in a specified directory on a
+#' webpage.
 #' 
-#' It plots the time and memory metrics for all the tests present in the specified
+#' It plots specified metrics for all the tests present in the specified
 #' directory of the current git repository on a webpage.
 #' 
 #' @param test_directory Path of the directory containing the test files.
-#' @param out_file Name of the output webpage.
+#' @param metric Type of plot(s) desired. (See examples below for more details)
+#' @param out_file Name of the output .html file.
 #' 
 #' @examples
-#' ## Example-1
 #' 
 #' # Set to the git repository in consideration.
 #' setwd("path/to/repo")
+#' d_path <- "path/to/tests"
 #' 
-#' # Load the package and run the function
+#' # Load the library
 #' library(Rperform)
-#' plot_webpage(test_directory = "path/to/tests", out_file = "output.Rmd")
+#' 
+#' ## Example-1
+#' 
+#' # Pass the parameters and obtain the run-time followed by memory details against 10 commits
+#' # on two seperate webpages (html files).
+#' plot_webpage(test_directory = d_path, metric = "time", output_name = "timePage")
+#' plot_metrics(test_directory = d_path, metric = "memory", output_name = "memPage")
+#' 
+#' ## Example-2
+#' 
+#' # Obtain both memory and time metrics for each individual testthat block
+#' # inside a file and the file itself.
+#' plot_webpage(d_path, metric = "testMetrics", output_name = "testMetricsPage")
 #' 
 #' @section WARNING:
 #'   Library assumes the current directory to be the root directory of the
@@ -283,7 +301,7 @@ plot_webpage <- function(test_directory = "tests/testthat", metric = "testMetric
 ##  -----------------------------------------------------------------------------------------
 ##  -----------------------------------------------------------------------------------------
 
-#' Plot memory and time statistics across versions for all files in a given directory.
+#' Plot metrics across versions for all files in a given directory.
 #' 
 #' Given a directory path, plot the memory and time usage statistics of all files 
 #' in the directory against the commit message summaries of the specified number 
@@ -291,23 +309,38 @@ plot_webpage <- function(test_directory = "tests/testthat", metric = "testMetric
 #'
 #' 
 #' @param test_dir Directory containing the test-files which are to be used.
+#' @param metric Type of plot(s) desired. (See examples below for more details)
 #' @param num_commits Number of commits (versions) against which the files are to
 #'   be tested, with default being 5.
 #' @param save_data If set to TRUE, the metrics data is saved in a folder 'Rperform_Data'
 #'   in the current directory.
+#' @param save_plots If set to TRUE, the plots generated are stored in the
+#'   'Rperform_plots' directory in the root of the repo rather than being
+#'   printed.   
 #'
 #' @examples
+#' # Set to the git repository in consideration.
+#' setwd("path/to/repo")
+#' d_path <- "path/to/tests"
+#' 
+#' # Load the library
+#' library(Rperform)
+#' 
 #' ## Example-1
 #' 
-#' # Set the current directory to the git repository concerned.
-#' setwd("./Path/to/repository")
+#' # Pass the parameters and obtain the run-time followed by memory details against 10 commits.
+#' plot_directory(test_directory = d_path, metric = "time", num_commits = 10,
+#'                save_data = F, save_plots = T) 
+#' plot_directory(test_directory = d_path, metric = "memory", num_commits = 10,
+#'                save_data = F, save_plots = T)
 #' 
-#' # Specify the directory containing the test files
-#' d_path <- "Path/to/directory"
+#' ## Example-2
 #' 
-#' # Pass the parameters and obtain the memory usage details against 10 commits
-#' library(Rperform)
-#' plot_directory(test_dir = d_path, n_commits = 10)
+#' # Obtain both memory and time metrics for each individual testthat block
+#' # inside a file and the file itself ,and save the resulting plot as well as
+#' # data.
+#' plot_directory(d_path, metric = "testMetrics", num_commits = 5, save_data = F,
+#'                save_plots = T)
 #' 
 #' @section WARNING:
 #'   Library assumes the current directory to be the root directory of the
@@ -319,26 +352,26 @@ plot_webpage <- function(test_directory = "tests/testthat", metric = "testMetric
 ## the individual testthat blocks) against the corresponding commit messages for
 ## the given number of commits. 
 
-plot_directory <- function(test_dir, metric = "testMetrics", num_commits = 5, save_data = FALSE, 
+plot_directory <- function(test_directory, metric = "testMetrics", num_commits = 5, save_data = FALSE, 
                            save_plots = TRUE) {
-  stopifnot(is.character(test_dir))
+  stopifnot(is.character(test_directory))
   stopifnot(is.character(metric))
   stopifnot(is.numeric(num_commits))
   stopifnot(is.logical(save_data))
   stopifnot(is.logical(save_plots))
-  stopifnot(length(test_dir) == 1)
+  stopifnot(length(test_directory) == 1)
   stopifnot(length(metric) == 1)
   stopifnot(length(save_data) == 1)
   stopifnot(length(save_plots) == 1)
   
-  file_names <- list.files(test_dir)
+  file_names <- list.files(test_directory)
   
   # For each file, plots for both time and space metrics are plotted and stored
   # in the folder Rperform_Graphs in png format
   for (file_i in seq_along(file_names)) {
     
     # Print the plots as per the metric parameter.
-    plot_metrics(test_path = file.path(test_dir, file_names[file_i]), 
+    plot_metrics(test_path = file.path(test_directory, file_names[file_i]), 
                  metric = metric, num_commits = num_commits,
                  save_data = save_data, save_plots = save_plots)
     

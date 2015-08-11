@@ -4,7 +4,8 @@
 \alias{plot_metrics}
 \title{Plot test-file metrics across versions.}
 \usage{
-plot_metrics(test_path, metric, num_commits = 5, save_data = FALSE)
+plot_metrics(test_path, metric, num_commits = 5, save_data = FALSE,
+  save_plots = TRUE)
 }
 \arguments{
 \item{test_path}{File-path of the test-file which is to be used for run-time
@@ -16,7 +17,12 @@ comparisons.}
 be tested, with default being 5.}
 
 \item{save_data}{If set to TRUE, the data frame containing the time metrics
-  information is stored.}
+information is stored in the 'Rperform_Data' directory in the root of the
+repo.}
+
+\item{save_plots}{If set to TRUE, the plots generated are stored in the
+  'Rperform_plots' directory in the root of the repo rather than being
+  printed.}
 }
 \description{
 Given a test-file path, plot the metrics of entire file and individual

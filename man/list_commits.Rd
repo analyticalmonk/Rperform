@@ -35,7 +35,4 @@ list_commits(num_commits = 10)
 # specified by path.
 list_commits(path)
 }
-\seealso{
-\code{\link[git2r]{commits}}
-}
 

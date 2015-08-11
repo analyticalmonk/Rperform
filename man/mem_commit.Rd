@@ -15,7 +15,7 @@ mem_commit(test_path, test_commit)
 \description{
 Given a test-file's path, checks its memory metrics against the commit
 specified by the commit \code{object} passed as a parameter. Memory
-metrics returned are the memory leaked and maximum meory swapped during
+metrics returned are the memory leaked and maximum memory swapped during
 its execution.
 }
 \section{Warning}{
