@@ -13,7 +13,7 @@ plot_webpage(test_directory = "tests/testthat", metric = "testMetrics",
 
 \item{metric}{Type of plot(s) desired. (See examples below for more details)}
 
-\item{out_file}{Name of the output .html file.}
+\item{output_name}{Name of the output .html file.}
 }
 \description{
 It plots specified metrics for all the tests present in the specified

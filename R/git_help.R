@@ -56,13 +56,12 @@ get_msg <- function(commit_val) {
 
 #' Current branch name of a git repository.
 #' 
-#' \code{get_branch} returns the branch name for the git repository passed in as
+#' \code{get_branch} returns the current branch name for the git repository passed in as
 #' parameter (default being the current repository).
 #' 
-#' @seealso \code{\link[git2r]{head}}
+#' @param dir_path Path of the git repository.
+#' 
 #' @seealso \code{\link[git2r]{repository}}
-
-## Return the current git branch of a repository
 
 get_branch <- function(dir_path = "./") {
   repo <- repository(dir_path)

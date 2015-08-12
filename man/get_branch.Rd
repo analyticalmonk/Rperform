@@ -6,13 +6,14 @@
 \usage{
 get_branch(dir_path = "./")
 }
+\arguments{
+\item{dir_path}{Path of the git repository.}
+}
 \description{
-\code{get_branch} returns the branch name for the git repository passed in as
+\code{get_branch} returns the current branch name for the git repository passed in as
 parameter (default being the current repository).
 }
 \seealso{
-\code{\link[git2r]{head}}
-
 \code{\link[git2r]{repository}}
 }
 

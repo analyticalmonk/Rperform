@@ -246,7 +246,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
 #' 
 #' @param test_directory Path of the directory containing the test files.
 #' @param metric Type of plot(s) desired. (See examples below for more details)
-#' @param out_file Name of the output .html file.
+#' @param output_name Name of the output .html file.
 #' 
 #' @examples
 #' 
@@ -308,7 +308,7 @@ plot_webpage <- function(test_directory = "tests/testthat", metric = "testMetric
 #' of commits in the current git repository. 
 #'
 #' 
-#' @param test_dir Directory containing the test-files which are to be used.
+#' @param test_directory Directory containing the test-files which are to be used.
 #' @param metric Type of plot(s) desired. (See examples below for more details)
 #' @param num_commits Number of commits (versions) against which the files are to
 #'   be tested, with default being 5.

@@ -8,6 +8,8 @@ plot_directory(test_directory, metric = "testMetrics", num_commits = 5,
   save_data = FALSE, save_plots = TRUE)
 }
 \arguments{
+\item{test_directory}{Directory containing the test-files which are to be used.}
+
 \item{metric}{Type of plot(s) desired. (See examples below for more details)}
 
 \item{num_commits}{Number of commits (versions) against which the files are to
@@ -19,8 +21,6 @@ in the current directory.}
 \item{save_plots}{If set to TRUE, the plots generated are stored in the
   'Rperform_plots' directory in the root of the repo rather than being
   printed.}
-
-\item{test_dir}{Directory containing the test-files which are to be used.}
 }
 \description{
 Given a directory path, plot the memory and time usage statistics of all files

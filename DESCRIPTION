@@ -11,6 +11,7 @@ Description: More about what it does (maybe more than one line)
 BugReports: https://github.com/da-ta-vinci21/Rperform/issues
 Imports: git2r (>= 0.10.1),
     ggplot2 (>= 1.0.1),
-    testthat (>= 0.10.0)
+    testthat (>= 0.10.0),
+    devtools (>= 1.8.0)
 Suggests: microbenchmark (>= 1.4-2),
     testthat
