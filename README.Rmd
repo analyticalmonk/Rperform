@@ -2,9 +2,11 @@ Rperform
 --------
 
 Rperform is an R package that makes it easy for R package developers to track quantitative performance metrics of their code, over time. <b>It focuses on providing changes, related to time and memory, brought over in the package’s performance metrics over subsequent development versions and across git branches.</b>
-<em>The project is under development, as a part of the [Google Summer of Code 2015](https://github.com/rstats-gsoc/gsoc2015/wiki/Test-timings-on-Travis) program.</em>
+Also, you can use Rperform with travis to do performance testing during your travis build by adding some sample scripts to your git repository. It can prove to be particularly useful while measuring the possible changes which can be introduced by a pull request (PR). Detailed instructions for doing that can be found on the wiki link provided below.
 
 **_For integrating Rperform with your travis build, check out the instructions in the [Rperform Wiki](https://github.com/da-ta-vinci21/Rperform/wiki#integrating-rperform-with-travis-ci)_**.
+
+<em>The project is under development, as a part of the [Google Summer of Code 2015](https://github.com/rstats-gsoc/gsoc2015/wiki/Test-timings-on-Travis) program.</em>
 
 Installation
 ------------
@@ -23,6 +25,8 @@ devtools::install_github("da-ta-vinci21/Rperform")
 Examples
 --------
 
+_For detailed information regarding Rperform's plotting functions, check out the **[Rperform Wiki](https://github.com/da-ta-vinci21/Rperform/wiki)**._
+
 <b>IMPORTANT</b>: The Rperform package requires you to set the current directory to the concerned 
 git repository before using the functions.
 
@@ -30,19 +34,20 @@ git repository before using the functions.
 > setwd(dir = "Path/to/repo")
 ```
 
-The following examples illustrates the use of the `Rperform::plot_time()` and `Rperform::plot_mem()` functions on the git repository of the package [stringr](https://github.com/tdhock/stringr).
+The following examples illustrates the use of the `Rperform::plot_metrics()` function on the git repository of the package [stringr](https://github.com/tdhock/stringr).
 
 ```r
 > setwd("./stringr")
 > library(Rperform)
-> plot_time(test_path = "./tests/testthat/test-extract.r", num_commits = 10, save_data = FALSE)
+> plot_metrics(test_path = "./tests/testthat/test-extract.r", num_commits = 10, save_data = FALSE, save_plots = FALSE)
 ```
 ![time plot](images/Rplot_time.jpeg)
 
 ```r
-> Rperform::plot_mem(test_path = "./tests/testthat/test-dup.r", num_commits = 4, save_data = F)
+> Rperform::plot_metrics(test_path = "./tests/testthat/test-dup.r", metric = "memory", num_commits = 5, save_data = F, save_plots = F)
 ```
 ![memory plot](images/Rplot_mem.jpeg)
+
 
 The following example illustrates the use of the `Rperform::time_compare()` and `Rperform::mem_compare()` functions on the git repository
 of the package [stringr](https://github.com/tdhock/stringr).
