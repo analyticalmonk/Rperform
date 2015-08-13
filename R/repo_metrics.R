@@ -266,7 +266,7 @@ time_compare <- function(test_path, num_commits = 10) {
   commit_list <- git2r::commits(target, n = num_commits)
   result_list <- list()
   # Loads the functions from the repository for the package to be tested
-  devtools::load_all(file.path("./"))
+  suppressPackageStartupMessages(devtools::load_all(file.path("./")))
 
   for(commit_i in seq_along(commit_list)){
     one_commit <- commit_list[[commit_i]]
@@ -476,7 +476,7 @@ get_mem <- function(test_path, commit_num = 1) {
   target_commit <- git2r::commits(target)[[commit_num]]
   result_list <- list()
   # Loads the functions from the repository for the package to be tested
-  devtools::load_all(file.path("./"))
+  suppressPackageStartupMessages(devtools::load_all(file.path("./")))
   
   test_results <- mem_commit(test_path, target_commit)
   test_results

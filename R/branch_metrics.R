@@ -58,7 +58,7 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
   writeLines(t_lines, temp_file_original)
   writeLines(q_lines, temp_file_subbed)
   
-  devtools::load_all(file.path("./"))
+  suppressPackageStartupMessages(devtools::load_all(file.path("./")))
   test_results <- list()
   commit_list <- git2r::commits(repo = target, n = num_commits)
 
@@ -72,6 +72,7 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
     # --------------------------------------------------------------
     
     require(testthat)
+    file_status = "pass"
     seconds_file <- tryCatch(expr = {
       if(require(microbenchmark)){
         times <- microbenchmark(test = {
@@ -88,14 +89,11 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
       }
     },
     error = function(e){
+      file_status = "fail"
       NA
     }
     )
-    if(is.na(seconds_file)){
-      file_status <- "fail"
-    } else {
-      file_status <- "pass"
-    }    
+    
     # ---------------------------------------------------------------
     
     # Code block measuring the run-time of the testthat code blocks (if present)
@@ -107,6 +105,7 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
       run <- function(){
         testthat:::test_code(test_name, code_subs, env=e)
       }
+      status = "pass"
       seconds <- tryCatch(expr = {
         if(require(microbenchmark)){
           times <- microbenchmark(test = {
@@ -123,14 +122,11 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
         }
       },
       error = function(e){
+        status = "fail"
         NA
       }
       )
-      if(is.na(seconds)){
-        status <- "fail"
-      } else {
-        status <- "pass"
-      }
+
       time_df <- data.frame(test_name, metric_name = "seconds", status, 
                             metric_val = seconds, message = commit_msg, 
                             date_time = commit_dtime, branch = branch)
@@ -203,7 +199,7 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
   stopifnot(is.character(branch2))
   stopifnot(length(branch2) == 1)
   
-  same_commit <- .common_commit(branch1, branch2)
+  same_commit <- .common_commit(branch1 = branch1, branch2 = branch2)
   #                  same_commit
   # ---------------------------------------------
   #      common_datetime, cnum_b1, cnum_b2
@@ -281,7 +277,7 @@ compare_branchm <- function(test_path, branch1, branch2 = "master") {
   
   target <- git2r::repository("./")
   original_state <- git2r::head(target)
-  same_commit <- .common_commit(branch1, branch2)
+  same_commit <- .common_commit(branch1 = branch1, branch2 = branch2)
   #                  same_commit
   # ---------------------------------------------
   #      common_datetime, cnum_b1, cnum_b2

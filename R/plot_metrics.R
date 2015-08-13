@@ -59,18 +59,19 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   stopifnot(length(save_data) == 1)
   
   if (metric == "time") {
-    .plot_time(test_path, num_commits, save_data, save_plots)
+    temp_out <- capture.output(.plot_time(test_path, num_commits, save_data, save_plots))
   }
   else if (metric == "memory") {
-    .plot_mem(test_path, num_commits, save_data, save_plots)
+    temp_out <- capture.output(.plot_mem(test_path, num_commits, save_data, save_plots))
   }
   else if (metric == "memtime") {
-    .plot_time(test_path, num_commits, save_data, save_plots)
-    .plot_mem(test_path, num_commits, save_data, save_plots)
+    temp_out <- capture.output(.plot_time(test_path, num_commits, save_data, save_plots))
+    temp_out <- capture.output(.plot_mem(test_path, num_commits, save_data, save_plots))
   }
   else if (metric == "testMetrics") {
-    .plot_testMetrics(test_path, num_commits, save_data, save_plots)
+    temp_out <- capture.output(.plot_testMetrics(test_path, num_commits, save_data, save_plots))
   }
+  remove(temp_out)
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -120,6 +121,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
       png(filename = png.file, width = 1024, height = 768, units = "px")
       print(test_plot)
       dev.off()
+      print(test_plot)
     }
     else {
       print(test_plot)
@@ -173,6 +175,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
     png(filename = png.file, width = 1024, height = 768, units = "px")
     print(test_plot)
     dev.off()
+    print(test_plot)
   }
   else {
     print(test_plot)
@@ -228,6 +231,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
     png(filename = png.file, width = 1024, height = 768, units = "px")
     print(test_plot)
     dev.off()
+    print(test_plot)
   }
   else {
     print(test_plot)
@@ -416,9 +420,9 @@ plot_btimes <- function(test_path, branch1, branch2 = "master") {
   stopifnot(is.character(branch2))
   stopifnot(length(branch2) == 1)
   
-  btimes_df <- compare_brancht(test_path = test_path, branch1 = branch1,
-                               branch2 = branch2)
-  common_commitdf <- (.common_commit(branch1, branch2))
+  suppressMessages(btimes_df <- compare_brancht(test_path = test_path, branch1 = branch1,
+                               branch2 = branch2))
+  common_commitdf <- (.common_commit(branch1 = branch1, branch2 = branch2))
   
   ggplot2::qplot(x = message, y = metric_val, data = btimes_df, color = test_name) + 
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90))+
@@ -477,7 +481,7 @@ plot_bmemory <- function(test_path, branch1, branch2 = "master") {
   
   bmem_df <- compare_branchm(test_path = test_path, branch1 = branch1,
                                branch2 = branch2)
-  common_commitdf <- (.common_commit(branch1, branch2))
+  common_commitdf <- (.common_commit(branch1 = branch1, branch2 = branch2))
   
   ggplot2::qplot(message, metric_val, data = bmem_df, color = test_name) +
     ggplot2::facet_grid(. ~ metric_name) + 
