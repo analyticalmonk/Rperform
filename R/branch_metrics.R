@@ -217,6 +217,28 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
 }
 
 ##  -----------------------------------------------------------------------------------------
+
+compare_dirt <- function(dir1, test_path1, branch1 = "master", 
+                         dir2, test_path2, branch2 = "master") {
+  
+  same_commit <- .common_commit(dir_one, dir_two, branch1, branch2)
+  curr_dir <- file.path("./")
+  
+  setwd(dir_one)
+  dir1_df <- time_branch(test_path1, branch1, num_commits = same_commit$cnum_b1)
+  dir1_df$directory <- rep(dir1, times = rnum(dir1_df))
+  setwd(curr_dir)
+  
+  setwd(dir_two)
+  dir2_df <- time_branch(test_path2, branch2, num_commits = same_commit$cnum_b2)
+  dir2_df$directory <- rep(dir2, times = rnum(dir2_df))
+  setwd(curr_dir)
+  
+  rbind(dir1_df, dir2_df)
+}
+
+
+##  -----------------------------------------------------------------------------------------
 ##                                MEMORY CHUNK BEGINS
 ##  -----------------------------------------------------------------------------------------
 
@@ -285,20 +307,36 @@ compare_branchm <- function(test_path, branch1, branch2 = "master") {
 ## Function to find the latest common commit given two branches of a repository
 ## ----------------------------------------------------------------------------  
 
-.common_commit <- function(branch1, branch2) {
+.common_commit <- function(dir1 = NULL, dir2 = NULL, branch1, branch2) {
   stopifnot(is.character(branch1))
   stopifnot(length(branch1) == 1)
   stopifnot(is.character(branch2))
   stopifnot(length(branch2) == 1)
   
+  curr_dir <- file.path("./../")
+  
   # Git operations
-  target <- git2r::repository(file.path("./"))
-  original_state <- git2r::head(target)
-  on.exit(expr = git2r::checkout(original_state))
-  git2r::checkout(object = target, branch = branch1)
-  commitlist1 <- git2r::commits(target)
-  git2r::checkout(object = target, branch = branch2)
-  commitlist2 <- git2r::commits(target)
+  if (!is.null(dir1)) {
+    setwd(dir1)
+  }
+  target1 <- git2r::repository(file.path("./"))
+  original_state1 <- git2r::head(target1)
+  git2r::checkout(object = target1, branch = branch1)
+  commitlist1 <- git2r::commits(target1)
+  git2r::checkout(original_state1)
+  
+  if (!is.null(dir2)) {
+    setwd(curr_dir)
+    setwd(dir2)
+  }
+  target2 <- git2r::repository(file.path("./"))
+  original_state2 <- git2r::head(target2)
+  git2r::checkout(object = target2, branch = branch2)
+  commitlist2 <- git2r::commits(target2)
+  git2r::checkout(original_state2)
+  if (!is.null(dir2)) {
+    setwd(curr_dir)
+  }
   
   dtime_list1 <- lapply(commitlist1, FUN = get_datetime)
   dtime_list2 <- lapply(commitlist2, FUN = get_datetime)
