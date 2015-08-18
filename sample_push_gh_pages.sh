@@ -32,18 +32,8 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
 fi
 
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo -e "Starting to update gh-pages\n"
-
-  # Set ORIGIN_BRANCH environment variable
-  touch pre_Rperform.txt
-  echo -n "export TEMP_ORIGIN_BRANCH=" > pre_Rperform.txt
-  git describe --all --contain HEAD >> pre_Rperform.txt
-  source ./pre_Rperform.txt
-  echo -n "export ORIGIN_BRANCH=" > pre_Rperform.txt
-  re="[^~]+"
-  if [[ $TEMP_ORIGIN_BRANCH =~ $re ]]; then echo ${BASH_REMATCH} >> pre_Rperform.txt; fi
-  source ./pre_Rperform.txt
-  rm ./pre_Rperform.txt
+  echo -e "Starting to update gh-pages for the PR\n"
+  echo -e "$ORIGIN_BRANCH"
 
   #go to home and setup git
   cd $HOME
@@ -51,20 +41,15 @@ if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   git config --global user.name "Travis"
 
   #using token clone gh-pages branch
-  git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/"{your_repo_here}"  gh-pages > /dev/null
-  git clone --quiet --branch=master https://${GH_TOKEN}@github.com/"{your_repo_here}"  master > /dev/null
-  git clone --quiet --branch=$ORIGIN_BRANCH https://${GH_TOKEN}@github.com/"{your_repo_here}"  origin > /dev/null
+  git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/da-ta-vinci21/Rperform_ggplotly.git  gh-pages > /dev/null
+  git clone --quiet --branch=master https://${GH_TOKEN}@github.com/da-ta-vinci21/Rperform_ggplotly.git  master > /dev/null
+  git clone --quiet --branch=$ORIGIN_BRANCH https://${GH_TOKEN}@github.com/da-ta-vinci21/Rperform_ggplotly.git  origin > /dev/null
 
   #Run the Rperform functions
-  if [! -f temp_Rperform.R]
-  then
-    touch temp_Rperform.R
-    echo "Rperform::compare_dirt(test_directory = \"./tests/\")" >> temp_Rperform.R
-  fi
   Rscript ./master/temp_Rperform.R
 
-  cd ../gh-pages
-  cp -Rf $HOME/master/index.html index.html
+  cd ./gh-pages
+  cp -Rf $HOME/index.html index.html
 
   #add, commit and push files
   git add -f .

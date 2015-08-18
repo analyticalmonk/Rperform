@@ -1,5 +1,8 @@
 language: r
 sudo: required
+
+r_packages:
+  - microbenchmark
 r_github_packages:
   - da-ta-vinci21/Rperform
   - yihui/knitr
@@ -10,7 +13,8 @@ env:
 
 before_install:
   - chmod 755 ./.push_gh_pages.sh
+  - chmod 755 ./.PR_setup.sh
+  - source ./.PR_setup.sh
 
 after_success:
-  - source PR_setup.sh
   - source ./.push_gh_pages.sh
