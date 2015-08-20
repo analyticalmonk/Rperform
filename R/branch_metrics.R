@@ -4,13 +4,13 @@
 
 #' Run-times of a file on the given branch.
 #' 
-#' Given a test-file and branch, returns the run-time of the file over the given
-#' number of commits on the branch.
+#' Given a test-file and branch, returns the run-time details of the file over
+#' the given number of commits on the branch.
 #' 
 #' @param test_path File-path for the test file to be tested.
-#' @param branch First Branch against whose commits the test file is to be 
+#' @param branch Branch against whose commits the test file is to be 
 #'   tested (with master being the default).   
-#' @param num_commits Number of commits on the first branch against which the test
+#' @param num_commits Number of commits on the branch against which the test
 #'   file is to be tested.
 #'   
 #' @examples
@@ -25,13 +25,24 @@
 #' library(Rperform)
 #' time_branch(test_path = t_path, branch_name = "helper", num_commits = 10)
 #' 
+#' @section Value:
+#' time_branch returns an object of class "data.frame".
+#' The data-frame consists of the following columns:
+#' \code{test_name}
+#' \code{metric_name}
+#' \code{status}
+#' \code{metric_val}
+#' \code{message}
+#' \code{date_time}
+#' \code{branch}
+#' 
 #' @section Warning:
-#'   Library assumes the current directory to be the root directory of the
+#'   Function assumes the current directory to be the root directory of the
 #'   package being tested.
 #'   
 
-# Given a test and branch, time_branch returns the run-time of the test over
-# the given number of commits on the specified branch.
+# Given a test and branch, time_branch returns the run-time details of the test
+# over the given number of commits on the specified branch.
 
 time_branch <- function(test_path, branch = "master", num_commits = 5) {
   stopifnot(is.character(test_path))
@@ -163,11 +174,11 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
 }
 
 ##  -----------------------------------------------------------------------------------------
-#' Run-times across branches.
+#' Run-time details across branches.
 #' 
-#' Given a test-file and two branches, returns the run-times of the file against
-#' the first commit till the latest common commit in branch1, and against the
-#' latest commit in branch2.
+#' Given a test-file and two branches, returns the run-time details of the file
+#' against the first commit till the latest common commit in branch1, and
+#' against the latest commit in branch2.
 #' 
 #' @param test_path File-path for the test file to be tested.
 #' @param branch_1 Branch against whose commits the test file is to be 
@@ -186,8 +197,19 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
 #' library(Rperform)
 #' compare_brancht(test_path = t_path, branch1 = "helper", branch2 = "master")
 #' 
+#' @section Value:
+#' compare_brancht returns an object of class "data.frame".
+#' The data-frame consists of the following columns:
+#' \code{test_name}
+#' \code{metric_name}
+#' \code{status}
+#' \code{metric_val}
+#' \code{message}
+#' \code{date_time}
+#' \code{branch}
+#' 
 #' @section Warning:
-#'   Library assumes the current directory to be the root directory of the
+#'   Function assumes the current directory to be the root directory of the
 #'   package being tested.
 #' 
 
@@ -213,7 +235,60 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
 }
 
 ##  -----------------------------------------------------------------------------------------
+##  -----------------------------------------------------------------------------------------
 
+#' Run-time details across directories/repositories.
+#' 
+#' Given a test-file and two branches, returns the run-time details of the file
+#' against the first commit till the latest common commit in branch1, and
+#' against the latest commit in branch2.
+#' 
+#' @param dir1 Path to the first directory/repository.
+#' @param test_path1 File-path, relative to the first directory, for the test
+#'   file to be tested.
+#' @param branch_1 Branch in the first repository against whose commits the test
+#'   file is to be tested.
+#' @param dir2 Path to the second directory/repository.
+#' @param test_path2 File-path, relative to the second directory, for the test
+#'   file to be tested.
+#' @param branch_2 Branch in the second directory against whose commits the test
+#'   file is to be tested.
+#'   
+#' @examples
+#' 
+#' # Set the current directory to the parent directory of the concerned repositories.
+#' setwd("./Path/to/parent/directory")
+#' 
+#' # Set the directory paths
+#' d_path1 <- "Path/to/first/directory"
+#' d_path2 <- "Path/to/second/directory"
+#' 
+#' # Set the file-paths
+#' t_path1 <- "First/path/to/file"
+#' t_path2 <- "Second/path/to/file"
+#'
+#' # Load the library and pass the parameters to the function
+#' library(Rperform)
+#' compare_dirt(d_path1, t_path1, branch1 = "master",
+#'              d_path2, t_path2, branch2 = "patch")
+#' 
+#' @section Value:
+#' compare_brancht returns an object of class "data.frame".
+#' The data-frame consists of the following columns:
+#' \code{test_name}
+#' \code{metric_name}
+#' \code{status}
+#' \code{metric_val}
+#' \code{message}
+#' \code{date_time}
+#' \code{branch}
+#' \code{directory}
+#' 
+#' @section Warning:
+#'   Function assumes the current directory to be the parent directory of both 
+#'   the repositories being tested. That means both the repositories should be
+#'   inside the same directory.
+#' 
 compare_dirt <- function(dir1, test_path1, branch1 = "master", 
                          dir2, test_path2, branch2 = "master") {
   
@@ -240,9 +315,9 @@ compare_dirt <- function(dir1, test_path1, branch1 = "master",
 
 #' Memory metrics across branches.
 #' 
-#' Given a test-file and two branches, returns the memory metrics of the file
-#' against the first commit till the latest common commit in branch1, and
-#' against the latest commit in branch2. Memory metrics returned are the memory
+#' Given a test-file and two branches, returns the memory metrics of the file 
+#' against the first commit till the latest common commit in branch1, and 
+#' against the latest commit in branch2. Memory metrics returned are the memory 
 #' leaked and maximum meory swapped during its execution.
 #' 
 #' @param test_path File-path for the test file to be tested.
@@ -262,8 +337,19 @@ compare_dirt <- function(dir1, test_path1, branch1 = "master",
 #' library(Rperform)
 #' compare_branchm(test_path = t_path, branch1 = "helper", branch2 = "master")
 #' 
+#' @section Value:
+#' compare_branchm returns an object of class "data.frame".
+#' The data-frame consists of the following columns:
+#' \code{test_name}
+#' \code{metric_name}
+#' \code{status}
+#' \code{metric_val}
+#' \code{message}
+#' \code{date_time}
+#' \code{time_branch} 
+#' 
 #' @section Warning:
-#'   Library assumes the current directory to be the root directory of the
+#'   Function assumes the current directory to be the root directory of the
 #'   package being tested.
 #'
 

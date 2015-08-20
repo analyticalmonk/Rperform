@@ -7,18 +7,20 @@
 #' folder 'Rperform_Data' in the current directory.The metrics plotted are in
 #' accordance with those specified using the parameter metric.
 #' 
-#' @param test_path File-path of the test-file which is to be used for run-time
+#' @param test_path File-path of the test-file which is to be used for run-time 
 #'   comparisons.
-#' @param metric Type of plot(s) desired. (See examples below for more details)
-#' @param num_commits Number of commits (versions) against which the file is to
+#' @param metric Type of plot(s) desired. This can be set to \code{time},
+#'   \code{memory}, \code{memtime} or \code{testMetrics}. (See examples below
+#'   for more details)
+#' @param num_commits Number of commits (versions) against which the file is to 
 #'   be tested, with default being 5.
-#' @param save_data If set to TRUE, the data frame containing the time metrics 
-#'   information is stored in the 'Rperform_Data' directory in the root of the
-#'   repo.
-#' @param save_plots If set to TRUE, the plots generated are stored in the
-#'   'Rperform_plots' directory in the root of the repo rather than being
-#'   printed.
-#'   
+#' @param save_data If set to TRUE, the data frame containing the metrics 
+#'   information is stored in the 'Rperform_Data' directory in the root of the 
+#'   repo. (default set to FALSE)
+#' @param save_plots If set to TRUE, the plots generated are stored in the 
+#'   'Rperform_plots' directory in the root of the repo rather than being 
+#'   printed. (default set to TRUE)
+#'      
 #' @examples
 #' 
 #' # Set the current directory to the git repository concerned.
@@ -44,8 +46,8 @@
 #' plot_metrics(test_path = t_path, metric = "testMetrics", n_commits = 5, save_data = F)
 #' 
 #' @section WARNING:
-#'   Library assumes the current directory to be the root directory of the
-#'   package being tested.
+#'   Function assumes the current directory to be the root directory of the
+#'   repository/package being tested.
 #' 
 
 plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, save_plots = TRUE) {
@@ -216,7 +218,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
     # respectively. The fourth line creates a facet grid so as to seperate
     # the plots for the swap and leak memory metrics.
     ggplot2::geom_point(color = "blue") +
-    ggplot2::ylab(label = "Memory (in mb)") +
+    ggplot2::ylab(label = "Memory (in Mb)") +
     ggplot2::xlab(label = "Commit messages") +
     ggplot2::ggtitle(label = paste0("Variation in memory metrics for ", curr_name))
   
@@ -249,7 +251,9 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
 #' directory of the current git repository on a webpage.
 #' 
 #' @param test_directory Path of the directory containing the test files.
-#' @param metric Type of plot(s) desired. (See examples below for more details)
+#' @param metric Type of plot(s) desired. This can be set to \code{time},
+#'   \code{memory}, \code{memtime} or \code{testMetrics}. (See examples below
+#'   for more details)
 #' @param output_name Name of the output .html file.
 #' 
 #' @examples
@@ -275,8 +279,8 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
 #' plot_webpage(d_path, metric = "testMetrics", output_name = "testMetricsPage")
 #' 
 #' @section WARNING:
-#'   Library assumes the current directory to be the root directory of the
-#'   package being tested.
+#'   Function assumes the current directory to be the root directory of the
+#'   repository being tested.
 #'   
 
 plot_webpage <- function(test_directory = "tests/testthat", metric = "testMetrics",
@@ -313,7 +317,9 @@ plot_webpage <- function(test_directory = "tests/testthat", metric = "testMetric
 #'
 #' 
 #' @param test_directory Directory containing the test-files which are to be used.
-#' @param metric Type of plot(s) desired. (See examples below for more details)
+#' @param metric Type of plot(s) desired. This can be set to \code{time},
+#'   \code{memory}, \code{memtime} or \code{testMetrics}. (See examples below
+#'   for more details)
 #' @param num_commits Number of commits (versions) against which the files are to
 #'   be tested, with default being 5.
 #' @param save_data If set to TRUE, the metrics data is saved in a folder 'Rperform_Data'
@@ -493,13 +499,9 @@ plot_bmemory <- function(test_path, branch1, branch2 = "master") {
   # horizontal and correct the order of message labels on the x -axis, 
   # respectively. The fourth line of code divides the commits from the two
   # different branches by a vertical line.
-    ggplot2::ylab(label = "Memory (in mb)") +
+    ggplot2::ylab(label = "Memory (in Mb)") +
     ggplot2::xlab(label = "Commit messages") +
     ggplot2::ggtitle(label = "Variation in memory metrics acros Git branches")
-  
-#   file_plots <- list(swap_plot, leak_plot)
-#   # To hide the warning messages from being displayed
-#   suppressWarnings(.multiplot(plotlist = file_plots))
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -525,55 +527,3 @@ plot_bmemory <- function(test_path, branch1, branch2 = "master") {
                                                              x = basename(replace_string))))
   }
 }
-
-##  -----------------------------------------------------------------------------------------
-## Multiple plot function
-#--- Source code obtained courtesy Winston Chang from:
-# http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/ ---
-#---------------------------------------------------------------------------------
-# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
-# - cols:   Number of columns in layout
-# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
-#
-# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
-# then plot 1 will go in the upper left, 2 will go in the upper right, and
-# 3 will go all the way across the bottom.
-#
-.multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-  library(grid)
-  
-  # Make a list from the ... arguments and plotlist
-  plots <- c(list(...), plotlist)
-  
-  numPlots = length(plots)
-  
-  # If layout is NULL, then use 'cols' to determine layout
-  if (is.null(layout)) {
-    # Make the panel
-    # ncol: Number of columns of plots
-    # nrow: Number of rows needed, calculated from # of cols
-    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
-                     ncol = cols, nrow = ceiling(numPlots/cols))
-  }
-  
-  if (numPlots==1) {
-    print(plots[[1]])
-    
-  } else {
-    # Set up the page
-    grid.newpage()
-    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
-    
-    # Make each plot, in the correct location
-    for (i in 1:numPlots) {
-      # Get the i,j matrix positions of the regions that contain this subplot
-      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-      
-      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
-                                      layout.pos.col = matchidx$col))
-    }
-  }
-}
-
-#---------------------------------------------------------------------------------
-

@@ -66,9 +66,6 @@ get_msg <- function(commit_val) {
 get_branch <- function(dir_path = "./") {
   repo <- repository(dir_path)
   git2r::head(repo)@name
-#   b_list <- system(command = "git branch", intern = TRUE)
-#   b_logical <- grepl(pattern = '\\* ', x = b_list)
-#   gsub(pattern = "\\* ",replacement = "", x =  b_list[b_logical])
 }
 
 ##  -----------------------------------------------------------------------------------------

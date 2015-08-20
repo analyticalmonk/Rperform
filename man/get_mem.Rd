@@ -20,9 +20,21 @@ are the memory leaked and maximum meory swapped during its execution. A
 commit number,n, would correspond to the nth commit in the commit log of the
 current git repository.
 }
+\section{Value}{
+
+get_mem returns an object of class "data.frame".
+The data-frame consists of the following columns:
+\code{test_name}
+\code{metric_name}
+\code{status}
+\code{metric_val}
+\code{message}
+\code{date_time}
+}
+
 \section{Warning}{
 
-  Library assumes the current directory to be the root directory of the
+  Function assumes the current directory to be the root directory of the
   package being tested.
 }
 \examples{

@@ -13,12 +13,7 @@ list_commits(path = "./", num_commits = 20)
 }
 \description{
 Given a repository path and number of commits (n), returns a data frame containing
-the SHA1 values and summary of the last n commits in the repo.
-}
-\section{Warning}{
-
-  Library assumes the current directory to be the root directory of the
-  package being tested.
+the date, SHA1 values and commit messages of the last n commits in the repo.
 }
 \examples{
 ## Example-1

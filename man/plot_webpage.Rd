@@ -11,7 +11,9 @@ plot_webpage(test_directory = "tests/testthat", metric = "testMetrics",
 \arguments{
 \item{test_directory}{Path of the directory containing the test files.}
 
-\item{metric}{Type of plot(s) desired. (See examples below for more details)}
+\item{metric}{Type of plot(s) desired. This can be set to \code{time},
+\code{memory}, \code{memtime} or \code{testMetrics}. (See examples below
+for more details)}
 
 \item{output_name}{Name of the output .html file.}
 }
@@ -21,8 +23,8 @@ directory of the current git repository on a webpage.
 }
 \section{WARNING}{
 
-  Library assumes the current directory to be the root directory of the
-  package being tested.
+  Function assumes the current directory to be the root directory of the
+  repository being tested.
 }
 \examples{
 # Set to the git repository in consideration.

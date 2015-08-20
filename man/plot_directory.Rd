@@ -10,7 +10,9 @@ plot_directory(test_directory, metric = "testMetrics", num_commits = 5,
 \arguments{
 \item{test_directory}{Directory containing the test-files which are to be used.}
 
-\item{metric}{Type of plot(s) desired. (See examples below for more details)}
+\item{metric}{Type of plot(s) desired. This can be set to \code{time},
+\code{memory}, \code{memtime} or \code{testMetrics}. (See examples below
+for more details)}
 
 \item{num_commits}{Number of commits (versions) against which the files are to
 be tested, with default being 5.}

@@ -9,19 +9,32 @@ time_branch(test_path, branch = "master", num_commits = 5)
 \arguments{
 \item{test_path}{File-path for the test file to be tested.}
 
-\item{branch}{First Branch against whose commits the test file is to be
+\item{branch}{Branch against whose commits the test file is to be
 tested (with master being the default).}
 
-\item{num_commits}{Number of commits on the first branch against which the test
+\item{num_commits}{Number of commits on the branch against which the test
   file is to be tested.}
 }
 \description{
-Given a test-file and branch, returns the run-time of the file over the given
-number of commits on the branch.
+Given a test-file and branch, returns the run-time details of the file over
+the given number of commits on the branch.
 }
+\section{Value}{
+
+time_branch returns an object of class "data.frame".
+The data-frame consists of the following columns:
+\code{test_name}
+\code{metric_name}
+\code{status}
+\code{metric_val}
+\code{message}
+\code{date_time}
+\code{branch}
+}
+
 \section{Warning}{
 
-  Library assumes the current directory to be the root directory of the
+  Function assumes the current directory to be the root directory of the
   package being tested.
 }
 \examples{

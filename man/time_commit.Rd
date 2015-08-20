@@ -13,12 +13,24 @@ time_commit(test_path, test_commit)
   run-time is to be checked.}
 }
 \description{
-Given a test-file's path, checks its run-time against the commit specified by the
+Given a test-file's path, measures its run-time against the commit specified by the
 commit \code{object} passed as a parameter.
 }
+\section{Value}{
+
+time_commit returns an object of class "data.frame".
+The data-frame consists of the following columns:
+\code{test_name}
+\code{metric_name}
+\code{status}
+\code{metric_val}
+\code{message}
+\code{date_time}
+}
+
 \section{Warning}{
 
-  Library assumes the current directory to be the root directory of the
+  Function assumes the current directory to be the root directory of the
   package being tested.
 }
 \examples{

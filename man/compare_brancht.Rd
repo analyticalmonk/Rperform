@@ -2,7 +2,7 @@
 % Please edit documentation in R/branch_metrics.R
 \name{compare_brancht}
 \alias{compare_brancht}
-\title{Run-times across branches.}
+\title{Run-time details across branches.}
 \usage{
 compare_brancht(test_path, branch1, branch2 = "master")
 }
@@ -15,13 +15,26 @@ tested.}
 \item{branch_2}{Branch into which branch1 is supposedly to be merged.}
 }
 \description{
-Given a test-file and two branches, returns the run-times of the file against
-the first commit till the latest common commit in branch1, and against the
-latest commit in branch2.
+Given a test-file and two branches, returns the run-time details of the file
+against the first commit till the latest common commit in branch1, and
+against the latest commit in branch2.
 }
+\section{Value}{
+
+compare_brancht returns an object of class "data.frame".
+The data-frame consists of the following columns:
+\code{test_name}
+\code{metric_name}
+\code{status}
+\code{metric_val}
+\code{message}
+\code{date_time}
+\code{branch}
+}
+
 \section{Warning}{
 
-  Library assumes the current directory to be the root directory of the
+  Function assumes the current directory to be the root directory of the
   package being tested.
 }
 \examples{

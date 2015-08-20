@@ -3,7 +3,7 @@
 #' Commits' details.
 #' 
 #' Given a repository path and number of commits (n), returns a data frame containing
-#' the SHA1 values and summary of the last n commits in the repo.
+#' the date, SHA1 values and commit messages of the last n commits in the repo.
 #' 
 #' @param path File-path to the git repository whose commits are to be summarized.
 #' @param num_commits Number of commits to be summarized. The default is 20.
@@ -24,12 +24,10 @@
 #' # specified by path.
 #' list_commits(path)
 #' 
-#' @section Warning:
-#'   Library assumes the current directory to be the root directory of the
-#'   package being tested.
 
-# The list_commits function, given a repository path and number of commits (n), returns
-# a data frame containing the SHA1 values and summary of the last n commits in the repo.
+# The list_commits function, given a repository path and number of commits (n),
+# returns a data frame containing the dates, SHA1 values and summary of the last
+# n commits in the repo.
 
 list_commits <- function(path = "./", num_commits = 20){
   stopifnot(is.character(path))
@@ -63,7 +61,7 @@ list_commits <- function(path = "./", num_commits = 20){
 
 #' Test file's run-time.
 #' 
-#' Given a test-file's path, checks its run-time against the commit specified by the 
+#' Given a test-file's path, measures its run-time against the commit specified by the 
 #' commit \code{object} passed as a parameter.
 #' 
 #' @param test_path File-path for the test file whose run-time is to be checked.
@@ -87,8 +85,18 @@ list_commits <- function(path = "./", num_commits = 20){
 #' library(Rperform)
 #' time_commit(t_path, t_commit)
 #' 
+#' @section Value:
+#' time_commit returns an object of class "data.frame".
+#' The data-frame consists of the following columns:
+#' \code{test_name}
+#' \code{metric_name}
+#' \code{status}
+#' \code{metric_val}
+#' \code{message}
+#' \code{date_time}
+#' 
 #' @section Warning:
-#'   Library assumes the current directory to be the root directory of the
+#'   Function assumes the current directory to be the root directory of the
 #'   package being tested.
 #' 
 #' @seealso \code{\link[git2r]{commits}}
@@ -130,7 +138,7 @@ time_commit <- function(test_path, test_commit) {
   require(testthat)
   file_status = "pass"
 # We have used tryCatch so that execution doesn't stop in case of an error
-# in the test file. Rather we modify the values in the result data frame
+# in the test file. Rather we will modify the values in the result data frame
 # (time as NA, status as 'fail') to let the user know of the error.
   seconds_file <- tryCatch(expr = {
       if(require(microbenchmark)){
@@ -244,8 +252,18 @@ time_commit <- function(test_path, test_commit) {
 #' library(Rperform)
 #' time_compare(test_path = t_path, num_commits = 10)
 #' 
+#' @section Value:
+#' time_compare returns an object of class "data.frame".
+#' The data-frame consists of the following columns:
+#' \code{test_name}
+#' \code{metric_name}
+#' \code{status}
+#' \code{metric_val}
+#' \code{message}
+#' \code{date_time}
+#' 
 #' @section Warning:
-#'   Library assumes the current directory to be the root directory of the
+#'   Function assumes the current directory to be the root directory of the
 #'   package being tested.
 #' 
 
@@ -309,8 +327,18 @@ time_compare <- function(test_path, num_commits = 10) {
 #' library(Rperform)
 #' mem_commit(t_path, t_commit)
 #' 
+#' @section Value:
+#' mem_commit returns an object of class "data.frame".
+#' The data-frame consists of the following columns:
+#' \code{test_name}
+#' \code{metric_name}
+#' \code{status}
+#' \code{metric_val}
+#' \code{message}
+#' \code{date_time}
+#' 
 #' @section Warning:
-#'   Library assumes the current directory to be the root directory of the
+#'   Function assumes the current directory to be the root directory of the
 #'   package being tested.
 #' 
 #' @seealso \code{\link[git2r]{commits}}
@@ -420,8 +448,6 @@ mem_commit <- function(test_path, test_commit) {
   mem_df <- rbind(testthat_df, testfile_df)
   rownames(mem_df) <- NULL
   mem_df
-#   data.frame(file_name, swap_mb = rss_list$swap/1000, leak_mb = rss_list$leak/1000,
-#              msg_val = msg_val, date_time = commit_dtime)
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -455,8 +481,18 @@ mem_commit <- function(test_path, test_commit) {
 #' library(Rperform)
 #' get_mem(t_path, 3)
 #' 
+#' @section Value:
+#' get_mem returns an object of class "data.frame".
+#' The data-frame consists of the following columns:
+#' \code{test_name}
+#' \code{metric_name}
+#' \code{status}
+#' \code{metric_val}
+#' \code{message}
+#' \code{date_time}
+#'
 #' @section Warning:
-#'   Library assumes the current directory to be the root directory of the
+#'   Function assumes the current directory to be the root directory of the
 #'   package being tested.
 #'
 
@@ -510,8 +546,18 @@ get_mem <- function(test_path, commit_num = 1) {
 #' library(Rperform)
 #' mem_compare(t_path, 10)
 #' 
+#' @section Value:
+#' time_commit returns an object of class "data.frame".
+#' The data-frame consists of the following columns:
+#' \code{test_name}
+#' \code{metric_name}
+#' \code{status}
+#' \code{metric_val}
+#' \code{message}
+#' \code{date_time}
+#'
 #' @section Warning:
-#'   Library assumes the current directory to be the root directory of the
+#'   Function assumes the current directory to be the root directory of the
 #'   package being tested.
 #' 
 

@@ -20,9 +20,22 @@ against the first commit till the latest common commit in branch1, and
 against the latest commit in branch2. Memory metrics returned are the memory
 leaked and maximum meory swapped during its execution.
 }
+\section{Value}{
+
+compare_branchm returns an object of class "data.frame".
+The data-frame consists of the following columns:
+\code{test_name}
+\code{metric_name}
+\code{status}
+\code{metric_val}
+\code{message}
+\code{date_time}
+\code{time_branch}
+}
+
 \section{Warning}{
 
-  Library assumes the current directory to be the root directory of the
+  Function assumes the current directory to be the root directory of the
   package being tested.
 }
 \examples{

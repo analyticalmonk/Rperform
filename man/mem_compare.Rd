@@ -18,9 +18,21 @@ commits specified by the parameter num_commits with default being 10. Memory
 metrics returned are the memory leaked and maximum meory swapped during its
 execution.
 }
+\section{Value}{
+
+time_commit returns an object of class "data.frame".
+The data-frame consists of the following columns:
+\code{test_name}
+\code{metric_name}
+\code{status}
+\code{metric_val}
+\code{message}
+\code{date_time}
+}
+
 \section{Warning}{
 
-  Library assumes the current directory to be the root directory of the
+  Function assumes the current directory to be the root directory of the
   package being tested.
 }
 \examples{

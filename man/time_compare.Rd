@@ -19,9 +19,21 @@ in the current git repository and returns a data-frame comprised of the test nam
 status of test run, time (if successful) and SHA1 value corresponding to the commit
 the value is for.
 }
+\section{Value}{
+
+time_compare returns an object of class "data.frame".
+The data-frame consists of the following columns:
+\code{test_name}
+\code{metric_name}
+\code{status}
+\code{metric_val}
+\code{message}
+\code{date_time}
+}
+
 \section{Warning}{
 
-  Library assumes the current directory to be the root directory of the
+  Function assumes the current directory to be the root directory of the
   package being tested.
 }
 \examples{

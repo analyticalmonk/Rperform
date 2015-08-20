@@ -11,18 +11,20 @@ plot_metrics(test_path, metric, num_commits = 5, save_data = FALSE,
 \item{test_path}{File-path of the test-file which is to be used for run-time
 comparisons.}
 
-\item{metric}{Type of plot(s) desired. (See examples below for more details)}
+\item{metric}{Type of plot(s) desired. This can be set to \code{time},
+\code{memory}, \code{memtime} or \code{testMetrics}. (See examples below
+for more details)}
 
 \item{num_commits}{Number of commits (versions) against which the file is to
 be tested, with default being 5.}
 
-\item{save_data}{If set to TRUE, the data frame containing the time metrics
+\item{save_data}{If set to TRUE, the data frame containing the metrics
 information is stored in the 'Rperform_Data' directory in the root of the
-repo.}
+repo. (default set to FALSE)}
 
 \item{save_plots}{If set to TRUE, the plots generated are stored in the
   'Rperform_plots' directory in the root of the repo rather than being
-  printed.}
+  printed. (default set to TRUE)}
 }
 \description{
 Given a test-file path, plot the metrics of entire file and individual
@@ -34,8 +36,8 @@ accordance with those specified using the parameter metric.
 }
 \section{WARNING}{
 
-  Library assumes the current directory to be the root directory of the
-  package being tested.
+  Function assumes the current directory to be the root directory of the
+  repository/package being tested.
 }
 \examples{
 # Set the current directory to the git repository concerned.
