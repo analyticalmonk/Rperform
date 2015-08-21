@@ -15,6 +15,7 @@
 #'   
 #' @examples
 #' 
+#' \dontrun{
 #' # Set the current directory to the git repository concerned.
 #' setwd("./Path/to/repository")
 #' 
@@ -24,7 +25,7 @@
 #' # Load the library and pass the parameters to the function
 #' library(Rperform)
 #' time_branch(test_path = t_path, branch_name = "helper", num_commits = 10)
-#' 
+#' }
 #' @section Value:
 #' time_branch returns an object of class "data.frame".
 #' The data-frame consists of the following columns:
@@ -187,6 +188,7 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
 #'   
 #' @examples
 #' 
+#' \dontrun{
 #' # Set the current directory to the git repository concerned.
 #' setwd("./Path/to/repository")
 #' 
@@ -196,6 +198,7 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
 #' # Load the library and pass the parameters to the function
 #' library(Rperform)
 #' compare_brancht(test_path = t_path, branch1 = "helper", branch2 = "master")
+#' }
 #' 
 #' @section Value:
 #' compare_brancht returns an object of class "data.frame".
@@ -256,6 +259,7 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
 #'   
 #' @examples
 #' 
+#' \dontrun{
 #' # Set the current directory to the parent directory of the concerned repositories.
 #' setwd("./Path/to/parent/directory")
 #' 
@@ -271,6 +275,7 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
 #' library(Rperform)
 #' compare_dirt(d_path1, t_path1, branch1 = "master",
 #'              d_path2, t_path2, branch2 = "patch")
+#' }
 #' 
 #' @section Value:
 #' compare_brancht returns an object of class "data.frame".
@@ -327,6 +332,7 @@ compare_dirt <- function(dir1, test_path1, branch1 = "master",
 #'   
 #' @examples
 #' 
+#' \dontrun{
 #' # Set the current directory to the git repository concerned.
 #' setwd("./Path/to/repository")
 #' 
@@ -336,6 +342,7 @@ compare_dirt <- function(dir1, test_path1, branch1 = "master",
 #' # Load the library and pass the parameters to the function
 #' library(Rperform)
 #' compare_branchm(test_path = t_path, branch1 = "helper", branch2 = "master")
+#' }
 #' 
 #' @section Value:
 #' compare_branchm returns an object of class "data.frame".

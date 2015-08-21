@@ -27,6 +27,7 @@ directory of the current git repository on a webpage.
   repository being tested.
 }
 \examples{
+\dontrun{
 # Set to the git repository in consideration.
 setwd("path/to/repo")
 d_path <- "path/to/tests"
@@ -46,5 +47,6 @@ plot_metrics(test_directory = d_path, metric = "memory", output_name = "memPage"
 # Obtain both memory and time metrics for each individual testthat block
 # inside a file and the file itself.
 plot_webpage(d_path, metric = "testMetrics", output_name = "testMetricsPage")
+}
 }
 

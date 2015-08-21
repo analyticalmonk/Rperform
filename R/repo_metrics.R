@@ -10,6 +10,7 @@
 #' 
 #' @examples
 #' 
+#' \dontrun{
 #' ## Example-1
 #' 
 #' # Set the current directory to the git repository concerned.
@@ -23,6 +24,7 @@
 #' # Obtained the details of the last 20 (default value) commits in the repository
 #' # specified by path.
 #' list_commits(path)
+#' }
 #' 
 
 # The list_commits function, given a repository path and number of commits (n),
@@ -69,6 +71,8 @@ list_commits <- function(path = "./", num_commits = 20){
 #'   run-time is to be checked.
 #'    
 #' @examples
+#
+#' \dontrun{
 #' ## Example-1
 #' 
 #' # Set the current directory to the git repository concerned.
@@ -84,6 +88,7 @@ list_commits <- function(path = "./", num_commits = 20){
 #' # Pass the parameters and obtain the run-time details
 #' library(Rperform)
 #' time_commit(t_path, t_commit)
+#' }
 #' 
 #' @section Value:
 #' time_commit returns an object of class "data.frame".
@@ -240,6 +245,8 @@ time_commit <- function(test_path, test_commit) {
 #'   be tested, with default being 10.
 #'   
 #' @examples
+#' 
+#' \dontrun{
 #' ## Example-1
 #' 
 #' # Set the current directory to the git repository concerned.
@@ -251,6 +258,7 @@ time_commit <- function(test_path, test_commit) {
 #' # Pass the parameters and obtain the run-time details against 10 commits
 #' library(Rperform)
 #' time_compare(test_path = t_path, num_commits = 10)
+#' }
 #' 
 #' @section Value:
 #' time_compare returns an object of class "data.frame".
@@ -311,6 +319,8 @@ time_compare <- function(test_path, num_commits = 10) {
 #'   memory stats are to be checked.
 #'    
 #' @examples
+#' 
+#' \dontrun{
 #' ## Example-1
 #' 
 #' # Set the current directory to the git repository concerned.
@@ -326,6 +336,7 @@ time_compare <- function(test_path, num_commits = 10) {
 #' # Pass the parameters and obtain the memory stats
 #' library(Rperform)
 #' mem_commit(t_path, t_commit)
+#' }
 #' 
 #' @section Value:
 #' mem_commit returns an object of class "data.frame".
@@ -469,6 +480,8 @@ mem_commit <- function(test_path, test_commit) {
 #'   for the most recent commit being 1.
 #'    
 #' @examples
+#' 
+#' \dontrun{
 #' ## Example-1
 #' 
 #' # Set the current directory to the git repository concerned.
@@ -480,6 +493,7 @@ mem_commit <- function(test_path, test_commit) {
 #' # Pass the parameters and obtain the memory stats
 #' library(Rperform)
 #' get_mem(t_path, 3)
+#' }
 #' 
 #' @section Value:
 #' get_mem returns an object of class "data.frame".
@@ -534,6 +548,8 @@ get_mem <- function(test_path, commit_num = 1) {
 #'   are to be checked starting from the most recent one.
 #'   
 #' @examples
+#' 
+#' \dontrun{
 #' ## Example-1
 #' 
 #' # Set the current directory to the git repository concerned.
@@ -545,6 +561,7 @@ get_mem <- function(test_path, commit_num = 1) {
 #' # Pass the parameters and obtain the run-time details
 #' library(Rperform)
 #' mem_compare(t_path, 10)
+#' }
 #' 
 #' @section Value:
 #' time_commit returns an object of class "data.frame".

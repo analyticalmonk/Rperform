@@ -38,6 +38,7 @@ The data-frame consists of the following columns:
   package being tested.
 }
 \examples{
+\dontrun{
 ## Example-1
 
 # Set the current directory to the git repository concerned.
@@ -49,5 +50,6 @@ t_path <- "Path/to/file"
 # Pass the parameters and obtain the memory stats
 library(Rperform)
 get_mem(t_path, 3)
+}
 }
 

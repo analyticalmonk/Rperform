@@ -36,6 +36,7 @@ The data-frame consists of the following columns:
   package being tested.
 }
 \examples{
+\dontrun{
 ## Example-1
 
 # Set the current directory to the git repository concerned.
@@ -47,5 +48,6 @@ t_path <- "Path/to/file"
 # Pass the parameters and obtain the run-time details
 library(Rperform)
 mem_compare(t_path, 10)
+}
 }
 

@@ -23,6 +23,7 @@
 #'      
 #' @examples
 #' 
+#' \dontrun{
 #' # Set the current directory to the git repository concerned.
 #' setwd("./Path/to/repository")
 #' 
@@ -44,6 +45,7 @@
 #' # inside a file and the file itself. The plots get stored in a directory
 #' # 'Rperform_Graphs' in the repo's root directory.
 #' plot_metrics(test_path = t_path, metric = "testMetrics", n_commits = 5, save_data = F)
+#' }
 #' 
 #' @section WARNING:
 #'   Function assumes the current directory to be the root directory of the
@@ -258,6 +260,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
 #' 
 #' @examples
 #' 
+#' \dontrun{
 #' # Set to the git repository in consideration.
 #' setwd("path/to/repo")
 #' d_path <- "path/to/tests"
@@ -277,6 +280,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
 #' # Obtain both memory and time metrics for each individual testthat block
 #' # inside a file and the file itself.
 #' plot_webpage(d_path, metric = "testMetrics", output_name = "testMetricsPage")
+#' }
 #' 
 #' @section WARNING:
 #'   Function assumes the current directory to be the root directory of the
@@ -329,6 +333,8 @@ plot_webpage <- function(test_directory = "tests/testthat", metric = "testMetric
 #'   printed.   
 #'
 #' @examples
+#' 
+#' \dontrun{
 #' # Set to the git repository in consideration.
 #' setwd("path/to/repo")
 #' d_path <- "path/to/tests"
@@ -351,6 +357,7 @@ plot_webpage <- function(test_directory = "tests/testthat", metric = "testMetric
 #' # data.
 #' plot_directory(d_path, metric = "testMetrics", num_commits = 5, save_data = F,
 #'                save_plots = T)
+#' }
 #' 
 #' @section WARNING:
 #'   Library assumes the current directory to be the root directory of the
@@ -404,6 +411,7 @@ plot_directory <- function(test_directory, metric = "testMetrics", num_commits =
 #'   
 #' @examples
 #' 
+#' \dontrun{
 #' # Set the current directory to the git repository concerned.
 #' setwd("./Path/to/repository")
 #' 
@@ -413,6 +421,7 @@ plot_directory <- function(test_directory, metric = "testMetrics", num_commits =
 #' # Load the library and pass the parameters to the function
 #' library(Rperform)
 #' plot_btimes(test_path = t_path, branch1 = "helper", branch2 = "master")
+#' }
 #' 
 #' @section Warning:
 #'   Library assumes the current directory to be the root directory of the
@@ -463,6 +472,7 @@ plot_btimes <- function(test_path, branch1, branch2 = "master") {
 #'   
 #' @examples
 #' 
+#' \dontrun{
 #' # Set the current directory to the git repository concerned.
 #' setwd("./Path/to/repository")
 #' 
@@ -472,6 +482,7 @@ plot_btimes <- function(test_path, branch1, branch2 = "master") {
 #' # Load the library and pass the parameters to the function
 #' library(Rperform)
 #' plot_bmemory(test_path = t_path, branch1 = "helper", branch2 = "master")
+#' }
 #' 
 #' @section Warning:
 #'   Library assumes the current directory to be the root directory of the

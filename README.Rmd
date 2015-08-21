@@ -1,6 +1,9 @@
 Rperform
 --------
 
+[![Build Status](https://travis-ci.org/da-ta-vinci21/Rperform.svg?branch=master)](https://travis-ci.org/da-ta-vinci21/Rperform)
+
+
 Rperform is an R package that makes it easy for R package developers to track quantitative performance metrics of their code, over time. <b>It focuses on providing changes, related to time and memory, brought over in the package’s performance metrics over subsequent development versions and across git branches.</b>
 Also, you can use Rperform with travis to do performance testing during your travis build by adding some sample scripts to your git repository. It can prove to be particularly useful while measuring the possible changes which can be introduced by a pull request (PR). Detailed instructions for doing that can be found on the wiki link provided below.
 

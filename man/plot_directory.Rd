@@ -35,6 +35,7 @@ of commits in the current git repository.
   package being tested.
 }
 \examples{
+\dontrun{
 # Set to the git repository in consideration.
 setwd("path/to/repo")
 d_path <- "path/to/tests"
@@ -57,5 +58,6 @@ plot_directory(test_directory = d_path, metric = "memory", num_commits = 10,
 # data.
 plot_directory(d_path, metric = "testMetrics", num_commits = 5, save_data = F,
                save_plots = T)
+}
 }
 

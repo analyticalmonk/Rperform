@@ -16,6 +16,7 @@ Given a repository path and number of commits (n), returns a data frame containi
 the date, SHA1 values and commit messages of the last n commits in the repo.
 }
 \examples{
+\dontrun{
 ## Example-1
 
 # Set the current directory to the git repository concerned.
@@ -29,5 +30,6 @@ list_commits(num_commits = 10)
 # Obtained the details of the last 20 (default value) commits in the repository
 # specified by path.
 list_commits(path)
+}
 }
 

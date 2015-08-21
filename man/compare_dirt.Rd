@@ -50,6 +50,7 @@ The data-frame consists of the following columns:
   inside the same directory.
 }
 \examples{
+\dontrun{
 # Set the current directory to the parent directory of the concerned repositories.
 setwd("./Path/to/parent/directory")
 
@@ -65,5 +66,6 @@ t_path2 <- "Second/path/to/file"
 library(Rperform)
 compare_dirt(d_path1, t_path1, branch1 = "master",
              d_path2, t_path2, branch2 = "patch")
+}
 }
 

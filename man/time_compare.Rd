@@ -37,6 +37,7 @@ The data-frame consists of the following columns:
   package being tested.
 }
 \examples{
+\dontrun{
 ## Example-1
 
 # Set the current directory to the git repository concerned.
@@ -48,5 +49,6 @@ t_path <- "Path/to/file"
 # Pass the parameters and obtain the run-time details against 10 commits
 library(Rperform)
 time_compare(test_path = t_path, num_commits = 10)
+}
 }
 

@@ -40,6 +40,7 @@ accordance with those specified using the parameter metric.
   repository/package being tested.
 }
 \examples{
+\dontrun{
 # Set the current directory to the git repository concerned.
 setwd("./Path/to/repository")
 
@@ -61,5 +62,6 @@ plot_metrics(test_path = t_path, metric = "memory", n_commits = 10, save_data = 
 # inside a file and the file itself. The plots get stored in a directory
 # 'Rperform_Graphs' in the repo's root directory.
 plot_metrics(test_path = t_path, metric = "testMetrics", n_commits = 5, save_data = F)
+}
 }
 
