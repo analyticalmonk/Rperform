@@ -15,13 +15,18 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   if [! -f temp_Rperform.R]
   then
     touch temp_Rperform.R
-    echo "Rperform::plot_webpage(test_directory = \"./tests/\")" >> temp_Rperform.R
+    echo "Rperform::plot_webpage(test_directory = \"./tests/\", metric = \"testMetrics\")" >> temp_Rperform.R
   fi
   Rscript temp_Rperform.R
   rm temp_Rperform.R
 
   cd ../gh-pages
-  cp -Rf $HOME/master/index.html index.html
+  if [! -f index.html]
+  then
+    mv -Rf index.html index_old.html
+  fi
+  cp -Rf $HOME/master/index.html index_buildnum{$TRAVIS_BUILD_NUMBER}.html
+  cp index_buildnum${TRAVIS_BUILD_NUMBER}.html index.html 
 
   #add, commit and push files
   git add -f .
