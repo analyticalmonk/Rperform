@@ -81,7 +81,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
 ##  -----------------------------------------------------------------------------------------
 
 .plot_testMetrics <- function(test_path, num_commits = 5, save_data = FALSE, save_plots) {
-  mem_data <- mem_compare(test_path, num_commits)
+  suppressMessages(mem_data <- mem_compare(test_path, num_commits))
   suppressMessages(time_data <- time_compare(test_path, num_commits))
   
   # Store the metrics data if save_data is TRUE
@@ -105,8 +105,8 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
       ggplot2::geom_point(color = "blue") +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
       ggplot2::scale_x_discrete(limits = rev(levels(test_frame$message))) +
-      # In the above 3 lines code, the first line creates the basic qplot. The 
-      # second and third lines display the x-axis labels at 90 degrees to the 
+      # In the above 4 lines of code, the first line creates the basic qplot. The 
+      # third and fourth lines display the x-axis labels at 90 degrees to the 
       # horizontal and correct the order of message labels on the x -axis,
       # respectively.
       ggplot2::xlab("Commit message") +
@@ -162,8 +162,8 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
     ggplot2::geom_point(color = "blue") + 
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
     ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
-    # In the above 3 lines code, the first line creates the basic qplot. The 
-    # second and third lines display the x-axis labels at 90 degrees to the 
+    # In the above 4 lines of code, the first line creates the basic qplot. The 
+    # third and fourth lines display the x-axis labels at 90 degrees to the 
     # horizontal and correct the order of message labels on the x -axis,
     # respectively.
     ggplot2::xlab("Commit message") +
@@ -229,8 +229,6 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
       dir.create(path = "./Rperform_memoryMetrics")
     }
     
-    curr_name <- gsub(pattern = " ", replacement = "_", x = t_names[num])
-    curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
     png.file <- file.path("Rperform_memoryMetrics", paste0("Test_", curr_name, ".png"))
     png(filename = png.file, width = 1024, height = 768, units = "px")
     print(test_plot)
