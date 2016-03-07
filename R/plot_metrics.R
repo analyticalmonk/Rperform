@@ -100,7 +100,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   for (num in seq(t_names)) {
     test_frame <- metric_data[metric_data$test_name == t_names[num],]
     
-    test_plot <- ggplot2::qplot(data = test_frame, x = message, y = metric_val) +
+    tryCatch(expr = {test_plot <- ggplot2::qplot(data = test_frame, x = message, y = metric_val) +
       ggplot2::facet_grid(facets = metric_name ~ ., scales = "free") + 
       ggplot2::geom_point(color = "blue") +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
@@ -130,7 +130,10 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
     else {
       print(test_plot)
     }
-  
+  },
+  error = function(e) {
+    print("Encountered an error!")
+  })
   }
 }
 
@@ -157,33 +160,37 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
   
   # Plot the metric data
-  test_plot <- ggplot2::qplot(message, metric_val, data = time_data) +
-    ggplot2::facet_grid(facets =  test_name ~ ., scales = "free") +
-    ggplot2::geom_point(color = "blue") + 
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
-    ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
-    # In the above 4 lines of code, the first line creates the basic qplot. The 
-    # third and fourth lines display the x-axis labels at 90 degrees to the 
-    # horizontal and correct the order of message labels on the x -axis,
-    # respectively.
-    ggplot2::xlab("Commit message") +
-    ggplot2::ylab("Time (in seconds)") +
-    ggplot2::ggtitle(label = paste0("Variation in time metrics for ", curr_name))
-                     
-  if (save_plots == TRUE) {
-    if (!dir.exists("./Rperform_timeMetrics")){
-      dir.create(path = "./Rperform_timeMetrics")
-    }
-    
-    png.file <- file.path("Rperform_timeMetrics", paste0("Test_", curr_name, ".png"))
-    png(filename = png.file, width = 1024, height = 768, units = "px")
-    print(test_plot)
-    dev.off()
-    print(test_plot)
-  }
-  else {
-    print(test_plot)
-  }
+  tryCatch(expr =   
+             {test_plot <- ggplot2::qplot(message, metric_val, data = time_data) +
+             ggplot2::facet_grid(facets =  test_name ~ ., scales = "free") +
+             ggplot2::geom_point(color = "blue") + 
+             ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+             ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
+             # In the above 4 lines of code, the first line creates the basic qplot. The 
+             # third and fourth lines display the x-axis labels at 90 degrees to the 
+             # horizontal and correct the order of message labels on the x -axis,
+             # respectively.
+             ggplot2::xlab("Commit message") +
+             ggplot2::ylab("Time (in seconds)") +
+             ggplot2::ggtitle(label = paste0("Variation in time metrics for ", curr_name))
+           
+            if (save_plots == TRUE) {
+             if (!dir.exists("./Rperform_timeMetrics")){
+               dir.create(path = "./Rperform_timeMetrics")
+             }
+             
+             png.file <- file.path("Rperform_timeMetrics", paste0("Test_", curr_name, ".png"))
+             png(filename = png.file, width = 1600, height = 1200, units = "px")
+             print(test_plot)
+             dev.off()
+             print(test_plot)
+           }
+           else {
+             print(test_plot)
+           }},
+           error = function(e){
+             print("Encountered an error!")
+           })
   
 }
 
@@ -209,7 +216,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   curr_name <- gsub(pattern = " ", replacement = "_", x = basename(test_path))
   curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
   
-  test_plot <- ggplot2::qplot(message, metric_val, data = mem_data) +
+  tryCatch(expr = {test_plot <- ggplot2::qplot(message, metric_val, data = mem_data) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90),
                    strip.text.x = ggplot2::element_text(size = 10, face = "bold")) +
     ggplot2::scale_x_discrete(limits = rev(levels(mem_data$message))) + 
@@ -238,6 +245,10 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   else {
     print(test_plot)
   }
+  }, 
+  error = function(e) {
+    print("Encountered an error!")
+  })
   
 }
 
