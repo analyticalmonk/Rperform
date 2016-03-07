@@ -7,14 +7,14 @@ Rperform
 Rperform is an R package that makes it easy for R package developers to track quantitative performance metrics of their code, over time. <b>It focuses on providing changes, related to time and memory, brought over in the package’s performance metrics over subsequent development versions and across git branches.</b>
 Also, you can use Rperform with travis-ci to do performance testing during your travis build by adding some sample scripts to your git repository. It can prove to be particularly useful while measuring the possible changes which can be introduced by a pull request (PR). Detailed instructions for doing that can be found on the wiki link provided below.
 
-**_For integrating Rperform with your travis build, check out the instructions in the [Rperform Wiki](https://github.com/analyticalmonk/Rperform/wiki#integrating-rperform-with-travis-ci)_**.
+**_For integrating Rperform with your travis build, check out the instructions provided on the [Rperform Wiki](https://github.com/analyticalmonk/Rperform/wiki/Integrating-Rperform-with-Travis-CI)_**.
 
 <em>The project was initiated as a part of the [Google Summer of Code 2015](https://github.com/rstats-gsoc/gsoc2015/wiki/Test-timings-on-Travis) program.</em>
 
 Installation
 ------------
 
-To get started, you can install the package from github using `devtools`.
+To get started, you can install the package from github using `devtools`*.
 
 ``` r
 library(devtools)
@@ -25,10 +25,12 @@ or,
 devtools::install_github("analyticalmonk/Rperform")
 ```
 
+*Follow the instructions on the [devtools README](https://github.com/hadley/devtools#updating-to-the-latest-version-of-devtools) to install the latest version.
+
 Examples
 --------
 
-_For detailed information regarding Rperform's plotting functions, check out the **[Rperform Wiki](https://github.com/analyticalmonk/Rperform/wiki)**._
+_For detailed information regarding Rperform's plotting functions, check out the **[Rperform Wiki](https://github.com/analyticalmonk/Rperform/wiki/Plotting-package-metrics-with-Rperform)**._
 
 <b>IMPORTANT</b>: The Rperform package requires you to set the current directory to the concerned 
 git repository before using the functions.
