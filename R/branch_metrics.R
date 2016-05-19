@@ -86,8 +86,8 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
     require(testthat)
     file_status = "pass"
     seconds_file <- tryCatch(expr = {
-      if(require(microbenchmark)){
-        times <- microbenchmark(test = {
+      if(requireNamespace(microbenchmark)){
+        times <- microbenchmark::microbenchmark(test = {
           base::source(temp_file_original, local = T)
         }, times = 3)
         times$time/1e9
@@ -119,8 +119,8 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
       }
       status = "pass"
       seconds <- tryCatch(expr = {
-        if(require(microbenchmark)){
-          times <- microbenchmark(test = {
+        if(requireNamespace(microbenchmark)){
+          times <- microbenchmark::microbenchmark(test = {
             run()
           }, times = 3)
           times$time/1e9

@@ -14,6 +14,5 @@ Imports: git2r (>= 0.10.1),
     testthat (>= 0.10.0),
     devtools (>= 1.8.0)
 Suggests: microbenchmark (>= 1.4-2),
-    testthat,
     knitr
 VignetteBuilder: knitr

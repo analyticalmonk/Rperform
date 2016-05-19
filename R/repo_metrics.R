@@ -146,8 +146,8 @@ time_commit <- function(test_path, test_commit) {
 # in the test file. Rather we will modify the values in the result data frame
 # (time as NA, status as 'fail') to let the user know of the error.
   seconds_file <- tryCatch(expr = {
-      if(require(microbenchmark)){
-        times <- microbenchmark(test = {
+      if(requireNamespace(microbenchmark)){
+        times <- microbenchmark::microbenchmark(test = {
           base::source(temp_file_original, local = T)
         }, times = 3)
         times$time/1e9
@@ -182,8 +182,8 @@ time_commit <- function(test_path, test_commit) {
     # in a testthat block. Rather we modify the values in the result data frame
     # (time as NA, status as 'fail') to let the user know of the error.
     seconds <- tryCatch(expr = {
-        if(require(microbenchmark)){
-          times <- microbenchmark(test = {
+        if(requireNamespace(microbenchmark)){
+          times <- microbenchmark::microbenchmark(test = {
             run()
           }, times = 3)
           times$time/1e9
