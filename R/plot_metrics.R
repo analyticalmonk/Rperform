@@ -414,9 +414,9 @@ plot_directory <- function(test_directory, metric = "testMetrics", num_commits =
 #' branches with the ones from branch1 on the left side.
 #' 
 #' @param test_path File-path for the test file to be tested.
-#' @param branch_1 Branch against whose commits the test file is to be 
+#' @param branch1 Branch against whose commits the test file is to be 
 #'   tested.
-#' @param branch_2 Branch into which branch1 is supposedly to be merged.  
+#' @param branch2 Branch into which branch1 is supposedly to be merged.  
 #'   
 #' @examples
 #' 
@@ -475,9 +475,9 @@ plot_btimes <- function(test_path, branch1, branch2 = "master") {
 #' left side.
 #' 
 #' @param test_path File-path for the test file to be tested.
-#' @param branch_1 Branch against whose commits the test file is to be 
+#' @param branch1 Branch against whose commits the test file is to be 
 #'   tested.
-#' @param branch_2 Branch into which branch1 is supposedly to be merged.  
+#' @param branch2 Branch into which branch1 is supposedly to be merged.  
 #'   
 #' @examples
 #' 

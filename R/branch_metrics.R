@@ -182,9 +182,9 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
 #' against the latest commit in branch2.
 #' 
 #' @param test_path File-path for the test file to be tested.
-#' @param branch_1 Branch against whose commits the test file is to be 
+#' @param branch1 Branch against whose commits the test file is to be 
 #'   tested.
-#' @param branch_2 Branch into which branch1 is supposedly to be merged.  
+#' @param branch2 Branch into which branch1 is supposedly to be merged.  
 #'   
 #' @examples
 #' 
@@ -249,12 +249,12 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
 #' @param dir1 Path to the first directory/repository.
 #' @param test_path1 File-path, relative to the first directory, for the test
 #'   file to be tested.
-#' @param branch_1 Branch in the first repository against whose commits the test
+#' @param branch1 Branch in the first repository against whose commits the test
 #'   file is to be tested.
 #' @param dir2 Path to the second directory/repository.
 #' @param test_path2 File-path, relative to the second directory, for the test
 #'   file to be tested.
-#' @param branch_2 Branch in the second directory against whose commits the test
+#' @param branch2 Branch in the second directory against whose commits the test
 #'   file is to be tested.
 #'   
 #' @examples
@@ -326,9 +326,9 @@ compare_dirt <- function(dir1, test_path1, branch1 = "master",
 #' leaked and maximum meory swapped during its execution.
 #' 
 #' @param test_path File-path for the test file to be tested.
-#' @param branch_1 Branch against whose commits the test file is to be 
+#' @param branch1 Branch against whose commits the test file is to be 
 #'   tested.
-#' @param branch_2 Branch into which branch1 is supposedly to be merged.  
+#' @param branch2 Branch into which branch1 is supposedly to be merged.  
 #'   
 #' @examples
 #' 

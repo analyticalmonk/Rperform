@@ -4,3 +4,6 @@
 ^README-.*\.png$
 ^images/$
 .travis.yml
+sample_PR_setup.sh
+sample_push_gh_pages.sh
+sample_tempRperform.R
