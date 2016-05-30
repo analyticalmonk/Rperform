@@ -86,7 +86,7 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
     require(testthat)
     file_status = "pass"
     seconds_file <- tryCatch(expr = {
-      if(requireNamespace(microbenchmark)){
+      if(requireNamespace('microbenchmark')){
         times <- microbenchmark::microbenchmark(test = {
           base::source(temp_file_original, local = T)
         }, times = 3)
@@ -119,7 +119,7 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
       }
       status = "pass"
       seconds <- tryCatch(expr = {
-        if(requireNamespace(microbenchmark)){
+        if(requireNamespace('microbenchmark')){
           times <- microbenchmark::microbenchmark(test = {
             run()
           }, times = 3)
@@ -297,17 +297,17 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
 compare_dirt <- function(dir1, test_path1, branch1 = "master", 
                          dir2, test_path2, branch2 = "master") {
   
-  same_commit <- .common_commit(dir_one, dir_two, branch1, branch2)
+  same_commit <- .common_commit(dir1, dir2, branch1, branch2)
   curr_dir <- file.path("./")
   
-  setwd(dir_one)
+  setwd(dir1)
   dir1_df <- time_branch(test_path1, branch1, num_commits = same_commit$cnum_b1)
-  dir1_df$directory <- rep(dir1, times = rnum(dir1_df))
+  dir1_df$directory <- rep(dir1, times = nrow(dir1_df))
   setwd(curr_dir)
   
-  setwd(dir_two)
+  setwd(dir2)
   dir2_df <- time_branch(test_path2, branch2, num_commits = same_commit$cnum_b2)
-  dir2_df$directory <- rep(dir2, times = rnum(dir2_df))
+  dir2_df$directory <- rep(dir2, times = nrow(dir2_df))
   setwd(curr_dir)
   
   rbind(dir1_df, dir2_df)

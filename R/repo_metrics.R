@@ -1,3 +1,12 @@
+## The below function call results in the listed variables being treated 
+## as global variables when the 'check' tool is applied. Here, this results
+## in reduction of NOTEs being returned when R CMD CHECK is applied to the
+## package.
+## Sample NOTE: 
+## mem_compate: no visible binding for global variable ‘mem_result’
+utils::globalVariables(c("mem_result"))
+
+
 ##  -----------------------------------------------------------------------------------------
 
 #' Commits' details.
@@ -146,7 +155,7 @@ time_commit <- function(test_path, test_commit) {
 # in the test file. Rather we will modify the values in the result data frame
 # (time as NA, status as 'fail') to let the user know of the error.
   seconds_file <- tryCatch(expr = {
-      if(requireNamespace(microbenchmark)){
+      if(requireNamespace('microbenchmark')){
         times <- microbenchmark::microbenchmark(test = {
           base::source(temp_file_original, local = T)
         }, times = 3)
@@ -182,7 +191,7 @@ time_commit <- function(test_path, test_commit) {
     # in a testthat block. Rather we modify the values in the result data frame
     # (time as NA, status as 'fail') to let the user know of the error.
     seconds <- tryCatch(expr = {
-        if(requireNamespace(microbenchmark)){
+        if(requireNamespace('microbenchmark')){
           times <- microbenchmark::microbenchmark(test = {
             run()
           }, times = 3)

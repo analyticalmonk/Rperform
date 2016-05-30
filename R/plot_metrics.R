@@ -1,3 +1,11 @@
+## The below function call results in the listed variables being treated 
+## as global variables when the 'check' tool is applied. Here, this results
+## in reduction of NOTEs being returned when R CMD CHECK is applied to the
+## package.
+## Sample NOTE: 
+## plot_bmemory: no visible binding for global variable ‘metric_val’
+utils::globalVariables(c("metric_val", "test_name"))
+
 #' Plot test-file metrics across versions.
 #' 
 #' Given a test-file path, plot the metrics of entire file and individual 

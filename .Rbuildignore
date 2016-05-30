@@ -2,7 +2,7 @@
 ^\.Rproj\.user$
 ^README\.Rmd$
 ^README-.*\.png$
-^images/$
+^images$
 .travis.yml
 sample_PR_setup.sh
 sample_push_gh_pages.sh

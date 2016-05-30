@@ -6,13 +6,16 @@ License: GPL-3
 Date: 2015-05-29
 Author: Akash Tandon (analyticalmonk on GitHub), Toby Dylan Hocking
 Maintainer: Akash Tandon <akashtndn.acm@gmail.com>
-Description: Rperform helps R package developers keep track of the quantitative metrics of their packages over various
-	development versions
+Description: Rperform helps R package developers keep track of the quantitative
+    metrics of their packages over various development versions.
 BugReports: https://github.com/analyticalmonk/Rperform/issues
-Imports: git2r (>= 0.10.1),
+Imports:
+    git2r (>= 0.10.1),
     ggplot2 (>= 1.0.1),
     testthat (>= 0.10.0),
     devtools (>= 1.8.0)
-Suggests: microbenchmark (>= 1.4-2),
+Suggests:
+    microbenchmark (>= 1.4-2),
     knitr
 VignetteBuilder: knitr
+RoxygenNote: 5.0.1
