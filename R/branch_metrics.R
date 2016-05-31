@@ -54,133 +54,16 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
   stopifnot(length(num_commits) == 1)
   num_commits <- floor(num_commits)
   
-  ## TO-DO --------------------------------------------------------
-  
   # Git operations
   target <- git2r::repository("./")
   origin_state <- git2r::head(target)
   git2r::checkout(target, branch)
   on.exit(expr = git2r::checkout(origin_state))
   
-  # Creating the tempfiles
-  t_lines <- readLines(test_path)
-  
-  # These lines of code allow us to load and attach the testthat library
-  # (in case the test file uses it) without having to explicitly doing so
-  # in our source code. We do so by appending a conditional statement to 
-  # the contents of the relevant file. This statement loads the testthat
-  # library if installed.
-  concat_string <- "if(requireNamespace(\"testthat\", quietly = TRUE)) {
-    require(testthat)\n }\n"
-  t_lines <- c(concat_string, t_lines)
-  
-  q_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed = TRUE)
-  temp_file_original <- tempfile()
-  temp_file_subbed <- tempfile()
-  writeLines(t_lines, temp_file_original)
-  writeLines(q_lines, temp_file_subbed)
-  
-  suppressPackageStartupMessages(devtools::load_all(file.path("./")))
-  test_results <- list()
-  commit_list <- git2r::commits(repo = target, n = num_commits)
-
-  for (commit_i in seq(commit_list)) {
-    
-#     sha_val <- get_sha(commit_list[[commit_i]])
-    commit_msg <- get_msg(commit_val = commit_list[[commit_i]])
-    commit_dtime <- get_datetime(commit_val = commit_list[[commit_i]])
-      
-    # Code block measuring the run-time for the test file as a whole
-    # --------------------------------------------------------------
-    
-    ## require(testthat)
-    file_status = "pass"
-    seconds_file <- tryCatch(expr = {
-      if(requireNamespace('microbenchmark')){
-        times <- microbenchmark::microbenchmark(test = {
-          base::source(temp_file_original, local = T)
-        }, times = 3)
-        times$time/1e9
-      } else {
-        replicate(3, {
-          time_vec <- system.time( {
-            source(temp_file_original, local = T)
-          } )
-          time_vec[["elapsed"]]
-        })
-      }
-    },
-    error = function(e){
-      file_status = "fail"
-      NA
-    }
-    )
-    
-    # ---------------------------------------------------------------
-    
-    # Code block measuring the run-time of the testthat code blocks (if present)
-    # --------------------------------------------------------------------------
-    
-    testthatQuantity <- function(test_name, code){
-      e <- parent.frame()
-      code_subs <- substitute(code)
-      run <- function(){
-        testthat:::test_code(test_name, code_subs, env=e)
-      }
-      status = "pass"
-      seconds <- tryCatch(expr = {
-        if(requireNamespace('microbenchmark')){
-          times <- microbenchmark::microbenchmark(test = {
-            run()
-          }, times = 3)
-          # Returns the three runtime values obtained by microbenchmark as a 
-          # vector.
-          times$time/1e9
-        } else {
-          replicate(3, {
-            time_vec <- system.time( {
-              run()
-            } )
-            time_vec[["elapsed"]]
-          })
-        }
-      },
-      error = function(e){
-        status = "fail"
-        NA
-      }
-      )
-
-      time_df <- data.frame(test_name, metric_name = "seconds", status, 
-                            metric_val = seconds, message = commit_msg, 
-                            date_time = commit_dtime, branch = branch)
-      test_results[[test_name]] <<- time_df
-    }
-    
-    
-    source(file = temp_file_subbed, local = T)
-#     seconds_file2 <- {
-#       times <- microbenchmark(times = 1, source(file = temp_file_subbed, local = T))
-#       times$time/1e9
-#     }
-    
-    # Formatting the output
-    # --------------------------------------------------------------------------
-    
-    test_df <- do.call(rbind, test_results)
-    #   test_results_df["file runtime"] <- seconds_file
-    if (exists("test_results_df")) {
-      test_results_df <- rbind(test_results_df, test_df)
-    } else {
-      test_results_df <- test_df
-    }
-    test_results_df <- 
-      rbind(test_results_df, data.frame(test_name = basename(test_path), 
-                                        metric_name = "seconds", status = file_status,
-                                        metric_val = seconds_file, message = commit_msg, 
-                                        date_time = commit_dtime,  branch = branch))
-    rownames(test_results_df) <- NULL
-  }
+  # We use time_compare() from R/repo_metrics.R to obtain the required
+  # results.
+  test_results_df <- time_compare(test_path, num_commits)
+  test_results_df$branch <- branch
   ## -----------------------------------------------------------------------
   
   test_results_df
@@ -309,7 +192,13 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
 compare_dirt <- function(dir1, test_path1, branch1 = "master", 
                          dir2, test_path2, branch2 = "master") {
   
+  # Obtain information about the latest common commit across the two branches
+  # (and their corresponding directories if provided).
   same_commit <- .common_commit(dir1, dir2, branch1, branch2)
+  #                  same_commit
+  # ---------------------------------------------
+  #      common_datetime, cnum_b1, cnum_b2
+  
   curr_dir <- file.path("./")
   
   setwd(dir1)
