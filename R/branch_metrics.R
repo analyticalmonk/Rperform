@@ -64,6 +64,16 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
   
   # Creating the tempfiles
   t_lines <- readLines(test_path)
+  
+  # These lines of code allow us to load and attach the testthat library
+  # (in case the test file uses it) without having to explicitly doing so
+  # in our source code. We do so by appending a conditional statement to 
+  # the contents of the relevant file. This statement loads the testthat
+  # library if installed.
+  concat_string <- "if(requireNamespace(\"testthat\", quietly = TRUE)) {
+    require(testthat)\n }\n"
+  t_lines <- c(concat_string, t_lines)
+  
   q_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed = TRUE)
   temp_file_original <- tempfile()
   temp_file_subbed <- tempfile()
@@ -83,7 +93,7 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
     # Code block measuring the run-time for the test file as a whole
     # --------------------------------------------------------------
     
-    require(testthat)
+    ## require(testthat)
     file_status = "pass"
     seconds_file <- tryCatch(expr = {
       if(requireNamespace('microbenchmark')){
@@ -123,6 +133,8 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
           times <- microbenchmark::microbenchmark(test = {
             run()
           }, times = 3)
+          # Returns the three runtime values obtained by microbenchmark as a 
+          # vector.
           times$time/1e9
         } else {
           replicate(3, {
@@ -449,8 +461,8 @@ compare_branchm <- function(test_path, branch1, branch2 = "master") {
 ##  -----------------------------------------------------------------------------------------
 
 ##  -----------------------------------------------------------------------------------------
-## Customized implementation of Binary Search
-## ------------------------------------------
+## Customized (recursive) implementation of Binary Search
+## ------------------------------------------------------
 
 .b_search <- function(search_list, search_target, start, end) {
   mid_val <- as.integer((end + start) / 2)

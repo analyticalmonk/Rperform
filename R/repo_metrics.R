@@ -131,6 +131,16 @@ time_commit <- function(test_path, test_commit) {
   commit_dtime <- get_datetime(test_commit)
   # Create the tempfiles
   t_lines <- readLines(test_path)
+  
+  # These lines of code allow us to load and attach the testthat library
+  # (in case the test file uses it) without having to explicitly doing so
+  # in our source code. We do so by appending a conditional statement to 
+  # the contents of the relevant file. This statement loads the testthat
+  # library if installed.
+  concat_string <- "if(requireNamespace(\"testthat\", quietly = TRUE)) {
+    require(testthat)\n }\n"
+  t_lines <- c(concat_string, t_lines)
+  
   q_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed=TRUE)
   temp_file_original <- tempfile()
   temp_file_subbed <- tempfile()
@@ -149,7 +159,7 @@ time_commit <- function(test_path, test_commit) {
 # Code block measuring the run-time for the test file as a whole
 # --------------------------------------------------------------
   
-  require(testthat)
+  # require(testthat)
   file_status = "pass"
 # We have used tryCatch so that execution doesn't stop in case of an error
 # in the test file. Rather we will modify the values in the result data frame
@@ -380,6 +390,16 @@ mem_commit <- function(test_path, test_commit) {
   msg_val <- get_msg(test_commit)
   commit_dtime <- get_datetime(test_commit)
   t_lines <- readLines(test_path)
+  
+  # These lines of code allow us to load and attach the testthat library
+  # (in case the test file uses it) without having to explicitly doing so
+  # in our source code. We do so by appending a conditional statement to 
+  # the contents of the relevant file. This statement loads the testthat
+  # library if installed.
+  concat_string <- "if(requireNamespace(\"testthat\", quietly = TRUE)) {
+    require(testthat)\n }\n"
+  t_lines <- c(concat_string, t_lines)
+  
   q_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed=TRUE)
   temp_file_original <- tempfile()
   temp_file_subbed   <- tempfile()
@@ -396,7 +416,7 @@ mem_commit <- function(test_path, test_commit) {
   rss_list <- list()
   
   ## Function for obtaining the memory metrics for testthat blocks
-  require(testthat)
+  # require(testthat)
   testthatQuantity <- function(test_name, code){
     e <- parent.frame()
     code_subs <- substitute(code)
