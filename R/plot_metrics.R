@@ -109,39 +109,39 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
     test_frame <- metric_data[metric_data$test_name == t_names[num],]
     
     tryCatch(expr = {test_plot <- ggplot2::qplot(data = test_frame, x = message, y = metric_val) +
-      ggplot2::facet_grid(facets = metric_name ~ ., scales = "free") + 
-      ggplot2::geom_point(color = "blue") +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
-      ggplot2::scale_x_discrete(limits = rev(levels(test_frame$message))) +
-      # In the above 4 lines of code, the first line creates the basic qplot. The 
-      # third and fourth lines display the x-axis labels at 90 degrees to the 
-      # horizontal and correct the order of message labels on the x -axis,
-      # respectively.
-      ggplot2::xlab("Commit message") +
-      ggplot2::ylab("Metric value") +
-      ggplot2::ggtitle(label = paste0("Variation in metrics for ", t_names[num]))
-    
-    
-    if (save_plots == TRUE) {
-      if (!dir.exists("./Rperform_testMetrics")){
-        dir.create(path = "./Rperform_testMetrics")
-      }
-      
-      curr_name <- gsub(pattern = " ", replacement = "_", x = t_names[num])
-      curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
-      png.file <- file.path("Rperform_testMetrics", paste0("Test_", curr_name, ".png"))
-      png(filename = png.file, width = 1024, height = 768, units = "px")
-      print(test_plot)
-      dev.off()
-      print(test_plot)
-    }
-    else {
-      print(test_plot)
-    }
-  },
-  error = function(e) {
-    print("Encountered an error!")
-  })
+                       ggplot2::facet_grid(facets = metric_name ~ ., scales = "free") + 
+                       ggplot2::geom_point(color = "blue") +
+                       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+                       ggplot2::scale_x_discrete(limits = rev(levels(test_frame$message))) +
+                       # In the above 4 lines of code, the first line creates the basic qplot. The 
+                       # third and fourth lines display the x-axis labels at 90 degrees to the 
+                       # horizontal and correct the order of message labels on the x -axis,
+                       # respectively.
+                       ggplot2::xlab("Commit message") +
+                       ggplot2::ylab("Metric value") +
+                       ggplot2::ggtitle(label = paste0("Variation in metrics for ", t_names[num]))
+                     
+                     
+                     if (save_plots == TRUE) {
+                       if (!dir.exists("./Rperform_testMetrics")){
+                         dir.create(path = "./Rperform_testMetrics")
+                       }
+                       
+                       curr_name <- gsub(pattern = " ", replacement = "_", x = t_names[num])
+                       curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
+                       png.file <- file.path("Rperform_testMetrics", paste0("Test_", curr_name, ".png"))
+                       png(filename = png.file, width = 1024, height = 768, units = "px")
+                       print(test_plot)
+                       dev.off()
+                       print(test_plot)
+                     }
+                     else {
+                       print(test_plot)
+                     }
+    },
+    error = function(e) {
+      print("Encountered an error!")
+    })
   }
 }
 
@@ -225,34 +225,34 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
   
   tryCatch(expr = {test_plot <- ggplot2::qplot(message, metric_val, data = mem_data) +
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90),
-                   strip.text.x = ggplot2::element_text(size = 10, face = "bold")) +
-    ggplot2::scale_x_discrete(limits = rev(levels(mem_data$message))) + 
-    ggplot2::facet_grid(test_name ~ metric_name, scales = "free") +
-    # In the above 4 lines of code, the first line creates the basic qplot. The 
-    # second and third lines display the x-axis labels at 90 degrees to the 
-    # horizontal and correct the order of message labels on the x -axis,
-    # respectively. The fourth line creates a facet grid so as to seperate
-    # the plots for the swap and leak memory metrics.
-    ggplot2::geom_point(color = "blue") +
-    ggplot2::ylab(label = "Memory (in Mb)") +
-    ggplot2::xlab(label = "Commit messages") +
-    ggplot2::ggtitle(label = paste0("Variation in memory metrics for ", curr_name))
-  
-  if (save_plots == TRUE) {
-    if (!dir.exists("./Rperform_memoryMetrics")){
-      dir.create(path = "./Rperform_memoryMetrics")
-    }
-    
-    png.file <- file.path("Rperform_memoryMetrics", paste0("Test_", curr_name, ".png"))
-    png(filename = png.file, width = 1024, height = 768, units = "px")
-    print(test_plot)
-    dev.off()
-    print(test_plot)
-  }
-  else {
-    print(test_plot)
-  }
+                     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90),
+                                    strip.text.x = ggplot2::element_text(size = 10, face = "bold")) +
+                     ggplot2::scale_x_discrete(limits = rev(levels(mem_data$message))) + 
+                     ggplot2::facet_grid(test_name ~ metric_name, scales = "free") +
+                     # In the above 4 lines of code, the first line creates the basic qplot. The 
+                     # second and third lines display the x-axis labels at 90 degrees to the 
+                     # horizontal and correct the order of message labels on the x -axis,
+                     # respectively. The fourth line creates a facet grid so as to seperate
+                     # the plots for the swap and leak memory metrics.
+                     ggplot2::geom_point(color = "blue") +
+                     ggplot2::ylab(label = "Memory (in Mb)") +
+                     ggplot2::xlab(label = "Commit messages") +
+                     ggplot2::ggtitle(label = paste0("Variation in memory metrics for ", curr_name))
+                   
+                   if (save_plots == TRUE) {
+                     if (!dir.exists("./Rperform_memoryMetrics")){
+                       dir.create(path = "./Rperform_memoryMetrics")
+                     }
+                     
+                     png.file <- file.path("Rperform_memoryMetrics", paste0("Test_", curr_name, ".png"))
+                     png(filename = png.file, width = 1024, height = 768, units = "px")
+                     print(test_plot)
+                     dev.off()
+                     print(test_plot)
+                   }
+                   else {
+                     print(test_plot)
+                   }
   }, 
   error = function(e) {
     print("Encountered an error!")
@@ -414,6 +414,10 @@ plot_directory <- function(test_directory, metric = "testMetrics", num_commits =
 
 ##  -----------------------------------------------------------------------------------------
 ##  -----------------------------------------------------------------------------------------
+##  BRANCH FUNCTIONS
+##  -----------------------------------------------------------------------------------------
+##  -----------------------------------------------------------------------------------------
+
 #' Plot run-times across branches.
 #' 
 #' Given a test-file and two branches, plots the run-times of the file against 
@@ -453,18 +457,18 @@ plot_btimes <- function(test_path, branch1, branch2 = "master") {
   stopifnot(length(branch2) == 1)
   
   suppressMessages(btimes_df <- compare_brancht(test_path = test_path, branch1 = branch1,
-                               branch2 = branch2))
+                                                branch2 = branch2))
   common_commitdf <- (.common_commit(branch1 = branch1, branch2 = branch2))
   
   ggplot2::qplot(x = message, y = metric_val, data = btimes_df, color = test_name) + 
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90))+
     ggplot2::scale_x_discrete(limits = rev(levels(btimes_df$message))) +
     ggplot2::geom_vline(ggplot2::aes(xintercept = common_commitdf$cnum_b1 + 0.5, size = 2)) +
-  # In the above 4 lines code, the first line creates the basic qplot. The 
-  # second and third lines display the x-axis labels at 90 degrees to the 
-  # horizontal and correct the order of message labels on the x -axis, 
-  # respectively. The fourth line of code divides the commits from the two
-  # different branches by a vertical line.
+    # In the above 4 lines code, the first line creates the basic qplot. The 
+    # second and third lines display the x-axis labels at 90 degrees to the 
+    # horizontal and correct the order of message labels on the x -axis, 
+    # respectively. The fourth line of code divides the commits from the two
+    # different branches by a vertical line.
     ggplot2::ylab(label = "Time (in seconds)") +
     ggplot2::xlab(label = "Commit messages") +
     ggplot2::ggtitle(label = "Variation in time metrics acros Git branches")
@@ -514,7 +518,7 @@ plot_bmemory <- function(test_path, branch1, branch2 = "master") {
   stopifnot(length(branch2) == 1)
   
   bmem_df <- compare_branchm(test_path = test_path, branch1 = branch1,
-                               branch2 = branch2)
+                             branch2 = branch2)
   common_commitdf <- (.common_commit(branch1 = branch1, branch2 = branch2))
   
   ggplot2::qplot(message, metric_val, data = bmem_df, color = test_name) +
@@ -522,11 +526,11 @@ plot_bmemory <- function(test_path, branch1, branch2 = "master") {
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
     ggplot2::scale_x_discrete(limits = rev(levels(bmem_df$message))) +
     ggplot2::geom_vline(ggplot2::aes(xintercept = common_commitdf$cnum_b1 + 0.5, size = 2)) +
-  # In the above 4 lines code, the first line creates the basic qplot. The 
-  # second and third lines display the x-axis labels at 90 degrees to the 
-  # horizontal and correct the order of message labels on the x -axis, 
-  # respectively. The fourth line of code divides the commits from the two
-  # different branches by a vertical line.
+    # In the above 4 lines code, the first line creates the basic qplot. The 
+    # second and third lines display the x-axis labels at 90 degrees to the 
+    # horizontal and correct the order of message labels on the x -axis, 
+    # respectively. The fourth line of code divides the commits from the two
+    # different branches by a vertical line.
     ggplot2::ylab(label = "Memory (in Mb)") +
     ggplot2::xlab(label = "Commit messages") +
     ggplot2::ggtitle(label = "Variation in memory metrics acros Git branches")

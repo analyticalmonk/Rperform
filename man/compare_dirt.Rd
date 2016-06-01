@@ -25,9 +25,10 @@ file to be tested.}
 file is to be tested.}
 }
 \description{
-Given a test-file and two branches, returns the run-time details of the file
-against the first commit till the latest common commit in branch1, and
-against the latest commit in branch2.
+Given a test-file, two directories and their corresponding branches, returns 
+the run-time details of the file against the first commit till the latest 
+common commit in branch1 of dir1, and against the latest commit in branch2 of
+dir2.
 }
 \section{Value}{
 

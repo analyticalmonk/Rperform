@@ -128,7 +128,7 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
                             num_commits = same_commit$cnum_b1)
   branch2_df <- time_branch(test_path = test_path, branch = branch2,
                             num_commits = 1)
-
+  
   rbind(branch1_df, branch2_df)
 }
 
@@ -137,9 +137,10 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
 
 #' Run-time details across directories/repositories.
 #' 
-#' Given a test-file and two branches, returns the run-time details of the file
-#' against the first commit till the latest common commit in branch1, and
-#' against the latest commit in branch2.
+#' Given a test-file, two directories and their corresponding branches, returns 
+#' the run-time details of the file against the first commit till the latest 
+#' common commit in branch1 of dir1, and against the latest commit in branch2 of
+#' dir2.
 #' 
 #' @param dir1 Path to the first directory/repository.
 #' @param test_path1 File-path, relative to the first directory, for the test
@@ -188,12 +189,12 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
 #'   Function assumes the current directory to be the parent directory of both 
 #'   the repositories being tested. That means both the repositories should be
 #'   inside the same directory.
-#' 
+#'
+ 
 compare_dirt <- function(dir1, test_path1, branch1 = "master", 
                          dir2, test_path2, branch2 = "master") {
   
-  # Obtain information about the latest common commit across the two branches
-  # (and their corresponding directories if provided).
+  # Obtain information about the latest common commit.
   same_commit <- .common_commit(dir1, dir2, branch1, branch2)
   #                  same_commit
   # ---------------------------------------------
