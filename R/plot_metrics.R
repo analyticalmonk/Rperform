@@ -69,6 +69,8 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   stopifnot(length(num_commits) == 1)
   stopifnot(is.logical(save_data))
   stopifnot(length(save_data) == 1)
+  stopifnot(is.logical(save_plots))
+  stopifnot(length(save_plots) == 1)
   
   if (metric == "time") {
     temp_out <- capture.output(.plot_time(test_path, num_commits, save_data, save_plots))
@@ -123,16 +125,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
                      
                      
                      if (save_plots == TRUE) {
-                       if (!dir.exists("./Rperform_testMetrics")){
-                         dir.create(path = "./Rperform_testMetrics")
-                       }
-                       
-                       curr_name <- gsub(pattern = " ", replacement = "_", x = t_names[num])
-                       curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
-                       png.file <- file.path("Rperform_testMetrics", paste0("Test_", curr_name, ".png"))
-                       png(filename = png.file, width = 1024, height = 768, units = "px")
-                       print(test_plot)
-                       dev.off()
+                       .save_plots(test_plot = test_plot, test_name = t_names[num], metric = "testMetrics")
                        print(test_plot)
                      }
                      else {
@@ -168,34 +161,27 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
   
   # Plot the metric data
-  tryCatch(expr =   
-             {test_plot <- ggplot2::qplot(message, metric_val, data = time_data) +
-             ggplot2::facet_grid(facets =  test_name ~ ., scales = "free") +
-             ggplot2::geom_point(color = "blue") + 
-             ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
-             ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
-             # In the above 4 lines of code, the first line creates the basic qplot. The 
-             # third and fourth lines display the x-axis labels at 90 degrees to the 
-             # horizontal and correct the order of message labels on the x -axis,
-             # respectively.
-             ggplot2::xlab("Commit message") +
-             ggplot2::ylab("Time (in seconds)") +
-             ggplot2::ggtitle(label = paste0("Variation in time metrics for ", curr_name))
-           
-            if (save_plots == TRUE) {
-             if (!dir.exists("./Rperform_timeMetrics")){
-               dir.create(path = "./Rperform_timeMetrics")
-             }
-             
-             png.file <- file.path("Rperform_timeMetrics", paste0("Test_", curr_name, ".png"))
-             png(filename = png.file, width = 1600, height = 1200, units = "px")
-             print(test_plot)
-             dev.off()
-             print(test_plot)
-           }
-           else {
-             print(test_plot)
-           }},
+  tryCatch(expr =   {test_plot <- ggplot2::qplot(message, metric_val, data = time_data) +
+                       ggplot2::facet_grid(facets =  test_name ~ ., scales = "free") +
+                       ggplot2::geom_point(color = "blue") + 
+                       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+                       ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
+                       # In the above 4 lines of code, the first line creates the basic qplot. The 
+                       # third and fourth lines display the x-axis labels at 90 degrees to the 
+                       # horizontal and correct the order of message labels on the x -axis,
+                       # respectively.
+                       ggplot2::xlab("Commit message") +
+                       ggplot2::ylab("Time (in seconds)") +
+                       ggplot2::ggtitle(label = paste0("Variation in time metrics for ", curr_name))
+                     
+                     if (save_plots == TRUE) {
+                       .save_plots(test_plot = test_plot, test_name = curr_name, metric = "time", 
+                                   width = 1600, height = 1200)
+                       print(test_plot)
+                     }
+                     else {
+                       print(test_plot)
+                     }},
            error = function(e){
              print("Encountered an error!")
            })
@@ -240,14 +226,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
                      ggplot2::ggtitle(label = paste0("Variation in memory metrics for ", curr_name))
                    
                    if (save_plots == TRUE) {
-                     if (!dir.exists("./Rperform_memoryMetrics")){
-                       dir.create(path = "./Rperform_memoryMetrics")
-                     }
-                     
-                     png.file <- file.path("Rperform_memoryMetrics", paste0("Test_", curr_name, ".png"))
-                     png(filename = png.file, width = 1024, height = 768, units = "px")
-                     print(test_plot)
-                     dev.off()
+                     .save_plots(test_plot = test_plot, test_name = curr_name, metric = "memory")
                      print(test_plot)
                    }
                    else {
@@ -558,4 +537,35 @@ plot_bmemory <- function(test_path, branch1, branch2 = "master") {
                                                              replacement = replacement,
                                                              x = basename(replace_string))))
   }
+}
+
+##  -----------------------------------------------------------------------------------------
+
+.save_plots <- function(test_plot, test_name, metric, width = 1024, height = 768, units = "px") {
+  
+  if (metric == "time") {
+    if(!dir.exists(paths = "./Rperform_timeMetrics")) {
+      dir.create(path = "./Rperform_timeMetrics")
+    }
+    target_dir <- "Rperform_timeMetrics"
+  }
+  else if (metric == "memory") {
+    if(!dir.exists(paths = "./Rperform_memoryMetrics")) {
+      dir.create(path = "./Rperform_memoryMetrics")
+    }
+    target_dir <- "Rperform_memoryMetrics"
+  }
+  else if (metric == "testMetrics") {
+    if(!dir.exists(paths = "./Rperform_testMetrics")) {
+      dir.create(path = "./Rperform_testMetrics")
+    }
+    target_dir <- "Rperform_testMetrics"
+  }
+  
+  curr_name <- gsub(pattern = " ", replacement = "_", x = test_name)
+  curr_name <- gsub(pattern = ".[rR]$", replacement = "", curr_name)
+  png.file <- file.path(target_dir, paste0("Test_", curr_name, ".png"))
+  grDevices::png(filename = png.file, width = width, height = height, units = units)
+  print(test_plot)
+  grDevices::dev.off()
 }
