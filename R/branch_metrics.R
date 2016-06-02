@@ -124,8 +124,14 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
   # ---------------------------------------------
   #      common_datetime, cnum_b1, cnum_b2
   
-  branch1_df <- time_branch(test_path = test_path, branch = branch1,
-                            num_commits = same_commit$cnum_b1)
+  if (same_commit$cnum_b2 == 1) {
+    branch1_df <- time_branch(test_path = test_path, branch = branch1,
+                              num_commits = (same_commit$cnum_b1 - 1))
+  }
+  else {
+    branch1_df <- time_branch(test_path = test_path, branch = branch1,
+                              num_commits = same_commit$cnum_b1)
+  }
   branch2_df <- time_branch(test_path = test_path, branch = branch2,
                             num_commits = 1)
   
@@ -279,7 +285,12 @@ compare_branchm <- function(test_path, branch1, branch2 = "master") {
   
   # For branch1
   git2r::checkout(target, branch1)
-  branch1_df <- mem_compare(test_path = test_path, num_commits = same_commit$cnum_b1)
+  if (same_commit$cnum_b2 == 1) {
+    branch1_df <- mem_compare(test_path = test_path, num_commits = (same_commit$cnum_b1 - 1))
+  }
+  else {
+    branch1_df <- mem_compare(test_path = test_path, num_commits = same_commit$cnum_b1)
+  }
   branch1_df$branch <- rep(branch1, times = nrow(branch1_df))
   git2r::checkout(original_state)
   
