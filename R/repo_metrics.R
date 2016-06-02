@@ -155,6 +155,10 @@ time_commit <- function(test_path, test_commit) {
   on.exit(expr = git2r::checkout(original_state))
 ######################################################################
   test_results <- list()
+
+# Loads the functions from the repository for the package to be tested
+  suppressPackageStartupMessages(devtools::load_all(file.path("./")))
+
   
 # Code block measuring the run-time for the test file as a whole
 # --------------------------------------------------------------
@@ -310,8 +314,6 @@ time_compare <- function(test_path, num_commits = 10) {
   target <- git2r::repository("./")
   commit_list <- git2r::commits(target, n = num_commits)
   result_list <- list()
-  # Loads the functions from the repository for the package to be tested
-  suppressPackageStartupMessages(devtools::load_all(file.path("./")))
 
   for(commit_i in seq_along(commit_list)){
     one_commit <- commit_list[[commit_i]]
@@ -414,6 +416,9 @@ mem_commit <- function(test_path, test_commit) {
   test_results <- list()
   testthat_rss_list <- list()
   rss_list <- list()
+  
+  # Loads the functions from the repository for the package to be tested
+  suppressPackageStartupMessages(devtools::load_all(file.path("./")))
   
   ## Function for obtaining the memory metrics for testthat blocks
   # require(testthat)
@@ -554,8 +559,6 @@ get_mem <- function(test_path, commit_num = 1) {
   target <- git2r::repository("./")
   target_commit <- git2r::commits(target)[[commit_num]]
   result_list <- list()
-  # Loads the functions from the repository for the package to be tested
-  suppressPackageStartupMessages(devtools::load_all(file.path("./")))
   
   test_results <- mem_commit(test_path, target_commit)
   test_results
