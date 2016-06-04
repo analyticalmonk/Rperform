@@ -131,6 +131,7 @@ time_commit <- function(test_path, test_commit) {
   commit_dtime <- get_datetime(test_commit)
   # Create the tempfiles
   t_lines <- readLines(test_path)
+  q_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed=TRUE)
   
   # These lines of code allow us to load and attach the testthat library
   # (in case the test file uses it) without having to explicitly doing so
@@ -140,8 +141,8 @@ time_commit <- function(test_path, test_commit) {
   concat_string <- "if(requireNamespace(\"testthat\", quietly = TRUE)) {
     require(testthat)\n }\n"
   t_lines <- c(concat_string, t_lines)
+  q_lines <- c(concat_string, q_lines)
   
-  q_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed=TRUE)
   temp_file_original <- tempfile()
   temp_file_subbed <- tempfile()
   writeLines(t_lines, temp_file_original)
@@ -392,6 +393,7 @@ mem_commit <- function(test_path, test_commit) {
   msg_val <- get_msg(test_commit)
   commit_dtime <- get_datetime(test_commit)
   t_lines <- readLines(test_path)
+  q_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed=TRUE)
   
   # These lines of code allow us to load and attach the testthat library
   # (in case the test file uses it) without having to explicitly doing so
@@ -401,8 +403,8 @@ mem_commit <- function(test_path, test_commit) {
   concat_string <- "if(requireNamespace(\"testthat\", quietly = TRUE)) {
     require(testthat)\n }\n"
   t_lines <- c(concat_string, t_lines)
+  q_lines <- c(concat_string, q_lines)
   
-  q_lines <- sub("test_that(", "testthatQuantity(", t_lines, fixed=TRUE)
   temp_file_original <- tempfile()
   temp_file_subbed   <- tempfile()
   writeLines(t_lines, temp_file_original)
@@ -444,7 +446,7 @@ mem_commit <- function(test_path, test_commit) {
         # The below line is required in order to stop the ps process which was started
         # by .rss.profile.start earlier. In case of an error, the .rss.profile.stop
         # function in the above code-block won't be executed resulting in an infinite
-        # loop. (Check out /R/mem_experiment.R for better understanding.)
+        # loop. (Check out /R/mem_operations.R for better understanding.)
         .rss.profile.stop(paste0(new_name, ".RSS"))
         
         test_status <- "fail"  
@@ -478,7 +480,7 @@ mem_commit <- function(test_path, test_commit) {
     list(swap = NA, leak = NA)
   }
   )
-  # Check /R/mem_experiment.R for source code for the functions .rss.profile.*  
+  # Check /R/mem_operations.R for source code for the functions .rss.profile.*  
 
   testfile_swap_df <- data.frame(test_name = file_name, metric_name = "swap_mb",
                                  status = file_status, metric_val = rss_list$swap/1000, 

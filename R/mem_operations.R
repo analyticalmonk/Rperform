@@ -26,8 +26,7 @@
   Sys.sleep(1)
   cat("", file = DONE.file)
   kilobytes <- scan(rss.file, what = integer(), quiet = TRUE)
-  list(kilobytes.over.time = kilobytes,
-       swap = max(kilobytes) - kilobytes[1],
+  list(swap = max(kilobytes) - kilobytes[1],
        leak = kilobytes[length(kilobytes)]-kilobytes[1])
 }
 
