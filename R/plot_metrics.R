@@ -86,6 +86,10 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   else if (metric == "testMetrics") {
     temp_out <- capture.output(.plot_testMetrics(test_path, num_commits, save_data, save_plots))
   }
+  else {
+    temp_out <- NULL
+    print("Input a valid metric parameter!")
+  }
   remove(temp_out)
 }
 
@@ -410,13 +414,15 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
     temp_out <- capture.output(.plot_btime(test_path, branch1, branch2, save_data, save_plots))
   }
   else if (metric == "memory") {
-    NULL
+    temp_out <- capture.output(.plot_bmem(test_path, branch1, branch2, save_data, save_plots))
   }
   else if (metric == "memtime") {
-    NULL
+    temp_out <- capture.output(.plot_btime(test_path, branch1, branch2, save_data, save_plots))
+    temp_out <- capture.output(.plot_bmem(test_path, branch1, branch2, save_data, save_plots))
   }
   else if (metric == "testMetrics") {
     NULL
+    # temp_out <- capture.output(.plot_btestMetrics(test_path, branch1, branch2, save_data, save_plots))
   }
   else {
     temp_out <- NULL
@@ -477,6 +483,61 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
   })
 
 }
+
+##  -----------------------------------------------------------------------------------------
+
+.plot_bmem <- function(test_path, branch1, branch2, save_data, save_plots) {
+  
+  suppressMessages(mem_data <- compare_branchm(test_path = test_path,
+                                                branch1 = branch1, branch2 = branch2))
+  suppressMessages(same_commit <- .common_commit(branch1 = branch1, branch2 = branch2))
+  #                  same_commit
+  # ---------------------------------------------
+  #      common_datetime, cnum_b1, cnum_b2
+  
+  # Store the metrics data if save_data is TRUE
+  if (save_data) {
+    .save_data(metric_frame = time_data, pattern = "*.[rR]$",
+               replacement = paste0("_", branch1, "_", branch2, "_mem.RData"),
+               replace_string = basename(test_path))
+  }
+  
+  curr_name <- gsub(pattern = " ", replacement = "_", x = basename(test_path))
+  curr_name <- gsub(pattern = "*.[rR]$", replacement = paste0("_", branch1, "_", branch2),
+                    x = curr_name)
+  
+  # Plot the branches' metric data
+  tryCatch(expr = {test_plot <- ggplot2::qplot(x = message, y = metric_val, data = mem_data) +
+                     ggplot2::facet_grid(test_name ~ metric_name, scales = "free") +
+                     ggplot2::geom_point(color = "green") +
+                     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+                     ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = same_commit$cnum_b2 + 0.5)) +
+                     ggplot2::scale_x_discrete(limits = rev(levels(mem_data$message))) +
+                     # In the above 5 lines of code, the first line creates the basic qplot. The
+                     # fourth and fifth lines display the x-axis labels at 90 degrees to the
+                     # horizontal and correct the order of message labels on the x -axis,
+                     # respectively.
+                     ggplot2::xlab(label = "Commit messages") +
+                     ggplot2::ylab(label = "Memory (in Mb") +
+                     ggplot2::ggtitle(label = paste0("Variation in memory metrics across branches ",
+                                                     branch2, " and ", branch1))
+                   
+                   if (save_plots == TRUE) {
+                     .save_plots(test_plot = test_plot, test_name = curr_name, metric = "memory")
+                     print(test_plot)
+                   }
+                   else {
+                     print(test_plot)
+                   }
+  },
+  error = function(e){
+    print("Encountered an error!")
+  })
+  
+}
+
+##  -----------------------------------------------------------------------------------------
+
 
 ##  -----------------------------------------------------------------------------------------
 ##  -----------------------------------------------------------------------------------------

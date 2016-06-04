@@ -15,7 +15,7 @@
   ##   ## wait for the system(cmd) to start writing to rss.file.
   ##   cat("Waiting for rss.sh to start writing to ", rss.file, "\n")
   ## }
-  Sys.sleep(1)
+  Sys.sleep(0.5)
 }
 
 .rss.profile.stop <- function(rss.file){
@@ -23,7 +23,7 @@
   stopifnot(length(rss.file) == 1)
   DONE.file <- paste0(rss.file, ".DONE")
   gc()
-  Sys.sleep(1)
+  Sys.sleep(0.5)
   cat("", file = DONE.file)
   kilobytes <- scan(rss.file, what = integer(), quiet = TRUE)
   list(swap = max(kilobytes) - kilobytes[1],
