@@ -51,7 +51,7 @@ utils::globalVariables(c("metric_val", "test_name"))
 #'
 #' # Obtain both memory and time metrics for each individual testthat block
 #' # inside a file and the file itself. The plots get stored in a directory
-#' # 'Rperform_Graphs' in the repo's root directory.
+#' # 'Rperform_testMetrics' in the repo's root directory.
 #' plot_metrics(test_path = t_path, metric = "testMetrics", n_commits = 5, save_data = F)
 #' }
 #'
@@ -395,6 +395,80 @@ plot_directory <- function(test_directory, metric = "testMetrics", num_commits =
 ##  -----------------------------------------------------------------------------------------
 ##  -----------------------------------------------------------------------------------------
 
+#' Plot and compare different versions of test files across two branches.
+#'
+#' Given a test-file path and two branches, plot and compare the metrics of the
+#' file across the two branches. The chosen metric values are plotted against the
+#' commit message summaries. For the first branch, metrics are plotted upto the
+#' latest common commit of both the branches. For the second branch, metrics for
+#' only the latest commit are plotted, which may or may not be the latest common 
+#' commit. If the parameter save_data is set
+#' to true, it also stores the corresponding data-frames in an RData file in a
+#' folder 'Rperform_Data' in the current directory.The metrics plotted are in
+#' accordance with those specified using the parameter metric.
+#' 
+#'
+#' @param test_path File-path of the test-file which is to be used for run-time
+#'   comparisons.
+#' @param metric Type of plot(s) desired. This can be set to \code{time},
+#'   \code{memory}, \code{memtime} or \code{testMetrics}. (See examples below
+#'   for more details)
+#' @param branch1 Name of the first branch whose commits are to be analyzed.
+#' @param branch2 Name of the second branch whose commits are to be analyzed.
+#'    This is supposedly the branch into which branch1 is to be merged and its
+#'    default value is set to 'master'.
+#' @param save_data If set to TRUE, the data frame containing the metrics
+#'   information is stored in the 'Rperform_Data' directory in the root of the
+#'   repo. (default set to FALSE)
+#' @param save_plots If set to TRUE, the plots generated are stored in the
+#'   'Rperform_plots' directory in the root of the repo rather than being
+#'   printed. (default set to TRUE)
+#'   
+#' @section NOTE:
+#'    This function can be helpful when analyzing how would merging a branch into 
+#'    the master branch would affect performance. 'branch2' is assumed to be the
+#'    branch into which 'branch1' is to be merged.
+#'    This function is useful only when branch1 had branched off from branch2 at some
+#'    point, that is they have at least one common commit.
+#'
+#' @examples
+#'
+#' \dontrun{
+#' # Set the current directory to the git repository concerned.
+#' setwd("./Path/to/repository")
+#'
+#' # Specify the test-file path
+#' t_path <- "Path/to/file"
+#'
+#' # Load the library
+#' library(Rperform)
+#'
+#' ## Example-1
+#'
+#' # Pass the parameters and obtain the run-time details for branches, 'experiment' and
+#' 'master'.
+#' # Since branch2 is not specified in this case, it's assumed to be 'master'.
+#' plot_branchmetrics(test_path = t_path, metric = "time", branch1 = 'experiment', save_data = F)
+#' 
+#' # Pass the parameters and obtain the memory details.
+#' plot_branchmetrics(test_path = t_path, metric = 'memory', 
+#'                    branch1 = 'experiment_1', branch2 = 'experiment_2')
+#'
+#' ## Example-2
+#'
+#' # Obtain both memory and time metrics for each individual testthat block
+#' # inside a file, and those for the file itself. Same as the other metric
+#' # cases, metrics both the commits are plotted. The plots get stored in a 
+#' # directory 'Rperform_testMetrics' in the repo's root directory.
+#' plot_metrics(test_path = t_path, metric = "testMetrics", branch1 = "experiment")
+#' }
+#'
+#' @section WARNING:
+#'   Function assumes the current directory to be the root directory of the
+#'   repository/package being tested.
+#'
+
+
 plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
                                save_data = FALSE, save_plots = TRUE) {
   stopifnot(is.character(test_path))
@@ -560,7 +634,7 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
   
   # Store the metrics data if save_data is TRUE
   if (save_data) {
-    .save_data(metric_frame = time_data, pattern = "*.[rR]$",
+    .save_data(metric_frame = mem_data, pattern = "*.[rR]$",
                replacement = paste0("_", branch1, "_", branch2, "_mem.RData"),
                replace_string = basename(test_path))
   }

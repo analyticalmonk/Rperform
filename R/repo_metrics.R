@@ -318,7 +318,7 @@ time_compare <- function(test_path, num_commits = 10) {
 
   for(commit_i in seq_along(commit_list)){
     one_commit <- commit_list[[commit_i]]
-    result_list[[commit_i]] <- time_commit(test_path, one_commit)
+    suppressMessages(result_list[[commit_i]] <- time_commit(test_path, one_commit))
   } 
   
   test_results <- do.call(rbind, result_list)

@@ -8,29 +8,29 @@ plot_metrics(test_path, metric, num_commits = 5, save_data = FALSE,
   save_plots = TRUE)
 }
 \arguments{
-\item{test_path}{File-path of the test-file which is to be used for run-time 
+\item{test_path}{File-path of the test-file which is to be used for run-time
 comparisons.}
 
 \item{metric}{Type of plot(s) desired. This can be set to \code{time},
 \code{memory}, \code{memtime} or \code{testMetrics}. (See examples below
 for more details)}
 
-\item{num_commits}{Number of commits (versions) against which the file is to 
+\item{num_commits}{Number of commits (versions) against which the file is to
 be tested, with default being 5.}
 
-\item{save_data}{If set to TRUE, the data frame containing the metrics 
-information is stored in the 'Rperform_Data' directory in the root of the 
+\item{save_data}{If set to TRUE, the data frame containing the metrics
+information is stored in the 'Rperform_Data' directory in the root of the
 repo. (default set to FALSE)}
 
-\item{save_plots}{If set to TRUE, the plots generated are stored in the 
-'Rperform_plots' directory in the root of the repo rather than being 
+\item{save_plots}{If set to TRUE, the plots generated are stored in the
+'Rperform_plots' directory in the root of the repo rather than being
 printed. (default set to TRUE)}
 }
 \description{
-Given a test-file path, plot the metrics of entire file and individual 
-testthat blocks against the commit message summaries of the specified number 
-of commits in the current git repository. If the parameter save_data is set 
-to true, it also stores the corresponding data-frames in an RData file in a 
+Given a test-file path, plot the metrics of entire file and individual
+testthat blocks against the commit message summaries of the specified number
+of commits in the current git repository. If the parameter save_data is set
+to true, it also stores the corresponding data-frames in an RData file in a
 folder 'Rperform_Data' in the current directory.The metrics plotted are in
 accordance with those specified using the parameter metric.
 }
@@ -61,7 +61,7 @@ plot_metrics(test_path = t_path, metric = "memory", n_commits = 10, save_data = 
 
 # Obtain both memory and time metrics for each individual testthat block
 # inside a file and the file itself. The plots get stored in a directory
-# 'Rperform_Graphs' in the repo's root directory.
+# 'Rperform_testMetrics' in the repo's root directory.
 plot_metrics(test_path = t_path, metric = "testMetrics", n_commits = 5, save_data = F)
 }
 
