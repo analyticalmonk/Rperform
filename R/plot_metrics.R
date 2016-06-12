@@ -115,9 +115,10 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   for (num in seq(t_names)) {
     test_frame <- metric_data[metric_data$test_name == t_names[num],]
 
-    tryCatch(expr = {test_plot <- ggplot2::qplot(data = test_frame, x = message, y = metric_val) +
+    tryCatch(expr = {test_plot <- 
+                       ggplot2::ggplot(data = test_frame, mapping = ggplot::aes(message, metric_val)) +
+                       ggplot2::geom_point() + 
                        ggplot2::facet_grid(facets = metric_name ~ ., scales = "free") +
-                       ggplot2::geom_point(color = "blue") +
                        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
                        ggplot2::scale_x_discrete(limits = rev(levels(test_frame$message))) +
                        # In the above 4 lines of code, the first line creates the basic qplot. The
@@ -162,9 +163,10 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
 
   # Plot the metric data
-  tryCatch(expr =   {test_plot <- ggplot2::qplot(message, metric_val, data = time_data) +
+  tryCatch(expr =   {test_plot <- 
+                       ggplot2::ggplot(data = time_data, mapping = ggplot2::aes(message, metric_val)) +
+                       ggplot2::geom_point() +
                        ggplot2::facet_grid(facets =  test_name ~ ., scales = "free") +
-                       ggplot2::geom_point(color = "blue") +
                        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
                        ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
                        # In the above 5 lines of code, the first line creates the basic qplot. The
@@ -207,7 +209,9 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   curr_name <- gsub(pattern = " ", replacement = "_", x = basename(test_path))
   curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
 
-  tryCatch(expr = {test_plot <- ggplot2::qplot(message, metric_val, data = mem_data) +
+  tryCatch(expr = {test_plot <- 
+                     ggplot2::ggplot(data = mem_data, mapping = ggplot2::aes(message, metric_val)) +
+                     ggplot2::geom_point() +
                      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90),
                                     strip.text.x = ggplot2::element_text(size = 10, face = "bold")) +
                      ggplot2::scale_x_discrete(limits = rev(levels(mem_data$message))) +
@@ -217,7 +221,6 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
                      # horizontal and correct the order of message labels on the x -axis,
                      # respectively. The fourth line creates a facet grid so as to seperate
                      # the plots for the swap and leak memory metrics.
-                     ggplot2::geom_point(color = "blue") +
                      ggplot2::ylab(label = "Memory (in Mb)") +
                      ggplot2::xlab(label = "Commit messages") +
                      ggplot2::ggtitle(label = paste0("Variation in memory metrics for ", curr_name))
@@ -532,9 +535,10 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
   for(num in seq(t_names)) {
     test_frame <- metric_data[metric_data$test_name == t_names[num],]
         
-    tryCatch(expr = {test_plot <- ggplot2::qplot(data = test_frame, x = message, y = metric_val) +
+    tryCatch(expr = {test_plot <- 
+                       ggplot2::ggplot(data = test_frame, mapping = ggplot2::aes(message, metric_val)) +
+                       ggplot2::geom_point(color = "blue") +
                        ggplot2::facet_grid(facets = metric_name ~ ., scales = "free") +
-                       ggplot2::geom_point(color = "green") +
                        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
                        ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = same_commit$cnum_b2 + 0.5)) +
                        ggplot2::scale_x_discrete(limits = rev(levels(test_frame$message))) +
@@ -589,9 +593,10 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
                     x = curr_name)
 
   # Plot the branches' metric data
-  tryCatch(expr = {test_plot <- ggplot2::qplot(x = message, y = metric_val, data = time_data) +
+  tryCatch(expr = {test_plot <- 
+                     ggplot2::ggplot(data = time_data, mapping = ggplot2::aes(message, metric_val)) +
+                     ggplot2::geom_point(color = "blue") +
                      ggplot2::facet_grid(test_name ~ ., scales = "free") +
-                     ggplot2::geom_point(color = "green") +
                      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
                      ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = same_commit$cnum_b2 + 0.5)) +
                      ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
@@ -644,10 +649,12 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
                     x = curr_name)
   
   # Plot the branches' metric data
-  tryCatch(expr = {test_plot <- ggplot2::qplot(x = message, y = metric_val, data = mem_data) +
+  tryCatch(expr = {test_plot <- 
+                     ggplot2::ggplot(data = mem_data, mapping = ggplot2::aes(message, metric_val)) +
+                     ggplot2::geom_point(color = "blue") +
                      ggplot2::facet_grid(test_name ~ metric_name, scales = "free") +
-                     ggplot2::geom_point(color = "green") +
-                     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+                     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90),
+                                    strip.text.x = ggplot2::element_text(size = 10, face = "bold")) +
                      ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = same_commit$cnum_b2 + 0.5)) +
                      ggplot2::scale_x_discrete(limits = rev(levels(mem_data$message))) +
                      # In the above 6 lines of code, the first line creates

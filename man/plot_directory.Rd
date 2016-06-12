@@ -25,8 +25,8 @@ in the current directory.}
 printed.}
 }
 \description{
-Given a directory path, plot the memory and time usage statistics of all files 
-in the directory against the commit message summaries of the specified number 
+Given a directory path, plot the memory and time usage statistics of all files
+in the directory against the commit message summaries of the specified number
 of commits in the current git repository.
 }
 \section{WARNING}{
@@ -48,7 +48,7 @@ library(Rperform)
 
 # Pass the parameters and obtain the run-time followed by memory details against 10 commits.
 plot_directory(test_directory = d_path, metric = "time", num_commits = 10,
-               save_data = F, save_plots = T) 
+               save_data = F, save_plots = T)
 plot_directory(test_directory = d_path, metric = "memory", num_commits = 10,
                save_data = F, save_plots = T)
 
