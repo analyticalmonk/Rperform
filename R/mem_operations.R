@@ -26,7 +26,7 @@
   Sys.sleep(0.5)
   cat("", file = DONE.file)
   kilobytes <- scan(rss.file, what = integer(), quiet = TRUE)
-  list(swap = max(kilobytes) - kilobytes[1],
+  list(max_mem = max(kilobytes) - kilobytes[1],
        leak = kilobytes[length(kilobytes)]-kilobytes[1])
 }
 

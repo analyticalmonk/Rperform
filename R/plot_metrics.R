@@ -220,7 +220,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
                      # second and third lines display the x-axis labels at 90 degrees to the
                      # horizontal and correct the order of message labels on the x -axis,
                      # respectively. The fourth line creates a facet grid so as to seperate
-                     # the plots for the swap and leak memory metrics.
+                     # the plots for the max memory and leak memory metrics.
                      ggplot2::ylab(label = "Memory (in Mb)") +
                      ggplot2::xlab(label = "Commit messages") +
                      ggplot2::ggtitle(label = paste0("Variation in memory metrics for ", curr_name))

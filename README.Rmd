@@ -90,24 +90,24 @@ of the package [stringr](https://github.com/tdhock/stringr).
 > Rperform::mem_compare(test_path = "./tests/testthat/test-join.r", num_commits = 1)
 
              test_name metric_name status metric_val         msg_val           date_time
-11.1  basic case works     swap_mb   pass      0.040 Can now use CRA 2015-01-08 14:09:43
-11.2  basic case works     leak_mb   pass      0.040 Can now use CRA 2015-01-08 14:09:43
-11.3 NULLs are dropped     swap_mb   pass      0.044 Can now use CRA 2015-01-08 14:09:43
-11.4 NULLs are dropped     leak_mb   pass      0.044 Can now use CRA 2015-01-08 14:09:43
-11.5       test-join.r     swap_mb   pass      0.148 Can now use CRA 2015-01-08 14:09:43
-11.6       test-join.r     leak_mb   pass      0.148 Can now use CRA 2015-01-08 14:09:43
-12.1  basic case works     swap_mb   pass      0.040 Can now use CRA 2015-01-08 14:09:43
-12.2  basic case works     leak_mb   pass      0.040 Can now use CRA 2015-01-08 14:09:43
-12.3 NULLs are dropped     swap_mb   pass      0.044 Can now use CRA 2015-01-08 14:09:43
-12.4 NULLs are dropped     leak_mb   pass      0.044 Can now use CRA 2015-01-08 14:09:43
-12.5       test-join.r     swap_mb   pass      0.144 Can now use CRA 2015-01-08 14:09:43
-12.6       test-join.r     leak_mb   pass      0.144 Can now use CRA 2015-01-08 14:09:43
-13.1  basic case works     swap_mb   pass      0.040 Can now use CRA 2015-01-08 14:09:43
-13.2  basic case works     leak_mb   pass      0.040 Can now use CRA 2015-01-08 14:09:43
-13.3 NULLs are dropped     swap_mb   pass      0.048 Can now use CRA 2015-01-08 14:09:43
-13.4 NULLs are dropped     leak_mb   pass      0.048 Can now use CRA 2015-01-08 14:09:43
-13.5       test-join.r     swap_mb   pass      0.148 Can now use CRA 2015-01-08 14:09:43
-13.6       test-join.r     leak_mb   pass      0.148 Can now use CRA 2015-01-08 14:09:43
+11.1  basic case works     max_mem_mb   pass      0.040 Can now use CRA 2015-01-08 14:09:43
+11.2  basic case works     leak_mb      pass      0.040 Can now use CRA 2015-01-08 14:09:43
+11.3 NULLs are dropped     max_mem_mb   pass      0.044 Can now use CRA 2015-01-08 14:09:43
+11.4 NULLs are dropped     leak_mb      pass      0.044 Can now use CRA 2015-01-08 14:09:43
+11.5       test-join.r     max_mem_mb   pass      0.148 Can now use CRA 2015-01-08 14:09:43
+11.6       test-join.r     leak_mb      pass      0.148 Can now use CRA 2015-01-08 14:09:43
+12.1  basic case works     max_mem_mb   pass      0.040 Can now use CRA 2015-01-08 14:09:43
+12.2  basic case works     leak_mb      pass      0.040 Can now use CRA 2015-01-08 14:09:43
+12.3 NULLs are dropped     max_mem_mb   pass      0.044 Can now use CRA 2015-01-08 14:09:43
+12.4 NULLs are dropped     leak_mb      pass      0.044 Can now use CRA 2015-01-08 14:09:43
+12.5       test-join.r     max_mem_mb   pass      0.144 Can now use CRA 2015-01-08 14:09:43
+12.6       test-join.r     leak_mb      pass      0.144 Can now use CRA 2015-01-08 14:09:43
+13.1  basic case works     max_mem_mb   pass      0.040 Can now use CRA 2015-01-08 14:09:43
+13.2  basic case works     leak_mb      pass      0.040 Can now use CRA 2015-01-08 14:09:43
+13.3 NULLs are dropped     max_mem_mb   pass      0.048 Can now use CRA 2015-01-08 14:09:43
+13.4 NULLs are dropped     leak_mb      pass      0.048 Can now use CRA 2015-01-08 14:09:43
+13.5       test-join.r     max_mem_mb   pass      0.148 Can now use CRA 2015-01-08 14:09:43
+13.6       test-join.r     leak_mb      pass      0.148 Can now use CRA 2015-01-08 14:09:43
 ```
 
 ---
