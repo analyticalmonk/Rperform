@@ -231,7 +231,7 @@ compare_dirt <- function(dir1, test_path1, branch1 = "master",
 #' Given a test-file and two branches, returns the memory metrics of the file 
 #' against the first commit till the latest common commit in branch1, and 
 #' against the latest commit in branch2. Memory metrics returned are the memory 
-#' leaked and maximum meory swapped during its execution.
+#' leaked and maximum memory utilized during its execution.
 #' 
 #' @param test_path File-path for the test file to be tested.
 #' @param branch1 Branch against whose commits the test file is to be 
