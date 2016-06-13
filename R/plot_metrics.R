@@ -72,7 +72,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   stopifnot(is.logical(save_plots))
   stopifnot(length(save_plots) == 1)
   floor(num_commits)
-
+  
   if (metric == "time") {
     temp_out <- capture.output(.plot_time(test_path, num_commits, save_data, save_plots))
   }
@@ -98,23 +98,23 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
 .plot_testMetrics <- function(test_path, num_commits = 5, save_data = FALSE, save_plots) {
   suppressMessages(mem_data <- mem_compare(test_path, num_commits))
   suppressMessages(time_data <- time_compare(test_path, num_commits))
-
+  
   # Store the metrics data if save_data is TRUE
   if (save_data){
-
+    
     # Store the metric data
     .save_data(time_data, pattern = "*.[rR]$", replacement = "_time.RData",
                replace_string = basename(test_path))
     .save_data(mem_data, pattern = "*.[rR]$", replacement = "_mem.RData",
                replace_string = basename(test_path))
   }
-
+  
   metric_data <- rbind(time_data, mem_data)
   t_names <- levels(metric_data$test_name)
-
+  
   for (num in seq(t_names)) {
     test_frame <- metric_data[metric_data$test_name == t_names[num],]
-
+    
     tryCatch(expr = {test_plot <- 
                        ggplot2::ggplot(data = test_frame, mapping = ggplot::aes(message, metric_val)) +
                        ggplot2::geom_point() + 
@@ -128,8 +128,8 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
                        ggplot2::xlab("Commit message") +
                        ggplot2::ylab("Metric value") +
                        ggplot2::ggtitle(label = paste0("Variation in metrics for ", t_names[num]))
-
-
+                     
+                     
                      if (save_plots == TRUE) {
                        .save_plots(test_plot = test_plot, test_name = t_names[num], metric = "testMetrics")
                        print(test_plot)
@@ -147,21 +147,21 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
 ##  -----------------------------------------------------------------------------------------
 
 .plot_time <- function(test_path, num_commits = 5, save_data = FALSE, save_plots) {
-
+  
   # Obtain the metrics data
   suppressMessages(time_data <- time_compare(test_path, num_commits))
-
+  
   # Store the metrics data if save_data is TRUE
   if (save_data){
-
+    
     # Store the metric data
     .save_data(time_data, pattern = "*.[rR]$", replacement = "_time.RData",
                replace_string = basename(test_path))
   }
-
+  
   curr_name <- gsub(pattern = " ", replacement = "_", x = basename(test_path))
   curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
-
+  
   # Plot the metric data
   tryCatch(expr =   {test_plot <- 
                        ggplot2::ggplot(data = time_data, mapping = ggplot2::aes(message, metric_val)) +
@@ -176,7 +176,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
                        ggplot2::xlab("Commit message") +
                        ggplot2::ylab("Time (in seconds)") +
                        ggplot2::ggtitle(label = paste0("Variation in time metrics for ", curr_name))
-
+                     
                      if (save_plots == TRUE) {
                        .save_plots(test_plot = test_plot, test_name = curr_name, metric = "time",
                                    width = 1600, height = 1200)
@@ -188,27 +188,27 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
            error = function(e){
              print("Encountered an error!")
            })
-
+  
 }
 
 ##  -----------------------------------------------------------------------------------------
 
 .plot_mem <- function(test_path, num_commits = 5, save_data = FALSE, save_plots) {
-
+  
   # Obtain the metrics data
   suppressMessages(mem_data <- mem_compare(test_path, num_commits))
-
+  
   # Store the metrics data if save_data is TRUE
   if (save_data){
-
+    
     # Store the metric data
     .save_data(mem_data, pattern = "*.[rR]$", replacement = "_mem.RData",
                replace_string = basename(test_path))
   }
-
+  
   curr_name <- gsub(pattern = " ", replacement = "_", x = basename(test_path))
   curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
-
+  
   tryCatch(expr = {test_plot <- 
                      ggplot2::ggplot(data = mem_data, mapping = ggplot2::aes(message, metric_val)) +
                      ggplot2::geom_point() +
@@ -224,7 +224,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
                      ggplot2::ylab(label = "Memory (in Mb)") +
                      ggplot2::xlab(label = "Commit messages") +
                      ggplot2::ggtitle(label = paste0("Variation in memory metrics for ", curr_name))
-
+                   
                    if (save_plots == TRUE) {
                      .save_plots(test_plot = test_plot, test_name = curr_name, metric = "memory")
                      print(test_plot)
@@ -236,7 +236,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   error = function(e) {
     print("Encountered an error!")
   })
-
+  
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -291,13 +291,13 @@ plot_webpage <- function(test_directory = "tests/testthat", metric = "testMetric
   stopifnot(length(test_directory) == 1)
   stopifnot(length(output_name) == 1)
   stopifnot(length(metric) == 1)
-
+  
   out_file <- paste0(output_name, ".Rmd")
-
+  
   if(!file.exists(out_file)){
     file.create(out_file)
   }
-
+  
   line_p1 <- "---\ntitle: \"plot\"\noutput: html_document\n---\n\n```{r}\nRperform::plot_directory(\""
   line_p3 <- "\", metric = \""
   line_p5 <- "\", save_plots = FALSE)\n```"
@@ -377,18 +377,18 @@ plot_directory <- function(test_directory, metric = "testMetrics", num_commits =
   stopifnot(length(save_data) == 1)
   stopifnot(length(save_plots) == 1)
   floor(num_commits)
-
+  
   file_names <- list.files(test_directory)
-
+  
   # For each file, plots for both time and space metrics are plotted and stored
   # in the folder Rperform_Graphs in png format
   for (file_i in seq_along(file_names)) {
-
+    
     # Print the plots as per the metric parameter.
     plot_metrics(test_path = file.path(test_directory, file_names[file_i]),
                  metric = metric, num_commits = num_commits,
                  save_data = save_data, save_plots = save_plots)
-
+    
   }
 }
 
@@ -486,7 +486,7 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
   stopifnot(length(save_data) == 1)
   stopifnot(is.logical(save_plots))
   stopifnot(length(save_plots) == 1)
-
+  
   if (metric == "time") {
     temp_out <- capture.output(.plot_btime(test_path, branch1, branch2, save_data, save_plots))
   }
@@ -531,10 +531,10 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
   
   metric_data <- rbind(time_data, mem_data)
   t_names <- levels(metric_data$test_name)
-    
+  
   for(num in seq(t_names)) {
     test_frame <- metric_data[metric_data$test_name == t_names[num],]
-        
+    
     tryCatch(expr = {test_plot <- 
                        ggplot2::ggplot(data = test_frame, mapping = ggplot2::aes(message, metric_val)) +
                        ggplot2::geom_point(color = "blue") +
@@ -553,7 +553,7 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
                        ggplot2::ggtitle(label = paste0("Variation in metrics for ", t_names[num]))
                      
                      curr_name <- paste0(branch1, "_", branch2, "_", t_names[num])
-                                          
+                     
                      if (save_plots == TRUE) {
                        .save_plots(test_plot = test_plot, test_name = t_names[num],
                                    metric = "testMetrics")
@@ -573,25 +573,25 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
 
 
 .plot_btime <- function(test_path, branch1, branch2, save_data, save_plots) {
-
+  
   suppressMessages(time_data <- compare_brancht(test_path = test_path,
                                                 branch1 = branch1, branch2 = branch2))
   suppressMessages(same_commit <- .common_commit(branch1 = branch1, branch2 = branch2))
   #                  same_commit
   # ---------------------------------------------
   #      common_datetime, cnum_b1, cnum_b2
-
+  
   # Store the metrics data if save_data is TRUE
   if (save_data) {
     .save_data(metric_frame = time_data, pattern = "*.[rR]$",
                replacement = paste0("_", branch1, "_", branch2, "_time.RData"),
                replace_string = basename(test_path))
   }
-
+  
   curr_name <- gsub(pattern = " ", replacement = "_", x = basename(test_path))
   curr_name <- gsub(pattern = "*.[rR]$", replacement = paste0("_", branch1, "_", branch2),
                     x = curr_name)
-
+  
   # Plot the branches' metric data
   tryCatch(expr = {test_plot <- 
                      ggplot2::ggplot(data = time_data, mapping = ggplot2::aes(message, metric_val)) +
@@ -599,6 +599,14 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
                      ggplot2::facet_grid(test_name ~ ., scales = "free") +
                      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
                      ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = same_commit$cnum_b2 + 0.5)) +
+                     ggplot2::geom_text(mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.3,
+                                                               label = branch2, angle = 90,
+                                                               vjust = "center"), 
+                                                               check_overlap = TRUE) +
+                     ggplot2::geom_text(mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.7,
+                                                               label = branch1, angle = -90,
+                                                               vjust = "center"), 
+                                                               check_overlap = TRUE) +
                      ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
                      # In the above 6 lines of code, the first line creates
                      # the basic qplot. The fourth and sixth lines display the
@@ -610,7 +618,7 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
                      ggplot2::ylab(label = "Time (in seconds)") +
                      ggplot2::ggtitle(label = paste0("Variation in time metrics across branches ",
                                                      branch2, " and ", branch1))
-
+                   
                    if (save_plots == TRUE) {
                      .save_plots(test_plot = test_plot, test_name = curr_name, metric = "time",
                                  width = 1600, height = 900)
@@ -623,7 +631,7 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
   error = function(e){
     print("Encountered an error!")
   })
-
+  
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -631,7 +639,7 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
 .plot_bmem <- function(test_path, branch1, branch2, save_data, save_plots) {
   
   suppressMessages(mem_data <- compare_branchm(test_path = test_path,
-                                                branch1 = branch1, branch2 = branch2))
+                                               branch1 = branch1, branch2 = branch2))
   suppressMessages(same_commit <- .common_commit(branch1 = branch1, branch2 = branch2))
   #                  same_commit
   # ---------------------------------------------
@@ -689,30 +697,30 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
 ##  -----------------------------------------------------------------------------------------
 
 .save_data <- function(metric_frame, pattern = "*.[rR]$", replacement, replace_string) {
-
+  
   # Create a directory for storing the metric data
   if (!dir.exists("./Rperform_Data")){
     dir.create(path = "./Rperform_Data")
   }
-
+  
   if(grepl(pattern = "time", x = replacement) > 0) {
     time_frame <- metric_frame
     save(time_frame, file = file.path("Rperform_Data", sub(pattern = pattern,
-                                                             replacement = replacement,
-                                                             x = basename(replace_string))))
+                                                           replacement = replacement,
+                                                           x = basename(replace_string))))
   }
   else if(grepl(pattern = "mem", x = replacement) > 0){
     mem_frame <- metric_frame
     save(mem_frame, file = file.path("Rperform_Data", sub(pattern = pattern,
-                                                             replacement = replacement,
-                                                             x = basename(replace_string))))
+                                                          replacement = replacement,
+                                                          x = basename(replace_string))))
   }
 }
 
 ##  -----------------------------------------------------------------------------------------
 
 .save_plots <- function(test_plot, test_name, metric, width = 1024, height = 768, units = "px") {
-
+  
   if (metric == "time") {
     if(!dir.exists(paths = "./Rperform_timeMetrics")) {
       dir.create(path = "./Rperform_timeMetrics")
@@ -731,7 +739,7 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
     }
     target_dir <- "Rperform_testMetrics"
   }
-
+  
   curr_name <- gsub(pattern = " ", replacement = "_", x = test_name)
   curr_name <- gsub(pattern = ".[rR]$", replacement = "", curr_name)
   png.file <- file.path(target_dir, paste0("Test_", curr_name, ".png"))
