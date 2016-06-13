@@ -333,7 +333,7 @@ time_compare <- function(test_path, num_commits = 10) {
 #' 
 #' Given a test-file's path, checks its memory metrics against the commit
 #' specified by the commit \code{object} passed as a parameter. Memory 
-#' metrics returned are the memory leaked and maximum memory swapped during
+#' metrics returned are the memory leaked and maximum memory utilized during
 #' its execution.
 #' 
 #' @param test_path File-path for the test file which is to be checked.
@@ -377,7 +377,7 @@ time_compare <- function(test_path, num_commits = 10) {
 #' @seealso \code{\link[git2r]{commits}}
 
 # The mem_commit function, given a test-file path, checks its memory details, 
-# more specifically the memory leaked and maximum memory swapped during its
+# more specifically the memory leaked and maximum memory utilized during its
 # execution. It does so against the specified commit in the current git
 # repository.
 
@@ -450,18 +450,18 @@ mem_commit <- function(test_path, test_commit) {
         .rss.profile.stop(paste0(new_name, ".RSS"))
         
         test_status <- "fail"  
-        list(swap = NA, leak = NA)
+        list(max_mem = NA, leak = NA)
       }
       )
     
-    testthat_swap_df <- data.frame(test_name, metric_name = "swap_mb", status = test_status,
-                                   metric_val = testthat_rss_list$swap/1000, 
+    testthat_maxmem_df <- data.frame(test_name, metric_name = "max_mem", status = test_status,
+                                   metric_val = testthat_rss_list$max_mem/1000, 
                                    message = msg_val, date_time = commit_dtime)
-    testthat_leak_df <- data.frame(test_name, metric_name = "leak_mb", status = test_status,
+    testthat_leak_df <- data.frame(test_name, metric_name = "leak_mem", status = test_status,
                                    metric_val = testthat_rss_list$leak/1000, 
                                    message = msg_val, date_time = commit_dtime)
     
-    test_results[[test_name]] <<- rbind(testthat_swap_df, testthat_leak_df)
+    test_results[[test_name]] <<- rbind(testthat_maxmem_df, testthat_leak_df)
   }
   
 #   source(temp_file_subbed, local = TRUE)
@@ -477,20 +477,20 @@ mem_commit <- function(test_path, test_commit) {
   },
   error = function(e) {
     file_status <- "fail"
-    list(swap = NA, leak = NA)
+    list(max_mem = NA, leak = NA)
   }
   )
   # Check /R/mem_operations.R for source code for the functions .rss.profile.*  
 
-  testfile_swap_df <- data.frame(test_name = file_name, metric_name = "swap_mb",
-                                 status = file_status, metric_val = rss_list$swap/1000, 
+  testfile_maxmem_df <- data.frame(test_name = file_name, metric_name = "max_mem",
+                                 status = file_status, metric_val = rss_list$max_mem/1000, 
                                  message = msg_val, date_time = commit_dtime)
-  testfile_leak_df <- data.frame(test_name = file_name, metric_name = "leak_mb",
+  testfile_leak_df <- data.frame(test_name = file_name, metric_name = "leak_mem",
                                  status = file_status, metric_val = rss_list$leak/1000, 
                                  message = msg_val, date_time = commit_dtime)
 
   #Formatting the result dataframe
-  testfile_df <- rbind(testfile_swap_df, testfile_leak_df)
+  testfile_df <- rbind(testfile_maxmem_df, testfile_leak_df)
   testthat_df <- do.call(rbind, test_results)
   mem_df <- rbind(testthat_df, testfile_df)
   rownames(mem_df) <- NULL
@@ -506,7 +506,7 @@ mem_commit <- function(test_path, test_commit) {
 #' 
 #' Given a test-file's path, checks its memory metrics against the commit 
 #' specified by the commit number passed as a parameter. Memory metrics returned
-#' are the memory leaked and maximum meory swapped during its execution. A
+#' are the memory leaked and maximum meory utilized during its execution. A
 #' commit number,n, would correspond to the nth commit in the commit log of the
 #' current git repository.
 #' 
@@ -547,7 +547,7 @@ mem_commit <- function(test_path, test_commit) {
 #'
 
 # The get_mem function, given a test-file path, checks its memory details, more
-# specifically the memory leaked and maximum memory swapped during its 
+# specifically the memory leaked and maximum memory utilized during its 
 # execution. It does so against the nth commit in the current git repository, n
 # being the commit_num parameter (with default value equal to 1).
 
@@ -574,7 +574,7 @@ get_mem <- function(test_path, commit_num = 1) {
 #' 
 #' Given a test-file's path, checks its memory metrics against the number of 
 #' commits specified by the parameter num_commits with default being 10. Memory
-#' metrics returned are the memory leaked and maximum meory swapped during its
+#' metrics returned are the memory leaked and maximum meory utilized during its
 #' execution.
 #' 
 #' @param test_path File-path for the test file which is to be checked.
@@ -614,7 +614,7 @@ get_mem <- function(test_path, commit_num = 1) {
 
 # The mem_compare function, given a test-file path, returns its memory details. 
 # Specifically it obtains the values for memory leaked and maximum memory
-# swapped during the file's execution. It does so against the specified number
+# utilized during the file's execution. It does so against the specified number
 # of commits from the git log in the current git repository.
 
 mem_compare <- function(test_path, num_commits = 10) {
