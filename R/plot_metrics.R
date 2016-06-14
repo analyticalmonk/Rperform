@@ -592,21 +592,42 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
   curr_name <- gsub(pattern = "*.[rR]$", replacement = paste0("_", branch1, "_", branch2),
                     x = curr_name)
   
+  # Trying to find the min and max vals for each test
+  ###################################################
+  extremes_list <- list()
+  t_names <- levels(time_data$test_name)
+  for (test_num in seq(t_names)) {
+    max_val <- max(time_data[time_data$test_name == t_names[test_num], "metric_val"])
+    min_val <- min(time_data[time_data$test_name == t_names[test_num], "metric_val"])
+    extremes_list[[t_names[test_num]]] <- (data.frame(test_name = t_names[test_num], 
+                                                      max_val = max_val, min_val = min_val))
+  }
+  extremes_frame <- do.call(rbind, extremes_list)
+  row.names(extremes_frame) <- NULL
+  extremes_frame$mid_val <- (extremes_frame$max_val + extremes_frame$min_val) / 2
+  
+  ## extremes_frame
+  ## test_name   |      max_val     |    min_val    |   mid_val
+  ## ----------------------------------------------------------
+  
+#   return(extremes_frame)  
+  ###################################################
+  
   # Plot the branches' metric data
   tryCatch(expr = {test_plot <- 
                      ggplot2::ggplot(data = time_data, mapping = ggplot2::aes(message, metric_val)) +
                      ggplot2::geom_point(color = "blue") +
                      ggplot2::facet_grid(test_name ~ ., scales = "free") +
+                     ggplot2::geom_text(data = extremes_frame, 
+                                        mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.3,
+                                                               y = mid_val,
+                                                               label = branch2, angle = 90)) +
+                     ggplot2::geom_text(data = extremes_frame, 
+                                        mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.7,
+                                                               y = mid_val,
+                                                               label = branch1, angle = -90)) +
                      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
                      ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = same_commit$cnum_b2 + 0.5)) +
-                     ggplot2::geom_text(mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.3,
-                                                               label = branch2, angle = 90,
-                                                               vjust = "center"), 
-                                                               check_overlap = TRUE) +
-                     ggplot2::geom_text(mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.7,
-                                                               label = branch1, angle = -90,
-                                                               vjust = "center"), 
-                                                               check_overlap = TRUE) +
                      ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
                      # In the above 6 lines of code, the first line creates
                      # the basic qplot. The fourth and sixth lines display the
