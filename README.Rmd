@@ -16,7 +16,7 @@ Also, you can use Rperform with travis-ci to do performance testing during your 
 Installation
 ------------
 
-To get started, you can install the package from github using `devtools`*.
+- You can install the package from github using `devtools`*.
 
 ``` r
 library(devtools)
@@ -28,6 +28,15 @@ devtools::install_github("analyticalmonk/Rperform")
 ```
 
 *Follow the instructions on the [devtools README](https://github.com/hadley/devtools#updating-to-the-latest-version-of-devtools) to install the latest version.
+
+
+- Build and install it using the command line.
+
+```
+git clone https://github.com/analyticalmonk/rperform/ Rperform
+R CMD build Rperform
+R CMD INSTALL <insert name of the built tar file>
+```
 
 Examples
 --------
@@ -41,23 +50,26 @@ git repository before using the functions.
 > setwd(dir = "Path/to/repo")
 ```
 
-The following examples illustrates the use of the `Rperform::plot_metrics()` function on the git repository of the package [stringr](https://github.com/tdhock/stringr).
+- The following example illustrates the use of the `Rperform::plot_metrics()` function on the git repository of the package [stringr](https://github.com/tdhock/stringr).
 
 ```r
 > setwd("./stringr")
 > library(Rperform)
-> plot_metrics(test_path = "./tests/testthat/test-extract.r", num_commits = 10, save_data = FALSE, save_plots = FALSE)
+> plot_metrics(test_path = "tests/testthat/test-join.r", metric = "time", num_commits = 10, save_data = FALSE, save_plots = FALSE)
 ```
 ![time plot](images/Rplot_time.jpeg)
 
+- The following example illustrates the use of the `Rperform::plot_branchmetrics()` function on the git repository of the package [stringr](https://github.com/tdhock/stringr).
+
 ```r
-> Rperform::plot_metrics(test_path = "./tests/testthat/test-dup.r", metric = "memory", num_commits = 5, save_data = F, save_plots = F)
+> setwd("./stringr")
+> library(Rperform)
+> plot_branchmetrics(test_path = "tests/testthat/test-interp.r", metric = "memory", branch1 = "rperform_test", branch2 = "master", save_data = F, save_plots = F)
 ```
-![memory plot](images/Rplot_mem.jpeg)
+![memory plot](images/Rplot_branchmem.jpeg)
 
 
-The following example illustrates the use of the `Rperform::time_compare()` and `Rperform::mem_compare()` functions on the git repository
-of the package [stringr](https://github.com/tdhock/stringr).
+- The following example illustrates the use of the `Rperform::time_compare()` and `Rperform::mem_compare()` functions on the git repository of the package [stringr](https://github.com/tdhock/stringr).
 
 ```r
 > setwd("./stringr")
