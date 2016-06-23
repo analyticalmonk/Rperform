@@ -60,7 +60,8 @@ utils::globalVariables(c("metric_val", "test_name"))
 #'   repository/package being tested.
 #'
 
-plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, save_plots = TRUE) {
+plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, save_plots = FALSE,
+                         interactive = TRUE) {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
   stopifnot(is.character(metric))
@@ -74,7 +75,11 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   floor(num_commits)
   
   if (metric == "time") {
-    temp_out <- capture.output(.plot_time(test_path, num_commits, save_data, save_plots))
+    if (interactive) {
+      (.plot_interactive_time(test_path, num_commits, save_data, save_plots))
+    } else {
+      temp_out <- capture.output(.plot_time(test_path, num_commits, save_data, save_plots))
+    }
   }
   else if (metric == "memory") {
     temp_out <- capture.output(.plot_mem(test_path, num_commits, save_data, save_plots))
@@ -90,7 +95,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
     temp_out <- NULL
     print("Input a valid metric parameter!")
   }
-  remove(temp_out)
+#   remove(temp_out)
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -116,7 +121,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
     test_frame <- metric_data[metric_data$test_name == t_names[num],]
     
     tryCatch(expr = {test_plot <- 
-                       ggplot2::ggplot(data = test_frame, mapping = ggplot::aes(message, metric_val)) +
+                       ggplot2::ggplot(data = test_frame, mapping = ggplot2::aes(message, metric_val)) +
                        ggplot2::geom_point(color = "blue") + 
                        ggplot2::facet_grid(facets = metric_name ~ ., scales = "free") +
                        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
@@ -146,6 +151,83 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
 
 ##  -----------------------------------------------------------------------------------------
 
+.plot_interactive_time <- function(test_path, num_commits = 5, save_data = FALSE, save_plots) {
+  
+  # Obtain the metrics data
+  suppressMessages(time_data <- time_compare(test_path, num_commits))
+  
+  # Store the metrics data if save_data is TRUE
+  if (save_data){
+    
+    # Store the metric data
+    .save_data(time_data, pattern = "*.[rR]$", replacement = "_time.RData",
+               replace_string = basename(test_path))
+  }
+    
+#   t_names <- levels(time_data$test_name)
+#   viz.list <- list()
+  
+  
+  test_plot <- ggplot2::ggplot() +
+    ggplot2::geom_point(mapping = ggplot2::aes(x = message, y = metric_val,
+                                               tooltip = message, showSelected = test_name),
+                        color = "blue",
+                        data = time_data) +
+    ggplot2::theme(axis.text.x = ggplot2::element_blank()) +
+    ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +  
+    ggplot2::xlab("Commit message") +
+    ggplot2::ylab("Runtime value") +
+    ggplot2::ggtitle(label = paste0("Variation in runtime for ", basename(test_path)))
+  
+  viz.list <- list(timeplot = test_plot)
+#   for (num in seq(t_names)) {
+#     test_frame <- time_data[time_data$test_name == t_names[num], ]
+#     print(test_frame)
+#     
+#     test_plot <- ggplot2::ggplot() +
+#       ggplot2::geom_point(mapping = ggplot2::aes(x = message, y = metric_val,
+#                                                  tooltip = message, ),
+#                           color = "blue",
+#                           data = test_frame) +
+#       ggplot2::theme(axis.text.x = ggplot2::element_blank()) +
+#       ggplot2::scale_x_discrete(limits = rev(levels(test_frame$message))) +  
+#       ggplot2::xlab("Commit message") +
+#       ggplot2::ylab("Runtime value") +
+#       ggplot2::ggtitle(label = paste0("Variation in runtime for ", t_names[num]))
+    
+#     print(test_plot)
+    
+#     tryCatch(expr = {test_plot <-
+#                        ggplot2::ggplot() +
+#                        ggplot2::geom_point(mapping = ggplot2::aes(x = message, y = metric_val,
+#                                                                   tooltip = message),
+#                                            color = "blue",
+#                                            data = test_frame) +
+#                        ggplot2::theme(axis.text.x = ggplot2::element_blank()) +
+#                        ggplot2::scale_x_discrete(limits = rev(levels(test_frame$message))) +  
+#                        ggplot2::xlab("Commit message") +
+#                        ggplot2::ylab("Runtime value") +
+#                        ggplot2::ggtitle(label = paste0("Variation in runtime for ", t_names[num]))
+#     },
+#     error = function(e) {
+#       print("Encountered an error!")
+#     })
+#     
+#     viz.list[[paste0("plot", num)]] <- test_plot
+#     
+#   }
+
+
+  print(viz.list)
+
+  print("Loaded animint")
+  animint::animint2dir(plot.list = viz.list, out.dir = "animint-stringr")
+#   print("Should have shown animint!")
+}
+
+##  -----------------------------------------------------------------------------------------
+
+
 .plot_time <- function(test_path, num_commits = 5, save_data = FALSE, save_plots) {
   
   # Obtain the metrics data
@@ -164,10 +246,12 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   
   # Plot the metric data
   tryCatch(expr =   {test_plot <- 
-                       ggplot2::ggplot(data = time_data, mapping = ggplot2::aes(message, metric_val)) +
-                       ggplot2::geom_point(color = "blue") +
+                       ggplot2::ggplot() +
+                       ggplot2::geom_point(mapping = ggplot2::aes(message, metric_val), 
+                                           data = time_data, color = "blue") +
                        ggplot2::facet_grid(facets =  test_name ~ ., scales = "free") +
-                       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+                       # ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+                       ggplot2::theme(axis.text.x = ggplot2::element_blank()) +
                        ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
                        # In the above 5 lines of code, the first line creates the basic qplot. The
                        # fourth and fifth lines display the x-axis labels at 90 degrees to the
@@ -183,6 +267,8 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
                        print(test_plot)
                      }
                      else {
+                       viz.list <- list(viz1 = test_plot)
+                       animint::animint2dir(plot.list = viz.list, out.dir = "stringr-animint")
                        print(test_plot)
                      }},
            error = function(e){
