@@ -1,0 +1,327 @@
+{
+ "geoms": {
+ "geom1_point_tipplot": {
+ "geom": "point",
+"classed": "geom1_point_tipplot",
+"aes": {
+ "x": "message",
+"y": "metric_val",
+"tooltip": "message" 
+},
+"params": {
+ "na.rm": false,
+"colour": "#0000FF" 
+},
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"tooltip": "factor",
+"PANEL": "factor" 
+},
+"PANEL": [ "1", "2", "3", "4" ],
+"chunk_order": [],
+"nest_order": [
+ "PANEL" 
+],
+"subset_order": [
+ "PANEL" 
+],
+"chunks": 1,
+"total": 1 
+} 
+},
+"selectors": [],
+"plots": {
+ "tipplot": {
+ "panel_margin_lines":   0.25,
+"legend": {},
+"strips": {
+ "right": [
+ "special cases are correct",
+"vectorised patterns work",
+"modifiers work",
+"test-detect.r" 
+],
+"top": [
+ "",
+"",
+"",
+"" 
+],
+"n": {
+ "top":      1,
+"right":      1 
+} 
+},
+"layout": {
+ "PANEL": [ "1", "2", "3", "4" ],
+"ROW": [ 1, 2, 3, 4 ],
+"COL": [ 1, 1, 1, 1 ],
+"test_name": [ "special cases are correct", "vectorised patterns work", "modifiers work", "test-detect.r" ],
+"SCALE_X": [ 1, 1, 1, 1 ],
+"SCALE_Y": [ 1, 2, 3, 4 ],
+"AXIS_Y": [ true, true, true, true ],
+"AXIS_X": [ false, false, false, true ],
+"coord_fixed": [ false, false, false, false ],
+"width_proportion": [      1,      1,      1,      1 ],
+"height_proportion": [   0.25,   0.25,   0.25,   0.25 ] 
+},
+"panel_background": {
+ "fill": "#E5E5E5",
+"colour": "transparent",
+"size":    0.5,
+"linetype":      1 
+},
+"panel_border": [],
+"grid_major": {
+ "colour": "#FFFFFF",
+"size":    0.5,
+"linetype":      1,
+"lineend": "butt",
+"loc": {
+ "x": [
+ 0.065217,
+0.17391,
+0.28261,
+0.3913,
+   0.5,
+0.6087,
+0.71739,
+0.82609,
+0.93478 
+],
+"y": [
+ 0.052231,
+0.33293,
+0.61363,
+0.89433 
+] 
+} 
+},
+"grid_minor": {
+ "colour": "#F2F2F2",
+"size":   0.25,
+"linetype":      1,
+"lineend": "butt",
+"loc": {
+ "x": [],
+"y": [
+ 0.19258,
+0.47328,
+0.75398 
+] 
+} 
+},
+"axis1": {
+ "x": [
+ 0.065217,
+0.17391,
+0.28261,
+0.3913,
+   0.5,
+0.6087,
+0.71739,
+0.82609,
+0.93478 
+],
+"xlab": [
+ "Fix existing pa",
+"Merge pull requ",
+"Merge branch 'm",
+"Implement str_t",
+"Convert to mode",
+"Tweaking test s",
+"Style tweaks to",
+"News tweaking",
+"Add simplify ar" 
+],
+"xrange": [    0.4,    9.6 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.052231,
+0.33293,
+0.61363,
+0.89433 
+],
+"ylab": [
+ "0.0011",
+"0.0012",
+"0.0013",
+"0.0014" 
+],
+"yrange": [ 0.0010814, 0.0014376 ],
+"yline": true,
+"yticks": true 
+},
+"axis2": {
+ "x": [
+ 0.065217,
+0.17391,
+0.28261,
+0.3913,
+   0.5,
+0.6087,
+0.71739,
+0.82609,
+0.93478 
+],
+"xlab": [
+ "Fix existing pa",
+"Merge pull requ",
+"Merge branch 'm",
+"Implement str_t",
+"Convert to mode",
+"Tweaking test s",
+"Style tweaks to",
+"News tweaking",
+"Add simplify ar" 
+],
+"xrange": [    0.4,    9.6 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.02598,
+0.33042,
+0.63485,
+0.93929 
+],
+"ylab": [
+ "0.0011",
+"0.0012",
+"0.0013",
+"0.0014" 
+],
+"yrange": [ 0.0010915, 0.0014199 ],
+"yline": true,
+"yticks": true 
+},
+"axis3": {
+ "x": [
+ 0.065217,
+0.17391,
+0.28261,
+0.3913,
+   0.5,
+0.6087,
+0.71739,
+0.82609,
+0.93478 
+],
+"xlab": [
+ "Fix existing pa",
+"Merge pull requ",
+"Merge branch 'm",
+"Implement str_t",
+"Convert to mode",
+"Tweaking test s",
+"Style tweaks to",
+"News tweaking",
+"Add simplify ar" 
+],
+"xrange": [    0.4,    9.6 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.018124,
+0.25043,
+0.48274,
+0.71505,
+0.94736 
+],
+"ylab": [
+ "0.0025",
+"0.0026",
+"0.0027",
+"0.0028",
+"0.0029" 
+],
+"yrange": [ 0.0024922, 0.0029227 ],
+"yline": true,
+"yticks": true 
+},
+"axis4": {
+ "x": [
+ 0.065217,
+0.17391,
+0.28261,
+0.3913,
+   0.5,
+0.6087,
+0.71739,
+0.82609,
+0.93478 
+],
+"xlab": [
+ "Fix existing pa",
+"Merge pull requ",
+"Merge branch 'm",
+"Implement str_t",
+"Convert to mode",
+"Tweaking test s",
+"Style tweaks to",
+"News tweaking",
+"Add simplify ar" 
+],
+"xrange": [    0.4,    9.6 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.014274,
+0.28225,
+0.55022,
+0.81819 
+],
+"ylab": [
+ "0.00",
+"0.05",
+"0.10",
+"0.15" 
+],
+"yrange": [ -0.0026632, 0.18392 ],
+"yline": true,
+"yticks": true 
+},
+"xtitle": "Commit message",
+"xanchor": "end",
+"xangle":     90,
+"ytitle": "Time (in seconds)",
+"yanchor": "end",
+"yangle":      0,
+"xlabs": [
+ "Fix existing pa",
+"Merge pull requ",
+"Merge branch 'm",
+"Implement str_t",
+"Convert to mode",
+"Tweaking test s",
+"Style tweaks to",
+"News tweaking",
+"Add simplify ar" 
+],
+"ylabs": [
+ "0.0011",
+"0.0012",
+"0.0013",
+"0.0014",
+"0.0025",
+"0.0026",
+"0.0027",
+"0.0028",
+"0.0029",
+"0.00",
+"0.05",
+"0.10",
+"0.15" 
+],
+"title": "Variation in time metrics for test-detect",
+"options": {
+ "width":    400,
+"height":    400 
+},
+"geoms": [
+ "geom1_point_tipplot" 
+] 
+} 
+} 
+}
