@@ -1,0 +1,46 @@
+x	y	tooltip	showSelected
+0.884615384615385	0.290610970986347	Add simplify ar	basic case works
+0.884615384615385	0.230436109047079	Add simplify ar	basic case works
+0.884615384615385	0.201959344982136	Add simplify ar	basic case works
+0.884615384615385	0.137430420088973	Add simplify ar	NULLs are dropped
+0.884615384615385	0.051100206062782	Add simplify ar	NULLs are dropped
+0.884615384615385	0.0481696316015778	Add simplify ar	NULLs are dropped
+0.884615384615385	0.832221364783747	Add simplify ar	test-join.r
+0.884615384615385	0.702625959913845	Add simplify ar	test-join.r
+0.884615384615385	0.697440918066813	Add simplify ar	test-join.r
+0.692307692307692	0.304766255129504	News tweaking	basic case works
+0.692307692307692	0.203512725967141	News tweaking	basic case works
+0.692307692307692	0.196363309967117	News tweaking	basic case works
+0.692307692307692	0.131354115910065	News tweaking	NULLs are dropped
+0.692307692307692	0.0506715608381463	News tweaking	NULLs are dropped
+0.692307692307692	0.0506186046682029	News tweaking	NULLs are dropped
+0.692307692307692	0.835407727537508	News tweaking	test-join.r
+0.692307692307692	0.707475612684568	News tweaking	test-join.r
+0.692307692307692	0.715552261245109	News tweaking	test-join.r
+0.5	0.302843180127914	Style tweaks to	basic case works
+0.5	0.202365675342708	Style tweaks to	basic case works
+0.5	0.214891641351508	Style tweaks to	basic case works
+0.5	0.140881563692451	Style tweaks to	NULLs are dropped
+0.5	0.0519145320722882	Style tweaks to	NULLs are dropped
+0.5	0.045678693268205	Style tweaks to	NULLs are dropped
+0.5	0.954545454545454	Style tweaks to	test-join.r
+0.5	0.838828895950452	Style tweaks to	test-join.r
+0.5	0.845946671471579	Style tweaks to	test-join.r
+0.307692307692308	0.335245028864443	Tweaking test s	basic case works
+0.307692307692308	0.252452886494278	Tweaking test s	basic case works
+0.307692307692308	0.201711883131395	Tweaking test s	basic case works
+0.307692307692308	0.139508366908322	Tweaking test s	NULLs are dropped
+0.307692307692308	0.0493439929551641	Tweaking test s	NULLs are dropped
+0.307692307692308	0.0600661186091645	Tweaking test s	NULLs are dropped
+0.307692307692308	0.831184223191272	Tweaking test s	test-join.r
+0.307692307692308	0.70956155288806	Tweaking test s	test-join.r
+0.307692307692308	0.703786332845182	Tweaking test s	test-join.r
+0.115384615384615	0.377066414697435	Convert to mode	basic case works
+0.115384615384615	0.347349010802059	Convert to mode	basic case works
+0.115384615384615	0.206091258468408	Convert to mode	basic case works
+0.115384615384615	0.127619207169533	Convert to mode	NULLs are dropped
+0.115384615384615	0.0613453931296197	Convert to mode	NULLs are dropped
+0.115384615384615	0.0454545454545455	Convert to mode	NULLs are dropped
+0.115384615384615	0.814783464219448	Convert to mode	test-join.r
+0.115384615384615	0.742341755140662	Convert to mode	test-join.r
+0.115384615384615	0.702037447006361	Convert to mode	test-join.r
