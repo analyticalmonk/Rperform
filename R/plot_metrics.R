@@ -213,7 +213,6 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
                                            data = time_data, color = "blue") +
                        ggplot2::facet_grid(facets =  test_name ~ ., scales = "free") +
                        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
-                       ggplot2::theme(axis.text.x = ggplot2::element_blank()) +
                        ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
                        # In the above 5 lines of code, the first line creates the basic qplot. The
                        # fourth and fifth lines display the x-axis labels at 90 degrees to the
