@@ -168,6 +168,12 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   remoteUrl <- git2r::remote_url(repo = git2r::repository(path = "./"))
   remoteUrl <- (paste0(remoteUrl, "/commit/"))
   time_data$remoteUrl <- paste0(remoteUrl, time_data$sha)
+  
+  levels(time_data$test_name) <- paste0(substr(levels(time_data$test_name), start = 0, stop = 4),
+                                        "...",
+                                        substr(levels(time_data$test_name), 
+                                               start = nchar(levels(time_data$test_name)) - 4,
+                                               stop = nchar(levels(time_data$test_name))))
 
   test_plot <- ggplot2::ggplot() +
     ggplot2::geom_point(mapping = ggplot2::aes(x = message, y = metric_val,
