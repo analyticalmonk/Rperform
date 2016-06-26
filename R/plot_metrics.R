@@ -163,66 +163,28 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
     .save_data(time_data, pattern = "*.[rR]$", replacement = "_time.RData",
                replace_string = basename(test_path))
   }
-    
-#   t_names <- levels(time_data$test_name)
-#   viz.list <- list()
   
-  
+  # Add links to the github page for each commit to data
+  remoteUrl <- git2r::remote_url(repo = git2r::repository(path = "./"))
+  remoteUrl <- (paste0(remoteUrl, "/commit/"))
+  time_data$remoteUrl <- paste0(remoteUrl, time_data$sha)
+
   test_plot <- ggplot2::ggplot() +
     ggplot2::geom_point(mapping = ggplot2::aes(x = message, y = metric_val,
-                                               tooltip = message, showSelected = test_name),
+                                               href = remoteUrl),
                         color = "blue",
                         data = time_data) +
     ggplot2::theme(axis.text.x = ggplot2::element_blank()) +
+    ggplot2::facet_grid(facets = test_name~., scales = "free") +
     ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +  
     ggplot2::xlab("Commit message") +
     ggplot2::ylab("Runtime value") +
     ggplot2::ggtitle(label = paste0("Variation in runtime for ", basename(test_path)))
   
   viz.list <- list(timeplot = test_plot)
-#   for (num in seq(t_names)) {
-#     test_frame <- time_data[time_data$test_name == t_names[num], ]
-#     print(test_frame)
-#     
-#     test_plot <- ggplot2::ggplot() +
-#       ggplot2::geom_point(mapping = ggplot2::aes(x = message, y = metric_val,
-#                                                  tooltip = message, ),
-#                           color = "blue",
-#                           data = test_frame) +
-#       ggplot2::theme(axis.text.x = ggplot2::element_blank()) +
-#       ggplot2::scale_x_discrete(limits = rev(levels(test_frame$message))) +  
-#       ggplot2::xlab("Commit message") +
-#       ggplot2::ylab("Runtime value") +
-#       ggplot2::ggtitle(label = paste0("Variation in runtime for ", t_names[num]))
-    
-#     print(test_plot)
-    
-#     tryCatch(expr = {test_plot <-
-#                        ggplot2::ggplot() +
-#                        ggplot2::geom_point(mapping = ggplot2::aes(x = message, y = metric_val,
-#                                                                   tooltip = message),
-#                                            color = "blue",
-#                                            data = test_frame) +
-#                        ggplot2::theme(axis.text.x = ggplot2::element_blank()) +
-#                        ggplot2::scale_x_discrete(limits = rev(levels(test_frame$message))) +  
-#                        ggplot2::xlab("Commit message") +
-#                        ggplot2::ylab("Runtime value") +
-#                        ggplot2::ggtitle(label = paste0("Variation in runtime for ", t_names[num]))
-#     },
-#     error = function(e) {
-#       print("Encountered an error!")
-#     })
-#     
-#     viz.list[[paste0("plot", num)]] <- test_plot
-#     
-#   }
-
-
-  print(viz.list)
 
   print("Loaded animint")
-  animint::animint2dir(plot.list = viz.list, out.dir = "animint-stringr")
-#   print("Should have shown animint!")
+  animint::animint2dir(plot.list = viz.list, out.dir = paste0(basename(getwd()), "_", "animint"))
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -250,7 +212,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
                        ggplot2::geom_point(mapping = ggplot2::aes(message, metric_val), 
                                            data = time_data, color = "blue") +
                        ggplot2::facet_grid(facets =  test_name ~ ., scales = "free") +
-                       # ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+                       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
                        ggplot2::theme(axis.text.x = ggplot2::element_blank()) +
                        ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
                        # In the above 5 lines of code, the first line creates the basic qplot. The
@@ -267,13 +229,12 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
                        print(test_plot)
                      }
                      else {
-                       viz.list <- list(viz1 = test_plot)
-                       animint::animint2dir(plot.list = viz.list, out.dir = "stringr-animint")
                        print(test_plot)
-                     }},
-           error = function(e){
-             print("Encountered an error!")
-           })
+                     }
+  },
+  error = function(e){
+    print("Encountered an error!")
+  })
   
 }
 
