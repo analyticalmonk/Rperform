@@ -6,8 +6,7 @@
 "aes": {
  "x": "message",
 "y": "metric_val",
-"tooltip": "message",
-"showSelected": "test_name" 
+"href": "remoteUrl" 
 },
 "params": {
  "na.rm": false,
@@ -16,61 +15,54 @@
 "types": {
  "x": "numeric",
 "y": "numeric",
-"tooltip": "factor",
-"showSelected": "factor",
-"PANEL": "integer" 
+"href": "factor",
+"PANEL": "factor" 
 },
-"PANEL": 1,
+"PANEL": [ "1", "2", "3" ],
 "chunk_order": [],
 "nest_order": [
- "showSelected" 
+ "PANEL" 
 ],
 "subset_order": [
- "showSelected" 
+ "PANEL" 
 ],
 "chunks": 1,
 "total": 1 
 } 
 },
-"selectors": {
- "test_name": {
- "is.variable.value": false,
-"type": "single",
-"showSelected": true,
-"selected": "basic case works",
-"levels": [ "basic case works", "NULLs are dropped", "test-join.r" ],
-"update": [
- "geom1_point_timeplot" 
-] 
-} 
-},
+"selectors": [],
 "plots": {
  "timeplot": {
  "panel_margin_lines":   0.25,
 "legend": {},
 "strips": {
- "top": [
- "" 
+ "right": [
+ "matc...group",
+"matc...roups",
+"test...ups.R" 
 ],
-"right": [
- "" 
+"top": [
+ "",
+"",
+"" 
 ],
 "n": {
- "top":      0,
-"right":      0 
+ "top":      1,
+"right":      1 
 } 
 },
 "layout": {
- "PANEL": [ 1 ],
-"ROW": [ 1 ],
-"COL": [ 1 ],
-"SCALE_X": [ 1 ],
-"SCALE_Y": [ 1 ],
-"AXIS_X": [ true ],
-"AXIS_Y": [ true ],
-"coord_fixed": [ false ],
-"width_proportion": [      1 ],
-"height_proportion": [      1 ] 
+ "PANEL": [ "1", "2", "3" ],
+"ROW": [ 1, 2, 3 ],
+"COL": [ 1, 1, 1 ],
+"test_name": [ "matc...group", "matc...roups", "test...ups.R" ],
+"SCALE_X": [ 1, 1, 1 ],
+"SCALE_Y": [ 1, 2, 3 ],
+"AXIS_Y": [ true, true, true ],
+"AXIS_X": [ false, false, true ],
+"coord_fixed": [ false, false, false ],
+"width_proportion": [      1,      1,      1 ],
+"height_proportion": [ 0.33333, 0.33333, 0.33333 ] 
 },
 "panel_background": {
  "fill": "#E5E5E5",
@@ -86,16 +78,19 @@
 "lineend": "butt",
 "loc": {
  "x": [
- 0.11538,
-0.30769,
-   0.5,
-0.69231,
-0.88462 
+ 0.073171,
+0.19512,
+0.31707,
+0.43902,
+0.56098,
+0.68293,
+0.80488,
+0.92683 
 ],
 "y": [
- 0.064028,
-0.39709,
-0.73014 
+ 0.22633,
+0.50032,
+0.77432 
 ] 
 } 
 },
@@ -107,34 +102,98 @@
 "loc": {
  "x": [],
 "y": [
- 0.23056,
-0.56361,
-0.89667 
+ 0.089337,
+0.36333,
+0.63732,
+0.91131 
 ] 
 } 
 },
 "axis1": {
  "x": [
- 0.11538,
-0.30769,
-   0.5,
-0.69231,
-0.88462 
+ 0.073171,
+0.19512,
+0.31707,
+0.43902,
+0.56098,
+0.68293,
+0.80488,
+0.92683 
 ],
-"xrange": [    0.4,    5.6 ],
+"xrange": [    0.4,    8.6 ],
 "xline": true,
 "xticks": true,
 "y": [
- 0.064028,
-0.39709,
-0.73014 
+ 0.22633,
+0.50032,
+0.77432 
 ],
 "ylab": [
- "0.001",
-"0.002",
-"0.003" 
+ "6e-04",
+"7e-04",
+"8e-04" 
 ],
-"yrange": [ 0.00080776, 0.0038102 ],
+"yrange": [ 0.00051739, 0.00088237 ],
+"yline": true,
+"yticks": true 
+},
+"axis2": {
+ "x": [
+ 0.073171,
+0.19512,
+0.31707,
+0.43902,
+0.56098,
+0.68293,
+0.80488,
+0.92683 
+],
+"xrange": [    0.4,    8.6 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.11191,
+0.29863,
+0.48535,
+0.67208,
+0.8588 
+],
+"ylab": [
+ "0.0008",
+"0.0009",
+"0.0010",
+"0.0011",
+"0.0012" 
+],
+"yrange": [ 0.00074007, 0.0012756 ],
+"yline": true,
+"yticks": true 
+},
+"axis3": {
+ "x": [
+ 0.073171,
+0.19512,
+0.31707,
+0.43902,
+0.56098,
+0.68293,
+0.80488,
+0.92683 
+],
+"xrange": [    0.4,    8.6 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.23738,
+0.50612,
+0.77485 
+],
+"ylab": [
+ "0.00250",
+"0.00275",
+"0.00300" 
+],
+"yrange": [ 0.0022792, 0.0032094 ],
 "yline": true,
 "yticks": true 
 },
@@ -146,11 +205,19 @@
 "yangle":      0,
 "xlabs": [],
 "ylabs": [
- "0.001",
-"0.002",
-"0.003" 
+ "6e-04",
+"7e-04",
+"8e-04",
+"0.0008",
+"0.0009",
+"0.0010",
+"0.0011",
+"0.0012",
+"0.00250",
+"0.00275",
+"0.00300" 
 ],
-"title": "Variation in runtime for test-join.r",
+"title": "Variation in runtime for test-optional-groups.R",
 "options": {
  "width":    400,
 "height":    400 
