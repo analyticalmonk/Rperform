@@ -28,6 +28,8 @@ utils::globalVariables(c("metric_val", "test_name"))
 #' @param save_plots If set to TRUE, the plots generated are stored in the
 #'   'Rperform_plots' directory in the root of the repo rather than being
 #'   printed. (default set to TRUE)
+#' @param interactive If set to TRUE, the plots generated are interactive. The
+#'   resulting plot is rendered in the default browser.
 #'
 #' @examples
 #'
@@ -212,6 +214,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
 
   print("Loaded animint")
   animint::animint2dir(plot.list = viz.list, out.dir = paste0(basename(getwd()), "_", "time_animint"))
+  unlink(x = paste0(basename(getwd()), "_", "time_animint"), recursive = T, force = T)
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -266,7 +269,61 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
 
 ##  -----------------------------------------------------------------------------------------
 
-.plot_mem <- function(test_path, num_commits = 5, save_data = FALSE, save_plots) {
+.plot_interactive_mem <- function(test_path, num_commits, save_data, save_plots) {
+  
+  # Obtain the metrics data
+  suppressMessages(mem_data <- mem_compare(test_path, num_commits))
+  
+  # Store the metrics data if save_data is TRUE
+  if (save_data){
+    
+    # Store the metric data
+    .save_data(mem_data, pattern = "*.[rR]$", replacement = "_mem.RData",
+               replace_string = basename(test_path))
+  }
+  
+  # Add links to the github page for each commit to data
+  remoteUrl <- git2r::remote_url(repo = git2r::repository(path = "./"))
+  remoteUrl <- (paste0(remoteUrl, "/commit/"))
+  mem_data$remoteUrl <- paste0(remoteUrl, mem_data$sha)
+  
+  levels(mem_data$test_name) <- paste0(substr(levels(mem_data$test_name), start = 0, stop = 4),
+                                        "...",
+                                        substr(levels(mem_data$test_name), 
+                                               start = nchar(levels(mem_data$test_name)) - 4,
+                                               stop = nchar(levels(mem_data$test_name))))
+  
+  test_plot <- ggplot2::ggplot() +
+    ggplot2::geom_point(mapping = ggplot2::aes(x = message, y = metric_val,
+                                               href = remoteUrl),
+                        color = "blue",
+                        data = mem_data) +
+    ggplot2::theme(axis.text.x = ggplot2::element_blank()) +
+    ggplot2::facet_grid(facets = test_name~metric_name, scales = "free") +
+    ggplot2::scale_x_discrete(limits = rev(levels(mem_data$message))) +  
+    ggplot2::xlab("Commit message") +
+    ggplot2::ylab("Memory usage (in mb)") +
+    ggplot2::ggtitle(label = paste0("Variation in memory usage for ", basename(test_path)))
+  
+  if (length(levels(mem_data$test_name)) > 6) {
+    test_plot <- test_plot + 
+      animint::theme_animint(height = 700)
+  }
+  else if (length(levels(mem_data$test_name)) > 3) {
+    test_plot <- test_plot +
+      animint::theme_animint(height = 650)
+  } 
+  
+  viz.list <- list(memplot = test_plot)
+  
+  print("Loaded animint")
+  animint::animint2dir(plot.list = viz.list, out.dir = paste0(basename(getwd()), "_", "mem_animint"))
+  unlink(x = paste0(basename(getwd()), "_", "mem_animint"), recursive = T, force = T)
+}
+
+##  -----------------------------------------------------------------------------------------
+
+.plot_mem <- function(test_path, num_commits, save_data, save_plots) {
   
   # Obtain the metrics data
   suppressMessages(mem_data <- mem_compare(test_path, num_commits))
