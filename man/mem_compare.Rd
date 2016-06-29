@@ -15,7 +15,7 @@ are to be checked starting from the most recent one.}
 \description{
 Given a test-file's path, checks its memory metrics against the number of 
 commits specified by the parameter num_commits with default being 10. Memory
-metrics returned are the memory leaked and maximum meory swapped during its
+metrics returned are the memory leaked and maximum meory utilized during its
 execution.
 }
 \section{Value}{
@@ -27,6 +27,7 @@ The data-frame consists of the following columns:
 \code{status}
 \code{metric_val}
 \code{message}
+\code{sha}
 \code{date_time}
 }
 

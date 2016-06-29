@@ -16,7 +16,7 @@ for the most recent commit being 1.}
 \description{
 Given a test-file's path, checks its memory metrics against the commit 
 specified by the commit number passed as a parameter. Memory metrics returned
-are the memory leaked and maximum meory swapped during its execution. A
+are the memory leaked and maximum memory utilized during its execution. A
 commit number,n, would correspond to the nth commit in the commit log of the
 current git repository.
 }
@@ -29,6 +29,7 @@ The data-frame consists of the following columns:
 \code{status}
 \code{metric_val}
 \code{message}
+\code{sha}
 \code{date_time}
 }
 

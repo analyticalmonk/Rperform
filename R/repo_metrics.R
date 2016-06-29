@@ -107,6 +107,7 @@ list_commits <- function(path = "./", num_commits = 20){
 #' \code{status}
 #' \code{metric_val}
 #' \code{message}
+#' \code{sha}
 #' \code{date_time}
 #' 
 #' @section Warning:
@@ -228,7 +229,7 @@ time_commit <- function(test_path, test_commit) {
 
     time_df <- data.frame(test_name, metric_name = "seconds", status, 
                           metric_val = seconds, message = msg_val, 
-                          date_time = commit_dtime)
+                          sha = sha_val, date_time = commit_dtime)
     test_results[[test_name]] <<- time_df
   }
 
@@ -246,7 +247,7 @@ time_commit <- function(test_path, test_commit) {
   test_results_df <- rbind(test_results_df, data.frame(test_name = basename(test_path), 
                                        metric_name = "seconds", status = file_status,
                                        metric_val = seconds_file, message = msg_val, 
-                                       date_time = commit_dtime))
+                                       sha = sha_val, date_time = commit_dtime))
   rownames(test_results_df) <- NULL
   test_results_df
 
@@ -292,6 +293,7 @@ time_commit <- function(test_path, test_commit) {
 #' \code{status}
 #' \code{metric_val}
 #' \code{message}
+#' \code{sha}
 #' \code{date_time}
 #' 
 #' @section Warning:
@@ -368,6 +370,7 @@ time_compare <- function(test_path, num_commits = 10) {
 #' \code{status}
 #' \code{metric_val}
 #' \code{message}
+#' \code{sha}
 #' \code{date_time}
 #' 
 #' @section Warning:
@@ -456,10 +459,10 @@ mem_commit <- function(test_path, test_commit) {
     
     testthat_maxmem_df <- data.frame(test_name, metric_name = "max_mem", status = test_status,
                                    metric_val = testthat_rss_list$max_mem/1000, 
-                                   message = msg_val, date_time = commit_dtime)
+                                   message = msg_val, sha = sha_val, date_time = commit_dtime)
     testthat_leak_df <- data.frame(test_name, metric_name = "leak_mem", status = test_status,
                                    metric_val = testthat_rss_list$leak/1000, 
-                                   message = msg_val, date_time = commit_dtime)
+                                   message = msg_val, sha = sha_val, date_time = commit_dtime)
     
     test_results[[test_name]] <<- rbind(testthat_maxmem_df, testthat_leak_df)
   }
@@ -484,10 +487,10 @@ mem_commit <- function(test_path, test_commit) {
 
   testfile_maxmem_df <- data.frame(test_name = file_name, metric_name = "max_mem",
                                  status = file_status, metric_val = rss_list$max_mem/1000, 
-                                 message = msg_val, date_time = commit_dtime)
+                                 message = msg_val, sha = sha_val, date_time = commit_dtime)
   testfile_leak_df <- data.frame(test_name = file_name, metric_name = "leak_mem",
                                  status = file_status, metric_val = rss_list$leak/1000, 
-                                 message = msg_val, date_time = commit_dtime)
+                                 message = msg_val, sha = sha_val, date_time = commit_dtime)
 
   #Formatting the result dataframe
   testfile_df <- rbind(testfile_maxmem_df, testfile_leak_df)
@@ -506,7 +509,7 @@ mem_commit <- function(test_path, test_commit) {
 #' 
 #' Given a test-file's path, checks its memory metrics against the commit 
 #' specified by the commit number passed as a parameter. Memory metrics returned
-#' are the memory leaked and maximum meory utilized during its execution. A
+#' are the memory leaked and maximum memory utilized during its execution. A
 #' commit number,n, would correspond to the nth commit in the commit log of the
 #' current git repository.
 #' 
@@ -539,6 +542,7 @@ mem_commit <- function(test_path, test_commit) {
 #' \code{status}
 #' \code{metric_val}
 #' \code{message}
+#' \code{sha}
 #' \code{date_time}
 #'
 #' @section Warning:
@@ -605,6 +609,7 @@ get_mem <- function(test_path, commit_num = 1) {
 #' \code{status}
 #' \code{metric_val}
 #' \code{message}
+#' \code{sha}
 #' \code{date_time}
 #'
 #' @section Warning:

@@ -15,6 +15,7 @@ Imports:
     testthat (>= 0.10.0),
     devtools (>= 1.8.0)
 Suggests:
+    animint,
     microbenchmark (>= 1.4-2),
     knitr
 VignetteBuilder: knitr

@@ -15,7 +15,7 @@ memory stats are to be checked.}
 \description{
 Given a test-file's path, checks its memory metrics against the commit
 specified by the commit \code{object} passed as a parameter. Memory 
-metrics returned are the memory leaked and maximum memory swapped during
+metrics returned are the memory leaked and maximum memory utilized during
 its execution.
 }
 \section{Value}{
@@ -27,6 +27,7 @@ The data-frame consists of the following columns:
 \code{status}
 \code{metric_val}
 \code{message}
+\code{sha}
 \code{date_time}
 }
 
