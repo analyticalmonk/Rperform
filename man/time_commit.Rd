@@ -25,6 +25,7 @@ The data-frame consists of the following columns:
 \code{status}
 \code{metric_val}
 \code{message}
+\code{sha}
 \code{date_time}
 }
 

@@ -5,7 +5,7 @@
 \title{Plot test-file metrics across versions.}
 \usage{
 plot_metrics(test_path, metric, num_commits = 5, save_data = FALSE,
-  save_plots = TRUE)
+  save_plots = FALSE, interactive = FALSE)
 }
 \arguments{
 \item{test_path}{File-path of the test-file which is to be used for run-time
@@ -25,6 +25,9 @@ repo. (default set to FALSE)}
 \item{save_plots}{If set to TRUE, the plots generated are stored in the
 'Rperform_plots' directory in the root of the repo rather than being
 printed. (default set to TRUE)}
+
+\item{interactive}{If set to TRUE, the plots generated are interactive. The
+resulting plot is rendered in the default browser.}
 }
 \description{
 Given a test-file path, plot the metrics of entire file and individual

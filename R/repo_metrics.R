@@ -107,6 +107,7 @@ list_commits <- function(path = "./", num_commits = 20){
 #' \code{status}
 #' \code{metric_val}
 #' \code{message}
+#' \code{sha}
 #' \code{date_time}
 #' 
 #' @section Warning:
@@ -292,6 +293,7 @@ time_commit <- function(test_path, test_commit) {
 #' \code{status}
 #' \code{metric_val}
 #' \code{message}
+#' \code{sha}
 #' \code{date_time}
 #' 
 #' @section Warning:
@@ -368,6 +370,7 @@ time_compare <- function(test_path, num_commits = 10) {
 #' \code{status}
 #' \code{metric_val}
 #' \code{message}
+#' \code{sha}
 #' \code{date_time}
 #' 
 #' @section Warning:
@@ -506,7 +509,7 @@ mem_commit <- function(test_path, test_commit) {
 #' 
 #' Given a test-file's path, checks its memory metrics against the commit 
 #' specified by the commit number passed as a parameter. Memory metrics returned
-#' are the memory leaked and maximum meory utilized during its execution. A
+#' are the memory leaked and maximum memory utilized during its execution. A
 #' commit number,n, would correspond to the nth commit in the commit log of the
 #' current git repository.
 #' 
@@ -539,6 +542,7 @@ mem_commit <- function(test_path, test_commit) {
 #' \code{status}
 #' \code{metric_val}
 #' \code{message}
+#' \code{sha}
 #' \code{date_time}
 #'
 #' @section Warning:
@@ -605,6 +609,7 @@ get_mem <- function(test_path, commit_num = 1) {
 #' \code{status}
 #' \code{metric_val}
 #' \code{message}
+#' \code{sha}
 #' \code{date_time}
 #'
 #' @section Warning:
