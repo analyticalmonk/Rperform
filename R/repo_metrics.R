@@ -456,10 +456,10 @@ mem_commit <- function(test_path, test_commit) {
     
     testthat_maxmem_df <- data.frame(test_name, metric_name = "max_mem", status = test_status,
                                    metric_val = testthat_rss_list$max_mem/1000, 
-                                   message = msg_val, date_time = commit_dtime)
+                                   message = msg_val, sha = sha_val, date_time = commit_dtime)
     testthat_leak_df <- data.frame(test_name, metric_name = "leak_mem", status = test_status,
                                    metric_val = testthat_rss_list$leak/1000, 
-                                   message = msg_val, date_time = commit_dtime)
+                                   message = msg_val, sha = sha_val, date_time = commit_dtime)
     
     test_results[[test_name]] <<- rbind(testthat_maxmem_df, testthat_leak_df)
   }
@@ -484,10 +484,10 @@ mem_commit <- function(test_path, test_commit) {
 
   testfile_maxmem_df <- data.frame(test_name = file_name, metric_name = "max_mem",
                                  status = file_status, metric_val = rss_list$max_mem/1000, 
-                                 message = msg_val, date_time = commit_dtime)
+                                 message = msg_val, sha = sha_val, date_time = commit_dtime)
   testfile_leak_df <- data.frame(test_name = file_name, metric_name = "leak_mem",
                                  status = file_status, metric_val = rss_list$leak/1000, 
-                                 message = msg_val, date_time = commit_dtime)
+                                 message = msg_val, sha = sha_val, date_time = commit_dtime)
 
   #Formatting the result dataframe
   testfile_df <- rbind(testfile_maxmem_df, testfile_leak_df)
