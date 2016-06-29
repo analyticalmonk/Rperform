@@ -61,7 +61,7 @@ utils::globalVariables(c("metric_val", "test_name"))
 #'
 
 plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, save_plots = FALSE,
-                         interactive = TRUE) {
+                         interactive = FALSE) {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
   stopifnot(is.character(metric))
@@ -76,31 +76,43 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   
   if (metric == "time") {
     if (interactive) {
-      (.plot_interactive_time(test_path, num_commits, save_data, save_plots))
+      temp_out <- capture.output(.plot_interactive_time(test_path, num_commits, save_data, save_plots))
     } else {
       temp_out <- capture.output(.plot_time(test_path, num_commits, save_data, save_plots))
     }
   }
   else if (metric == "memory") {
-    temp_out <- capture.output(.plot_mem(test_path, num_commits, save_data, save_plots))
+    if (interactive) {
+      temp_out <- capture.output(.plot_interactive_mem(test_path, num_commits, save_data, save_plots))
+    } else {
+      temp_out <- capture.output(.plot_mem(test_path, num_commits, save_data, save_plots))      
+    }
   }
   else if (metric == "memtime") {
-    temp_out <- capture.output(.plot_time(test_path, num_commits, save_data, save_plots))
-    temp_out <- capture.output(.plot_mem(test_path, num_commits, save_data, save_plots))
+    if (interactive) {
+      temp_out <- capture.output(.plot_interactive_time(test_path, num_commits, save_data, save_plots))
+      temp_out <- capture.output(.plot_interactive_mem(test_path, num_commits, save_data, save_plots))      
+    } else {
+      temp_out <- capture.output(.plot_time(test_path, num_commits, save_data, save_plots))
+      temp_out <- capture.output(.plot_mem(test_path, num_commits, save_data, save_plots))
+    }
   }
   else if (metric == "testMetrics") {
+    if (interactive) {
+      cat("Interactive mode not available for this metric!\nPrinting static plots instead.")
+    }
     temp_out <- capture.output(.plot_testMetrics(test_path, num_commits, save_data, save_plots))
   }
   else {
     temp_out <- NULL
     print("Input a valid metric parameter!")
   }
-#   remove(temp_out)
+  remove(temp_out)
 }
 
 ##  -----------------------------------------------------------------------------------------
 
-.plot_testMetrics <- function(test_path, num_commits = 5, save_data = FALSE, save_plots) {
+.plot_testMetrics <- function(test_path, num_commits, save_data, save_plots) {
   suppressMessages(mem_data <- mem_compare(test_path, num_commits))
   suppressMessages(time_data <- time_compare(test_path, num_commits))
   
@@ -151,7 +163,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
 
 ##  -----------------------------------------------------------------------------------------
 
-.plot_interactive_time <- function(test_path, num_commits = 5, save_data = FALSE, save_plots) {
+.plot_interactive_time <- function(test_path, num_commits, save_data, save_plots) {
   
   # Obtain the metrics data
   suppressMessages(time_data <- time_compare(test_path, num_commits))
@@ -187,16 +199,25 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
     ggplot2::ylab("Runtime value") +
     ggplot2::ggtitle(label = paste0("Variation in runtime for ", basename(test_path)))
   
+  if (length(levels(time_data$test_name)) > 6) {
+    test_plot <- test_plot + 
+      animint::theme_animint(height = 700)
+  }
+  else if (length(levels(time_data$test_name)) > 3) {
+    test_plot <- test_plot +
+      animint::theme_animint(height = 650)
+  } 
+  
   viz.list <- list(timeplot = test_plot)
 
   print("Loaded animint")
-  animint::animint2dir(plot.list = viz.list, out.dir = paste0(basename(getwd()), "_", "animint"))
+  animint::animint2dir(plot.list = viz.list, out.dir = paste0(basename(getwd()), "_", "time_animint"))
 }
 
 ##  -----------------------------------------------------------------------------------------
 
 
-.plot_time <- function(test_path, num_commits = 5, save_data = FALSE, save_plots) {
+.plot_time <- function(test_path, num_commits, save_data, save_plots) {
   
   # Obtain the metrics data
   suppressMessages(time_data <- time_compare(test_path, num_commits))
