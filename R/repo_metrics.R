@@ -227,7 +227,7 @@ time_commit <- function(test_path, test_commit) {
       }
     )
 
-    time_df <- data.frame(test_name, metric_name = "seconds", status, 
+    time_df <- data.frame(test_name, metric_name = "runtime (in seconds)", status, 
                           metric_val = seconds, message = msg_val, 
                           sha = sha_val, date_time = commit_dtime)
     test_results[[test_name]] <<- time_df
@@ -245,7 +245,7 @@ time_commit <- function(test_path, test_commit) {
 #   test_results_df["file runtime"] <- seconds_file
 #   test_results_df["file runtime-2"] <- seconds_file2
   test_results_df <- rbind(test_results_df, data.frame(test_name = basename(test_path), 
-                                       metric_name = "seconds", status = file_status,
+                                       metric_name = "runtime (in seconds)", status = file_status,
                                        metric_val = seconds_file, message = msg_val, 
                                        sha = sha_val, date_time = commit_dtime))
   rownames(test_results_df) <- NULL
