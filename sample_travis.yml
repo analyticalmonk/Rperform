@@ -4,7 +4,7 @@ sudo: required
 r_packages:
   - microbenchmark
 r_github_packages:
-  - da-ta-vinci21/Rperform
+  - analyticalmonk/Rperform
   - yihui/knitr
 
 env:
