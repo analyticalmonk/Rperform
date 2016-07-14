@@ -226,33 +226,44 @@ compare_branchm <- function(test_path, branch1, branch2 = "master") {
 ## Function to find the latest common commit given two branches of a repository
 ## ----------------------------------------------------------------------------  
 
-.common_commit <- function(dir1 = NULL, dir2 = NULL, branch1, branch2) {
-  stopifnot(is.character(branch1))
-  stopifnot(length(branch1) == 1)
-  stopifnot(is.character(branch2))
-  stopifnot(length(branch2) == 1)
+.common_commit <- function(dir1 = NULL, dir2 = NULL, branch1 = NULL, branch2 = NULL) {
   
   curr_dir <- file.path("./../")
   
-  # Git operations
+  ## Git operations
+  # Change into the first target directory
   if (!is.null(dir1)) {
     setwd(dir1)
   }
   target1 <- git2r::repository(file.path("./"))
-  original_state1 <- git2r::head(target1)
-  git2r::checkout(object = target1, branch = branch1)
+  # If branch1 is specified, check out to it and obtain commit list
+  if (!is.null(branch1)) {
+    original_state1 <- git2r::head(target1)
+    git2r::checkout(object = target1, branch = branch1)
+  }
   commitlist1 <- git2r::commits(target1)
-  git2r::checkout(original_state1)
+  # Revert to the original state if checked out to branch1 before
+  if (!is.null(branch1)) {
+    git2r::checkout(original_state1) 
+  }
   
+  # Change into the second target directory
   if (!is.null(dir2)) {
     setwd(curr_dir)
     setwd(dir2)
   }
   target2 <- git2r::repository(file.path("./"))
-  original_state2 <- git2r::head(target2)
-  git2r::checkout(object = target2, branch = branch2)
+  # If branch2 is specified, check out to it and obtain commit list
+  if (!is.null(branch2)) {
+    original_state2 <- git2r::head(target2)
+    git2r::checkout(object = target2, branch = branch2) 
+  }
   commitlist2 <- git2r::commits(target2)
-  git2r::checkout(original_state2)
+  # Revert to the original state if checked out to branch2 before
+  if (!is.null(branch2)) {
+    git2r::checkout(original_state2)
+  }
+  # Change to original directory if changed into directory 2
   if (!is.null(dir2)) {
     setwd(curr_dir)
   }
