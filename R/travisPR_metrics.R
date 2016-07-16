@@ -97,5 +97,8 @@ compare_dir <- function(dir1, dir2, test_path, metric = "time") {
   dir2_df$directory <- rep(dir2, times = nrow(dir2_df))
   setwd(curr_dir)
   
+  print(head(rbind(dir1_df, dir2_df)), 2)
+  print(tail(rbind(dir1_df, dir2_df)), 2)
+  
   rbind(dir1_df, dir2_df)
 }
