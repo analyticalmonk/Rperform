@@ -138,89 +138,6 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
   rbind(branch1_df, branch2_df)
 }
 
-##  -----------------------------------------------------------------------------------------
-##  -----------------------------------------------------------------------------------------
-
-#' Run-time details across directories/repositories.
-#' 
-#' Given a test-file, two directories and their corresponding branches, returns 
-#' the run-time details of the file against the first commit till the latest 
-#' common commit in branch1 of dir1, and against the latest commit in branch2 of
-#' dir2.
-#' 
-#' @param dir1 Path to the first directory/repository.
-#' @param test_path1 File-path, relative to the first directory, for the test
-#'   file to be tested.
-#' @param branch1 Branch in the first repository against whose commits the test
-#'   file is to be tested.
-#' @param dir2 Path to the second directory/repository.
-#' @param test_path2 File-path, relative to the second directory, for the test
-#'   file to be tested.
-#' @param branch2 Branch in the second directory against whose commits the test
-#'   file is to be tested.
-#'   
-#' @examples
-#' 
-#' \dontrun{
-#' # Set the current directory to the parent directory of the concerned repositories.
-#' setwd("./Path/to/parent/directory")
-#' 
-#' # Set the directory paths
-#' d_path1 <- "Path/to/first/directory"
-#' d_path2 <- "Path/to/second/directory"
-#' 
-#' # Set the file-paths
-#' t_path1 <- "First/path/to/file"
-#' t_path2 <- "Second/path/to/file"
-#'
-#' # Load the library and pass the parameters to the function
-#' library(Rperform)
-#' compare_dirt(d_path1, t_path1, branch1 = "master",
-#'              d_path2, t_path2, branch2 = "patch")
-#' }
-#' 
-#' @section Value:
-#' compare_brancht returns an object of class "data.frame".
-#' The data-frame consists of the following columns:
-#' \code{test_name}
-#' \code{metric_name}
-#' \code{status}
-#' \code{metric_val}
-#' \code{message}
-#' \code{date_time}
-#' \code{branch}
-#' \code{directory}
-#' 
-#' @section Warning:
-#'   Function assumes the current directory to be the parent directory of both 
-#'   the repositories being tested. That means both the repositories should be
-#'   inside the same directory.
-#'
- 
-compare_dirt <- function(dir1, test_path1, branch1 = "master", 
-                         dir2, test_path2, branch2 = "master") {
-  
-  # Obtain information about the latest common commit.
-  same_commit <- .common_commit(dir1, dir2, branch1, branch2)
-  #                  same_commit
-  # ---------------------------------------------
-  #      common_datetime, cnum_b1, cnum_b2
-  
-  curr_dir <- file.path("./")
-  
-  setwd(dir1)
-  dir1_df <- time_branch(test_path1, branch1, num_commits = same_commit$cnum_b1)
-  dir1_df$directory <- rep(dir1, times = nrow(dir1_df))
-  setwd(curr_dir)
-  
-  setwd(dir2)
-  dir2_df <- time_branch(test_path2, branch2, num_commits = same_commit$cnum_b2)
-  dir2_df$directory <- rep(dir2, times = nrow(dir2_df))
-  setwd(curr_dir)
-  
-  rbind(dir1_df, dir2_df)
-}
-
 
 ##  -----------------------------------------------------------------------------------------
 ##                                MEMORY CHUNK BEGINS
@@ -309,33 +226,44 @@ compare_branchm <- function(test_path, branch1, branch2 = "master") {
 ## Function to find the latest common commit given two branches of a repository
 ## ----------------------------------------------------------------------------  
 
-.common_commit <- function(dir1 = NULL, dir2 = NULL, branch1, branch2) {
-  stopifnot(is.character(branch1))
-  stopifnot(length(branch1) == 1)
-  stopifnot(is.character(branch2))
-  stopifnot(length(branch2) == 1)
+.common_commit <- function(dir1 = NULL, dir2 = NULL, branch1 = NULL, branch2 = NULL) {
   
   curr_dir <- file.path("./../")
   
-  # Git operations
+  ## Git operations
+  # Change into the first target directory
   if (!is.null(dir1)) {
     setwd(dir1)
   }
   target1 <- git2r::repository(file.path("./"))
-  original_state1 <- git2r::head(target1)
-  git2r::checkout(object = target1, branch = branch1)
+  # If branch1 is specified, check out to it and obtain commit list
+  if (!is.null(branch1)) {
+    original_state1 <- git2r::head(target1)
+    git2r::checkout(object = target1, branch = branch1)
+  }
   commitlist1 <- git2r::commits(target1)
-  git2r::checkout(original_state1)
+  # Revert to the original state if checked out to branch1 before
+  if (!is.null(branch1)) {
+    git2r::checkout(original_state1) 
+  }
   
+  # Change into the second target directory
   if (!is.null(dir2)) {
     setwd(curr_dir)
     setwd(dir2)
   }
   target2 <- git2r::repository(file.path("./"))
-  original_state2 <- git2r::head(target2)
-  git2r::checkout(object = target2, branch = branch2)
+  # If branch2 is specified, check out to it and obtain commit list
+  if (!is.null(branch2)) {
+    original_state2 <- git2r::head(target2)
+    git2r::checkout(object = target2, branch = branch2) 
+  }
   commitlist2 <- git2r::commits(target2)
-  git2r::checkout(original_state2)
+  # Revert to the original state if checked out to branch2 before
+  if (!is.null(branch2)) {
+    git2r::checkout(original_state2)
+  }
+  # Change to original directory if changed into directory 2
   if (!is.null(dir2)) {
     setwd(curr_dir)
   }
