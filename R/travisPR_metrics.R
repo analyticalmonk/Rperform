@@ -1,3 +1,23 @@
+compare_PR <- function(test_path, metric = "time") {
+  
+  # Obtain remote
+  targetdir_1 <- list.dirs(path = ".")[2]
+  remote <- git2r::remote_url(repo = git2r::repository(path = targetdir_1))[1]
+  
+  # Clone master branch as a directory
+  git2r::clone(url = remote, local_path = "./master", branch = "master")
+  targetdir_2 <- "master"
+  
+  # Compare the two directories
+  dir_df <- compare_dir(targetdir_1, targetdir_2, test_path, metric)
+  
+  unlink(x = "master/", recursive = T, force = T)
+  
+  dir_df
+}
+
+##  -----------------------------------------------------------------------------------------
+
 #' Compare details across directories/repositories.
 #' 
 #' Given a test-file, two directories and their corresponding branches, returns 
