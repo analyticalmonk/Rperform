@@ -1,3 +1,88 @@
+plot_PR_webpage <- function(test_path, metric = "time") {
+  
+  out_file <- paste0("PR", ".Rmd")
+    
+  line_p1 <- "---\ntitle: \"plot\"\noutput: html_document\n---\n\n```{r}\nRperform::plot_PR(\""
+  line_p3 <- "\", metric = \""
+  line_p5 <- "\")\n```"
+  file_lines <- paste0(line_p1, test_path, line_p3, metric, line_p5)
+  writeLines(file_lines, con = out_file)
+  rmarkdown::render(input = out_file, output_format = "html_document", 
+                    output_file = paste0("index", ".html"))
+}
+
+
+
+plot_PR <- function(test_path, metric = "time") {  
+  
+  dir_list <- compare_PR(test_path)
+  same_commit <- dir_list[[2]]
+  PR_data <- dir_list[[1]]
+  dir1 <- unique(PR_data$directory)[1]
+  dir2 <- unique(PR_data$directory)[2]
+  
+  curr_name <- gsub(pattern = " ", replacement = "_", x = basename(test_path))
+  curr_name <- gsub(pattern = "*.[rR]$", replacement = paste0("_", dir1, "_", dir2),
+                    x = curr_name)
+  
+  # Trying to find the min and max vals for each test
+  ###################################################
+  
+  extremes_frame <- .find_midvals(data = PR_data)  
+  ##                        extremes_frame
+  ## test_name   |      max_val     |    min_val    |   mid_val
+  ## ----------------------------------------------------------
+  
+  ###################################################
+  
+  # Plot the dires' metric data
+  tryCatch(expr = {test_plot <- 
+                     ggplot2::ggplot(data = PR_data, mapping = ggplot2::aes(message, metric_val)) +
+                     ggplot2::geom_point(color = "blue") +
+                     ggplot2::facet_grid(test_name ~ metric_name, scales = "free") +
+                     ggplot2::geom_text(data = extremes_frame, 
+                                        mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.3,
+                                                               y = mid_val,
+                                                               label = dir2, angle = 90)) +
+                     ggplot2::geom_text(data = extremes_frame, 
+                                        mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.7,
+                                                               y = mid_val,
+                                                               label = dir1, angle = -90)) +                     
+                     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90),
+                                    strip.text.x = ggplot2::element_text(size = 10, face = "bold")) +
+                     ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = same_commit$cnum_b2 + 0.5)) +
+                     ggplot2::scale_x_discrete(limits = rev(levels(PR_data$message))) +
+                     # In the above 8 lines of code, the first line creates
+                     # the basic plot. The sixth and eigth lines display the
+                     # x-axis labels at 90 degrees to the horizontal and
+                     # correct the order of message labels on the x -axis, 
+                     # respectively. The seventh line plots a vertical seperator between
+                     # the commit from dir2 and the commits from dir1.
+                     ggplot2::xlab(label = "Commit messages") +
+                     ggplot2::ylab(label = "Memory (in Mb)") +
+                     ggplot2::ggtitle(label = paste0("Variation in memory metrics across branches ",
+                                                     dir2, " and ", dir1))
+                   
+                   print(test_plot)
+                   
+#                    if (save_plots == TRUE) {
+#                      .save_plots(test_plot = test_plot, test_name = curr_name, metric = "memory")
+#                      print(test_plot)
+#                    }
+#                    else {
+#                      print(test_plot)
+#                    }
+  },
+  error = function(e){
+    print("Encountered an error!")
+  })
+  
+}
+    
+##  -----------------------------------------------------------------------------------------
+
+## FUNCTION TO OBTAIN METRIC DATAFRAME FOR THE COMMITS FROM A PR ON TRAVIS-CI
+
 compare_PR <- function(test_path, metric = "time") {
   
   # Obtain remote
