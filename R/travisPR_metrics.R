@@ -82,23 +82,30 @@ compare_dir <- function(dir1, dir2, test_path, metric = "time") {
   # ---------------------------------------------
   #      common_datetime, cnum_b1, cnum_b2
   
-  print("Printing same commit")
-  print(same_commit)
+  #   print("Printing same commit")
+  #   print(same_commit)
   
   curr_dir <- "../."
   
   setwd(dir1)
-  dir1_df <- time_compare(test_path = test_path, num = same_commit$cnum_b1)
-  dir1_df$directory <- rep(dir1, times = nrow(dir1_df))
+  if (same_commit$cnum_b2 == 1) {
+    dir1_df <- time_compare(test_path = test_path, num = same_commit$cnum_b1 - 1)
+  } 
+  else {
+    dir1_df <- time_compare(test_path = test_path, num = same_commit$cnum_b1)
+  }
+  dir1_df$directory <- rep(basename(dir1), times = nrow(dir1_df))
   setwd(curr_dir)
   
   setwd(dir2)
-  dir2_df <- time_compare(test_path = test_path, num_commits = same_commit$cnum_b2)
-  dir2_df$directory <- rep(dir2, times = nrow(dir2_df))
+  dir2_df <- time_compare(test_path = test_path, num_commits = 1)
+  dir2_df$directory <- rep(basename(dir2), times = nrow(dir2_df))
   setwd(curr_dir)
   
-  print(head(rbind(dir1_df, dir2_df)), 2)
-  print(tail(rbind(dir1_df, dir2_df)), 2)
+  #   print(head(rbind(dir1_df, dir2_df)), 2)
+  #   print(tail(rbind(dir1_df, dir2_df)), 2)
   
-  rbind(dir1_df, dir2_df)
+  dir_df <- rbind(dir1_df, dir2_df)
+  dir_list <- list(dir_df, same_commit)
+
 }
