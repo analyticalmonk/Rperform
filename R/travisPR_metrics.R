@@ -9,11 +9,11 @@ compare_PR <- function(test_path, metric = "time") {
   targetdir_2 <- "master"
   
   # Compare the two directories
-  dir_df <- compare_dir(targetdir_1, targetdir_2, test_path, metric)
+  dir_list <- compare_dir(targetdir_1, targetdir_2, test_path, metric)
   
   unlink(x = "master/", recursive = T, force = T)
   
-  dir_df
+  dir_list
 }
 
 ##  -----------------------------------------------------------------------------------------
