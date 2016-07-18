@@ -226,7 +226,8 @@ compare_branchm <- function(test_path, branch1, branch2 = "master") {
 ## Function to find the latest common commit given two branches of a repository
 ## ----------------------------------------------------------------------------  
 
-.common_commit <- function(dir1 = NULL, dir2 = NULL, branch1 = NULL, branch2 = NULL) {
+.common_commit <- function(dir1 = NULL, dir2 = NULL, branch1 = NULL, branch2 = NULL,
+                           PR = F) {
   
   curr_dir <- file.path("./../")
   
@@ -272,6 +273,11 @@ compare_branchm <- function(test_path, branch1, branch2 = "master") {
   dtime_list2 <- lapply(commitlist2, FUN = get_datetime)
   
   for (c1 in seq(dtime_list1)) {
+    if (PR == T) {
+      if (c1 == 1) {
+        next
+      }
+    }
     search_result <- .b_search(dtime_list2, dtime_list1[[c1]],
                                1, length(dtime_list2))
     if (search_result$status) {

@@ -162,7 +162,7 @@ compare_PR <- function(test_path, metric = "time") {
 compare_dir <- function(dir1, dir2, test_path, metric = "time") {
   
   # Obtain information about the latest common commit.
-  same_commit <- .common_commit(dir1, dir2)
+  same_commit <- .common_commit(dir1, dir2, PR = T)
   #                  same_commit
   # ---------------------------------------------
   #      common_datetime, cnum_b1, cnum_b2
