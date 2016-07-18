@@ -173,7 +173,7 @@ compare_dir <- function(dir1, dir2, test_path, metric = "time") {
   curr_dir <- "../."
   
   setwd(dir1)
-  if (same_commit$cnum_b2 == 1) {
+  if (same_commit$cnum_b2 == 1 & same_commit$cnum_b1 != 1) {
     dir1_df <- time_compare(test_path = test_path, num = same_commit$cnum_b1 - 1)
   } 
   else {
