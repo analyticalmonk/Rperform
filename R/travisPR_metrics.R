@@ -95,6 +95,43 @@ compare_dir <- function(dir1, dir2, test_path, metric = "time") {
 ##  FUNCTIONS DESIGNED FOR TRAVIS PRs
 ##  -----------------------------------------------------------------------------------------
 
+#' Generate a webpage containing a visualization detailing PR's impact on
+#' performance without haveing to merge.
+#' 
+#' The function must be called from a directory containing only a single git
+#' repository checked out to the branch which is meant to be tested against the
+#' master branch of the repository's remote repo. This function is designed keeping
+#' in mind the PR testing methodlogy of Travis-CI.
+#' Given a test-file path and the required metric, it creates a webpage
+#' visualizing the metric details of the file against the first commit till the
+#' latest common commit for the git repo, and against the latest commit for
+#' master branch of the repo's remote.
+#' 
+#' @param test_path File-path, relative to the git repo, for the test file to
+#'   be tested.
+#' @param metric The metric (runtime or memory) for which the file is to be 
+#'   tested.
+#'   
+#' @examples
+#' 
+#' \dontrun{
+#' # Set the current directory to the parent directory of the concerned repository.
+#' setwd("./Path/to/parent/directory")
+#' 
+#' # Set the file-path
+#' t_path <- "Path/to/file"
+#' 
+#' # Load the library and pass the parameters to the function
+#' library(Rperform)
+#' plot_PR_webpage(t_path, metric = "time")
+#' }
+#' 
+#' @section Value: None
+#' 
+#' @section Warning:
+#'   Function assumes the current directory to be the parent directory of the 
+#'   the repository being tested.
+
 plot_PR_webpage <- function(test_path, metric = "time") {
   
   out_file <- paste0("PR", ".Rmd")
@@ -110,7 +147,44 @@ plot_PR_webpage <- function(test_path, metric = "time") {
 
 ##  -----------------------------------------------------------------------------------------
 
-## Function to visualize 
+## FUNCTION TO VISUALIZE METRIC DETAILS FOR A PR ON TRAVIS-CI
+
+#' Visualize PR's impact on performance without having to merge.
+#' 
+#' The function must be called from a directory containing only a single git
+#' repository checked out to the branch which is meant to be tested against the
+#' master branch of the repository's remote repo. This function is designed keeping
+#' in mind the PR testing methodlogy of Travis-CI.
+#' Given a test-file path and the required metric, it plots the metric details
+#' of the file against the first commit till the latest common commit for the
+#' git repo, and against the latest commit for master branch of the repo's
+#' remote.
+#' 
+#' @param test_path File-path, relative to the git repo, for the test file to
+#'   be tested.
+#' @param metric The metric (runtime or memory) for which the file is to be 
+#'   tested.
+#'   
+#' @examples
+#' 
+#' \dontrun{
+#' # Set the current directory to the parent directory of the concerned repository.
+#' setwd("./Path/to/parent/directory")
+#' 
+#' # Set the file-path
+#' t_path <- "Path/to/file"
+#' 
+#' # Load the library and pass the parameters to the function
+#' library(Rperform)
+#' plot_PR(t_path, metric = "time")
+#' }
+#' 
+#' @section Value: None
+#' 
+#' @section Warning:
+#'   Function assumes the current directory to be the parent directory of the 
+#'   the repository being tested.
+
 plot_PR <- function(test_path, metric = "time") {  
   
   dir_list <- compare_PR(test_path)
@@ -174,7 +248,7 @@ plot_PR <- function(test_path, metric = "time") {
 
 ## FUNCTION TO OBTAIN METRIC DETAILS FOR THE COMMITS FROM A PR ON TRAVIS-CI
 
-#' Analyze PR's impact on performance without merging.
+#' Analyze PR's impact on performance without having to merge.
 #' 
 #' The function must be called from a directory containing only a single git
 #' repository checked out to the branch which is meant to be tested against the
