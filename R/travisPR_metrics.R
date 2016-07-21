@@ -1,7 +1,141 @@
+#' Compare performance across directories/repositories.
+#' 
+#' Given a test-file, two directories and the required metric, returns the 
+#' metric details of the file against the first commit till the latest common 
+#' commit for dir1, and against the latest commit for dir2. It also returns
+#' information regarding the latest common commit for the two directories.
+#' 
+#' @param dir1 Path to the first directory/repository.
+#' @param dir2 Path to the second directory/repository.
+#' @param test_path File-path, relative to the directories, for the test file to
+#'   be tested.
+#' @param metric The metric (runtime or memory) for which the file is to be 
+#'   tested.
+#'   
+#' @examples
+#' 
+#' \dontrun{
+#' # Set the current directory to the parent directory of the concerned repositories.
+#' setwd("./Path/to/parent/directory")
+#' 
+#' # Set the directory paths
+#' d_path1 <- "Path/to/first/directory"
+#' d_path2 <- "Path/to/second/directory"
+#' 
+#' # Set the file-path
+#' t_path <- "Path/to/file"
+#' 
+#' # Load the library and pass the parameters to the function
+#' library(Rperform)
+#' compare_dir(d_path1, d_path2, t_path, metric = "time")
+#' }
+#' 
+#' @section Value: compare_brancht returns an object of class "list" containing
+#'   two members.
+#' 
+#' The first member is a data-frame and consists of the following columns:
+#' \code{test_name}
+#' \code{metric_name}
+#' \code{status}
+#' \code{metric_val}
+#' \code{message}
+#' \code{sha}
+#' \code{date_time}
+#' \code{directory}
+#' 
+#' The second member is a data-frame and consists of the following columns:
+#' \code{common_datetime}
+#' \code{common_message}
+#' \code{cnum_b1}
+#' \code{cnum_b2}
+#' 
+#' @section Warning:
+#'   Function assumes the current directory to be the parent directory of both 
+#'   the repositories being tested. That means both the repositories should be
+#'   inside the same directory.
+
+compare_dir <- function(dir1, dir2, test_path, metric = "time") {
+  
+  # Obtain information about the latest common commit.
+  same_commit <- .common_commit(dir1, dir2, PR = T)
+  #                  same_commit
+  # ---------------------------------------------
+  #      common_datetime, cnum_b1, cnum_b2
+  
+  #   print("Printing same commit")
+  #   print(same_commit)
+  
+  curr_dir <- "../."
+  
+  setwd(dir1)
+  if (same_commit$cnum_b2 == 1 & same_commit$cnum_b1 != 1) {
+    dir1_df <- time_compare(test_path = test_path, num_commits = same_commit$cnum_b1 - 1)
+  } 
+  else {
+    dir1_df <- time_compare(test_path = test_path, num_commits = same_commit$cnum_b1)
+  }
+  dir1_df$directory <- rep(basename(dir1), times = nrow(dir1_df))
+  setwd(curr_dir)
+  
+  setwd(dir2)
+  dir2_df <- time_compare(test_path = test_path, num_commits = 1)
+  dir2_df$directory <- rep(basename(dir2), times = nrow(dir2_df))
+  setwd(curr_dir)
+  
+  #   print(head(rbind(dir1_df, dir2_df)), 2)
+  #   print(tail(rbind(dir1_df, dir2_df)), 2)
+  
+  dir_df <- rbind(dir1_df, dir2_df)
+  dir_list <- list(dir_df, same_commit)
+  
+  dir_list
+}
+
+##  -----------------------------------------------------------------------------------------
+##  FUNCTIONS DESIGNED FOR TRAVIS PRs
+##  -----------------------------------------------------------------------------------------
+
+#' Generate a webpage containing a visualization detailing PR's impact on
+#' performance without haveing to merge.
+#' 
+#' The function must be called from a directory containing only a single git
+#' repository checked out to the branch which is meant to be tested against the
+#' master branch of the repository's remote repo. This function is designed keeping
+#' in mind the PR testing methodlogy of Travis-CI.
+#' Given a test-file path and the required metric, it creates a webpage
+#' visualizing the metric details of the file against the first commit till the
+#' latest common commit for the git repo, and against the latest commit for
+#' master branch of the repo's remote.
+#' 
+#' @param test_path File-path, relative to the git repo, for the test file to
+#'   be tested.
+#' @param metric The metric (runtime or memory) for which the file is to be 
+#'   tested.
+#'   
+#' @examples
+#' 
+#' \dontrun{
+#' # Set the current directory to the parent directory of the concerned repository.
+#' setwd("./Path/to/parent/directory")
+#' 
+#' # Set the file-path
+#' t_path <- "Path/to/file"
+#' 
+#' # Load the library and pass the parameters to the function
+#' library(Rperform)
+#' plot_PR_webpage(t_path, metric = "time")
+#' }
+#' 
+#' @section Value: None
+#' 
+#' @section Warning:
+#'   Function assumes the current directory to be the parent directory of the 
+#'   the repository being tested.
+
 plot_PR_webpage <- function(test_path, metric = "time") {
   
   out_file <- paste0("PR", ".Rmd")
-    
+  
   line_p1 <- "---\ntitle: \"plot\"\noutput: html_document\n---\n\n```{r}\nRperform::plot_PR(\""
   line_p3 <- "\", metric = \""
   line_p5 <- "\")\n```"
@@ -11,7 +145,45 @@ plot_PR_webpage <- function(test_path, metric = "time") {
                     output_file = paste0("index", ".html"))
 }
 
+##  -----------------------------------------------------------------------------------------
 
+## FUNCTION TO VISUALIZE METRIC DETAILS FOR A PR ON TRAVIS-CI
+
+#' Visualize PR's impact on performance without having to merge.
+#' 
+#' The function must be called from a directory containing only a single git
+#' repository checked out to the branch which is meant to be tested against the
+#' master branch of the repository's remote repo. This function is designed keeping
+#' in mind the PR testing methodlogy of Travis-CI.
+#' Given a test-file path and the required metric, it plots the metric details
+#' of the file against the first commit till the latest common commit for the
+#' git repo, and against the latest commit for master branch of the repo's
+#' remote.
+#' 
+#' @param test_path File-path, relative to the git repo, for the test file to
+#'   be tested.
+#' @param metric The metric (runtime or memory) for which the file is to be 
+#'   tested.
+#'   
+#' @examples
+#' 
+#' \dontrun{
+#' # Set the current directory to the parent directory of the concerned repository.
+#' setwd("./Path/to/parent/directory")
+#' 
+#' # Set the file-path
+#' t_path <- "Path/to/file"
+#' 
+#' # Load the library and pass the parameters to the function
+#' library(Rperform)
+#' plot_PR(t_path, metric = "time")
+#' }
+#' 
+#' @section Value: None
+#' 
+#' @section Warning:
+#'   Function assumes the current directory to be the parent directory of the 
+#'   the repository being tested.
 
 plot_PR <- function(test_path, metric = "time") {  
   
@@ -60,28 +232,75 @@ plot_PR <- function(test_path, metric = "time") {
                      # the commit from dir2 and the commits from dir1.
                      ggplot2::xlab(label = "Commit messages") +
                      ggplot2::ylab(label = "Memory (in Mb)") +
-                     ggplot2::ggtitle(label = paste0("Variation in memory metrics across branches ",
+                     ggplot2::ggtitle(label = paste0("Variation in ", metric,  " metrics across branches ",
                                                      dir2, " and ", dir1))
                    
                    print(test_plot)
                    
-#                    if (save_plots == TRUE) {
-#                      .save_plots(test_plot = test_plot, test_name = curr_name, metric = "memory")
-#                      print(test_plot)
-#                    }
-#                    else {
-#                      print(test_plot)
-#                    }
   },
   error = function(e){
     print("Encountered an error!")
   })
   
 }
-    
+
 ##  -----------------------------------------------------------------------------------------
 
-## FUNCTION TO OBTAIN METRIC DATAFRAME FOR THE COMMITS FROM A PR ON TRAVIS-CI
+## FUNCTION TO OBTAIN METRIC DETAILS FOR THE COMMITS FROM A PR ON TRAVIS-CI
+
+#' Analyze PR's impact on performance without having to merge.
+#' 
+#' The function must be called from a directory containing only a single git
+#' repository checked out to the branch which is meant to be tested against the
+#' master branch of the repository's remote repo. This function is designed keeping
+#' in mind the PR testing methodlogy of Travis-CI.
+#' Given a test-file path and the required metric, it returns the metric details
+#' of the file against the first commit till the latest common commit for the
+#' git repo, and against the latest commit for master branch of the repo's
+#' remote. It also returns information regarding the latest common commit for
+#' the two directories.
+#' 
+#' @param test_path File-path, relative to the git repo, for the test file to
+#'   be tested.
+#' @param metric The metric (runtime or memory) for which the file is to be 
+#'   tested.
+#'   
+#' @examples
+#' 
+#' \dontrun{
+#' # Set the current directory to the parent directory of the concerned repository.
+#' setwd("./Path/to/parent/directory")
+#' 
+#' # Set the file-path
+#' t_path <- "Path/to/file"
+#' 
+#' # Load the library and pass the parameters to the function
+#' library(Rperform)
+#' compare_PR(t_path, metric = "time")
+#' }
+#' 
+#' @section Value: compare_brancht returns an object of class "list" containing
+#'   two members.
+#' 
+#' The first member is a data-frame and consists of the following columns:
+#' \code{test_name}
+#' \code{metric_name}
+#' \code{status}
+#' \code{metric_val}
+#' \code{message}
+#' \code{sha}
+#' \code{date_time}
+#' \code{directory}
+#' 
+#' The second member is a data-frame and consists of the following columns:
+#' \code{common_datetime}
+#' \code{common_message}
+#' \code{cnum_b1}
+#' \code{cnum_b2}
+#' 
+#' @section Warning:
+#'   Function assumes the current directory to be the parent directory of the 
+#'   the repository being tested.
 
 compare_PR <- function(test_path, metric = "time") {
   
@@ -99,98 +318,4 @@ compare_PR <- function(test_path, metric = "time") {
   unlink(x = "master/", recursive = T, force = T)
   
   dir_list
-}
-
-##  -----------------------------------------------------------------------------------------
-
-#' Compare details across directories/repositories.
-#' 
-#' Given a test-file, two directories and their corresponding branches, returns 
-#' the run-time details of the file against the first commit till the latest 
-#' common commit in branch1 of dir1, and against the latest commit in branch2 of
-#' dir2.
-#' 
-#' @param dir1 Path to the first directory/repository.
-#' @param test_path1 File-path, relative to the first directory, for the test
-#'   file to be tested.
-#' @param branch1 Branch in the first repository against whose commits the test
-#'   file is to be tested.
-#' @param dir2 Path to the second directory/repository.
-#' @param test_path2 File-path, relative to the second directory, for the test
-#'   file to be tested.
-#' @param branch2 Branch in the second directory against whose commits the test
-#'   file is to be tested.
-#'   
-#' @examples
-#' 
-#' \dontrun{
-#' # Set the current directory to the parent directory of the concerned repositories.
-#' setwd("./Path/to/parent/directory")
-#' 
-#' # Set the directory paths
-#' d_path1 <- "Path/to/first/directory"
-#' d_path2 <- "Path/to/second/directory"
-#' 
-#' # Set the file-paths
-#' t_path1 <- "First/path/to/file"
-#' t_path2 <- "Second/path/to/file"
-#'
-#' # Load the library and pass the parameters to the function
-#' library(Rperform)
-#' compare_dirt(d_path1, t_path1, branch1 = "master",
-#'              d_path2, t_path2, branch2 = "patch")
-#' }
-#' 
-#' @section Value:
-#' compare_brancht returns an object of class "data.frame".
-#' The data-frame consists of the following columns:
-#' \code{test_name}
-#' \code{metric_name}
-#' \code{status}
-#' \code{metric_val}
-#' \code{message}
-#' \code{date_time}
-#' \code{branch}
-#' \code{directory}
-#' 
-#' @section Warning:
-#'   Function assumes the current directory to be the parent directory of both 
-#'   the repositories being tested. That means both the repositories should be
-#'   inside the same directory.
-#'
-
-compare_dir <- function(dir1, dir2, test_path, metric = "time") {
-  
-  # Obtain information about the latest common commit.
-  same_commit <- .common_commit(dir1, dir2, PR = T)
-  #                  same_commit
-  # ---------------------------------------------
-  #      common_datetime, cnum_b1, cnum_b2
-  
-  #   print("Printing same commit")
-  #   print(same_commit)
-  
-  curr_dir <- "../."
-  
-  setwd(dir1)
-  if (same_commit$cnum_b2 == 1 & same_commit$cnum_b1 != 1) {
-    dir1_df <- time_compare(test_path = test_path, num = same_commit$cnum_b1 - 1)
-  } 
-  else {
-    dir1_df <- time_compare(test_path = test_path, num = same_commit$cnum_b1)
-  }
-  dir1_df$directory <- rep(basename(dir1), times = nrow(dir1_df))
-  setwd(curr_dir)
-  
-  setwd(dir2)
-  dir2_df <- time_compare(test_path = test_path, num_commits = 1)
-  dir2_df$directory <- rep(basename(dir2), times = nrow(dir2_df))
-  setwd(curr_dir)
-  
-  #   print(head(rbind(dir1_df, dir2_df)), 2)
-  #   print(tail(rbind(dir1_df, dir2_df)), 2)
-  
-  dir_df <- rbind(dir1_df, dir2_df)
-  dir_list <- list(dir_df, same_commit)
-
 }
