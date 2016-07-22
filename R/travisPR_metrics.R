@@ -72,18 +72,18 @@ compare_dir <- function(dir1, dir2, test_path, metric = "time", PR = F) {
   setwd(dir1)
   if (metric == "time") {
     if (same_commit$cnum_b2 == 1 & same_commit$cnum_b1 != 1) {
-      dir1_df <- time_compare(test_path = test_path, num = same_commit$cnum_b1 - 1)
+      dir1_df <- time_compare(test_path = test_path, num_commits = same_commit$cnum_b1 - 1)
     } 
     else {
-      dir1_df <- time_compare(test_path = test_path, num = same_commit$cnum_b1)
+      dir1_df <- time_compare(test_path = test_path, num_commits = same_commit$cnum_b1)
     } 
   }
   else if (metric == "memory") {
     if (same_commit$cnum_b2 == 1 & same_commit$cnum_b1 != 1) {
-      dir1_df <- mem_compare(test_path = test_path, num = same_commit$cnum_b1 - 1)
+      dir1_df <- mem_compare(test_path = test_path, num_commits = same_commit$cnum_b1 - 1)
     } 
     else {
-      dir1_df <- mem_compare(test_path = test_path, num = same_commit$cnum_b1)
+      dir1_df <- mem_compare(test_path = test_path, num_commits = same_commit$cnum_b1)
     }     
   }
   dir1_df$directory <- rep(basename(dir1), times = nrow(dir1_df))
