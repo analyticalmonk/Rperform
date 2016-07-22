@@ -1,20 +1,16 @@
 language: r
-sudo: required
 
 r_packages:
   - microbenchmark
+  - roxygen2
+  - rmarkdown
+
 r_github_packages:
   - analyticalmonk/Rperform
-  - yihui/knitr
 
 env:
   global:
   - secure: "enter_your_github_access_token_here"
 
-before_install:
-  - chmod 755 ./.push_gh_pages.sh
-  - chmod 755 ./.PR_setup.sh
-  - source ./.PR_setup.sh
-
-after_success:
+before_script:
   - source ./.push_gh_pages.sh
