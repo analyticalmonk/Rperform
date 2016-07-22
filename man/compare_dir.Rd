@@ -4,7 +4,7 @@
 \alias{compare_dir}
 \title{Compare performance across directories/repositories.}
 \usage{
-compare_dir(dir1, dir2, test_path, metric = "time")
+compare_dir(dir1, dir2, test_path, metric = "time", PR = F)
 }
 \arguments{
 \item{dir1}{Path to the first directory/repository.}
@@ -16,6 +16,9 @@ be tested.}
 
 \item{metric}{The metric (runtime or memory) for which the file is to be 
 tested.}
+
+\item{PR}{When set to True, it performs the analysis in accordance with the setup
+on Travis-CI environment for testing Pull Requests.}
 }
 \description{
 Given a test-file, two directories and the required metric, returns the 

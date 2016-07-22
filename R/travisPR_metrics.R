@@ -11,6 +11,8 @@
 #'   be tested.
 #' @param metric The metric (runtime or memory) for which the file is to be 
 #'   tested.
+#' @param PR When set to True, it performs the analysis in accordance with the setup
+#'   on Travis-CI environment for testing Pull Requests.
 #'   
 #' @examples
 #' 
@@ -54,10 +56,10 @@
 #'   the repositories being tested. That means both the repositories should be
 #'   inside the same directory.
 
-compare_dir <- function(dir1, dir2, test_path, metric = "time") {
+compare_dir <- function(dir1, dir2, test_path, metric = "time", PR = F) {
   
   # Obtain information about the latest common commit.
-  same_commit <- .common_commit(dir1, dir2, PR = T)
+  same_commit <- .common_commit(dir1, dir2, PR)
   #                  same_commit
   # ---------------------------------------------
   #      common_datetime, cnum_b1, cnum_b2
@@ -324,7 +326,7 @@ compare_PR <- function(test_path, metric = "time") {
   targetdir_2 <- "master"
   
   # Compare the two directories
-  dir_list <- compare_dir(targetdir_1, targetdir_2, test_path, metric)
+  dir_list <- compare_dir(targetdir_1, targetdir_2, test_path, metric, PR=T)
   
   unlink(x = "master/", recursive = T, force = T)
   
