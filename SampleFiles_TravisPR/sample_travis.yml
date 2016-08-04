@@ -11,6 +11,9 @@ r_github_packages:
 env:
   global:
   - secure: "enter_your_github_access_token_here"
+  - USER_EMAIL="id@domain.com""
+  - USER_NAME="user"
+  - R_COMMAND="Rperform::plot_PR_webpage(\"./tests/TEST_NAME_HERE\", metric = \"time\")"
 
 before_script:
   - source ./.push_gh_pages.sh

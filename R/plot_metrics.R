@@ -433,7 +433,7 @@ plot_webpage <- function(test_directory = "tests/testthat", metric = "testMetric
   line_p5 <- "\", save_plots = FALSE)\n```"
   file_lines <- paste0(line_p1, test_directory, line_p3, metric, line_p5)
   writeLines(file_lines, con = out_file)
-  knitr::knit2html(input = out_file, output = paste0(output_name, ".html"))
+  rmarkdown::render(input = out_file, output_format = "html_document", output_file = output_name)
 }
 
 ##  -----------------------------------------------------------------------------------------
