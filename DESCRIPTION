@@ -17,6 +17,6 @@ Imports:
 Suggests:
     animint,
     microbenchmark (>= 1.4-2),
-    knitr
+    rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
