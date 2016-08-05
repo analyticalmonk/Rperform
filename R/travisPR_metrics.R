@@ -318,7 +318,7 @@ plot_PR <- function(test_path, metric = "time") {
 compare_PR <- function(test_path, metric = "time") {
   
   # Obtain remote
-  targetdir_1 <- list.dirs(path = ".")[2]
+  targetdir_1 <- "Rperform_copy"
   remote <- git2r::remote_url(repo = git2r::repository(path = targetdir_1))[1]
   
   # Clone master branch as a directory

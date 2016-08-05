@@ -5,6 +5,14 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   git config --global user.email $USER_EMAIL
   git config --global user.name $USER_NAME 
   
+  # Store the original location (repo to be tested) and go up one level
+  pushd ./
+  cd ..
+  
+  # Create a copy of the repo to be tested
+  cp -Rf `ls` Rperform_copy
+  cd Rperform_copy
+  
   # Run the Rperform functions
   touch temp_Rperform.R
   echo $RPERFORM_COMMAND >> temp_Rperform.R
@@ -14,8 +22,7 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   # We copy the generated html file to one level above the current directory (repo) in order
   # to easily move it to the gh-pages directory (which we will download later)
   mv -Rf index.html ../index.html
-  # Store the original location (repo to be tested) and go up one level
-  pushd ./
+  # Go up one level
   cd ..
 
   # Using token clone gh-pages branch
@@ -49,6 +56,9 @@ if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   # Store the original location (repo to be tested) and go up one level
   pushd ./
   cd ..
+  
+  # Create a copy of the repo to be tested
+  cp -Rf `ls` Rperform_copy
 
   # Run the Rperform functions
   touch temp_Rperform.R
