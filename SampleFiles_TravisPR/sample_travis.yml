@@ -13,7 +13,8 @@ env:
   - secure: "enter_your_github_access_token_here"
   - USER_EMAIL="id@domain.com""
   - USER_NAME="user"
-  - R_COMMAND="Rperform::plot_PR_webpage(\"./tests/TEST_NAME_HERE\", metric = \"time\")"
+  - PR_COMMAND="Rperform::plot_PR_webpage(\"./tests/TEST_NAME_HERE\", metric = \"time\")"
+  - RPERFORM_COMMAND="Rperform::plot_webpage(test_directory = \"./tests/\", metric = \"time\")"
 
 before_script:
-  - source ./.push_gh_pages.sh
+  - travis_wait 20 source ./.push_gh_pages.sh
