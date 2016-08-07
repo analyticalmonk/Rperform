@@ -414,7 +414,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
 #'
 
 plot_webpage <- function(test_directory = "tests/testthat", metric = "testMetrics",
-                         output_name = "index"){
+                         output_name = "RperformTest.html"){
   stopifnot(is.character(test_directory))
   stopifnot(is.character(output_name))
   stopifnot(is.character(metric))

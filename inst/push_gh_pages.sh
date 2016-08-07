@@ -14,14 +14,20 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   cd Rperform_copy
   
   # Run the Rperform functions
+  echo `pwd`
   touch temp_Rperform.R
   echo $RPERFORM_COMMAND >> temp_Rperform.R
+  echo "Contents of Rperform_copy before running Rperform: "
+  echo `ls`
   Rscript temp_Rperform.R
+  echo "Contents of Rperform_copy after running Rperform: "
+  echo `ls`
+  rm index.Rmd
   rm temp_Rperform.R
   
   # We copy the generated html file to one level above the current directory (repo) in order
   # to easily move it to the gh-pages directory (which we will download later)
-  cp -Rf index.html ../index.html
+  cp -Rf RperformTest.html ../index.html
   # Go up one level
   cd ..
 
