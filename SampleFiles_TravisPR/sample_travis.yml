@@ -17,4 +17,4 @@ env:
   - RPERFORM_COMMAND="Rperform::plot_webpage(test_directory = \"./tests/\", metric = \"time\")"
 
 before_script:
-  - travis_wait 20 source ./.push_gh_pages.sh
+  - travis_wait 30 source `Rscript -e "cat(find.package(\"Rperform\"))"`/push_gh_pages.sh
