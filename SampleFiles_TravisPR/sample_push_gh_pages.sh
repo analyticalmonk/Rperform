@@ -14,14 +14,20 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   cd Rperform_copy
   
   # Run the Rperform functions
+  echo `pwd`
   touch temp_Rperform.R
   echo $RPERFORM_COMMAND >> temp_Rperform.R
+  echo "Contents of Rperform_copy before running Rperform: "
+  echo `ls`
   Rscript temp_Rperform.R
+  echo "Contents of Rperform_copy after running Rperform: "
+  echo `ls`
+  rm index.Rmd
   rm temp_Rperform.R
   
   # We copy the generated html file to one level above the current directory (repo) in order
   # to easily move it to the gh-pages directory (which we will download later)
-  mv -Rf index.html ../index.html
+  cp -Rf RperformTest.html ../index.html
   # Go up one level
   cd ..
 
@@ -29,12 +35,12 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}  gh-pages > /dev/null
   
   # Copy the generated html file to the gh-pages branch and preserve the existing files
-  cd ./gh-pages
+  cd ./gh-pages/Rperform
   if [! -f index.html]
   then
-    mv -Rf index.html index_old.html
+    mv index.html index_old.html
   fi
-  cp -Rf ../index.html index_buildnum${TRAVIS_BUILD_NUMBER}.html
+  cp -Rf ../../index.html index_buildnum${TRAVIS_BUILD_NUMBER}.html
   cp index_buildnum${TRAVIS_BUILD_NUMBER}.html index.html 
 
   # Add, commit and push files to the gh-pages branch
@@ -76,9 +82,9 @@ if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   cd ./gh-pages
   if [! -f index.html]
   then
-    mv -Rf index.html index_old.html
+    mv index.html index_old.html
   fi
-  cp -Rf ../index.html index_buildnum${TRAVIS_BUILD_NUMBER}.html
+  cp -Rf ../RperformTest.html index_buildnum${TRAVIS_BUILD_NUMBER}.html
   cp index_buildnum${TRAVIS_BUILD_NUMBER}.html index.html 
 
   # Add, commit and push files to gh-pages branch of the repo

@@ -82,9 +82,9 @@ if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   cd ./gh-pages
   if [! -f index.html]
   then
-    mv -Rf index.html index_old.html
+    mv index.html index_old.html
   fi
-  cp -Rf ../index.html index_buildnum${TRAVIS_BUILD_NUMBER}.html
+  cp -Rf ../RperformTest.html index_buildnum${TRAVIS_BUILD_NUMBER}.html
   cp index_buildnum${TRAVIS_BUILD_NUMBER}.html index.html 
 
   # Add, commit and push files to gh-pages branch of the repo

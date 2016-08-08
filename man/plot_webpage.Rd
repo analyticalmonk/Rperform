@@ -6,7 +6,7 @@
 webpage.}
 \usage{
 plot_webpage(test_directory = "tests/testthat", metric = "testMetrics",
-  output_name = "index")
+  output_name = "RperformTest.html")
 }
 \arguments{
 \item{test_directory}{Path of the directory containing the test files.}

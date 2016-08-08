@@ -155,7 +155,7 @@ plot_PR_webpage <- function(test_path, metric = "time") {
   file_lines <- paste0(line_p1, test_path, line_p3, metric, line_p5)
   writeLines(file_lines, con = out_file)
   rmarkdown::render(input = out_file, output_format = "html_document", 
-                    output_file = paste0("index", ".html"))
+                    output_file = paste0("RperformTest", ".html"))
 }
 
 ##  -----------------------------------------------------------------------------------------
