@@ -10,11 +10,11 @@ r_github_packages:
 
 env:
   global:
-  - secure: "enter_your_github_access_token_here"
-  - USER_EMAIL="id@domain.com""
-  - USER_NAME="user"
-  - PR_COMMAND="Rperform::plot_PR_webpage(\"./tests/TEST_NAME_HERE\", metric = \"time\")"
-  - RPERFORM_COMMAND="Rperform::plot_webpage(test_directory = \"./tests/\", metric = \"time\")"
+  - secure: "ENTER_YOUR_ENCRYPTED_GITHUB_ACCESS_TOKEN_HERE"
+  - USER_EMAIL="INSERT_EMAIL_ID_HERE"
+  - USER_NAME="INSERT_USERNAME_HERE"
+  - PR_COMMAND="Rperform::plot_PR_webpage('./INSERT_PATH_TO_TEST_DIR/INSERT_TEST_NAME_HERE', metric = 'time')"
+  - RPERFORM_COMMAND="Rperform::plot_webpage(test_directory = './INSERT_PATH_TO_TEST_DIR/', metric = 'time')"
 
 before_script:
   - travis_wait 30 source `Rscript -e "cat(find.package(\"Rperform\"))"`/push_gh_pages.sh
