@@ -4,10 +4,11 @@ Rperform
 [![Build Status](https://travis-ci.org/analyticalmonk/Rperform.svg?branch=master)](https://travis-ci.org/analyticalmonk/Rperform)
 
 
-Rperform is an R package that allows package developers to track quantitative performance metrics of their code, over time. <b>It focuses on providing changes in a package’s performance metrics, related to time and memory, over different git versions and across git branches.</b>
-Also, you can use Rperform with travis-ci to do performance testing during your travis build by adding some sample scripts to your git repository. It can prove to be particularly useful while measuring the possible changes which can be introduced by a pull request (PR). Detailed instructions for doing that can be found on the wiki link provided below.
+Rperform is a package that allows R developers to track quantitative performance metrics of their code. <b>It focuses on providing changes in a package’s performance metrics, related to time and memory, over different git versions and across git branches. Also, you can use Rperform with travis-ci to do performance testing during your travis build by adding some sample scripts to your git repository.</b> It can prove to be particularly useful while measuring the possible changes which can be introduced by a pull request (PR). Detailed instructions for doing that can be found on the wiki link provided below.
 
 **_For integrating Rperform with your travis build, check out the instructions provided on the [Rperform Wiki](https://github.com/analyticalmonk/Rperform/wiki/Integrating-Rperform-with-Travis-CI)_**.
+
+**_For more information and tutorials, go through the [Rperform wiki](https://github.com/analyticalmonk/Rperform/wiki/Integrating-Rperform-with-Travis-CI)._**
 
 <em>The project was initiated as a part of the [Google Summer of Code 2015](https://github.com/rstats-gsoc/gsoc2015/wiki/Test-timings-on-Travis) program.</em><br>
 <em>The project has been accepted into the [Google Summer of Code 2016](https://github.com/rstats-gsoc/gsoc2016/wiki/Rperform:-Performance-analysis-of-R-package-code) program.</em>
@@ -41,7 +42,7 @@ R CMD INSTALL <insert name of the built tar file>
 Examples
 --------
 
-_For detailed information regarding Rperform's plotting functions, check out the **[Rperform Wiki](https://github.com/analyticalmonk/Rperform/wiki/Plotting-package-metrics-with-Rperform)**._
+_For detailed information regarding Rperform's plotting functions, check out the **[Wiki](https://github.com/analyticalmonk/Rperform/wiki/Plotting-package-metrics-with-Rperform)**._
 
 <b>IMPORTANT</b>: The Rperform package requires you to set the current directory to the concerned 
 git repository before using the functions.
