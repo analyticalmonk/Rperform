@@ -59,7 +59,7 @@
 compare_dir <- function(dir1, dir2, test_path, metric = "time", PR = F) {
   
   # Obtain information about the latest common commit.
-  same_commit <- .common_commit(dir1, dir2, PR)
+  same_commit <- .common_commit(dir1=dir1, dir2=dir2, PR=PR)
   #                  same_commit
   # ---------------------------------------------
   #      common_datetime, cnum_b1, cnum_b2
@@ -246,7 +246,7 @@ plot_PR <- function(test_path, metric = "time") {
                      ggplot2::xlab(label = "Commit messages") +
                      ggplot2::ylab(label = "Memory (in Mb)") +
                      ggplot2::ggtitle(label = paste0("Variation in ", metric,  " metrics across branches ",
-                                                     dir2, " and ", dir1))
+                                                     dir2, " and PR# ", Sys.getenv("TRAVIS_PULL_REQUEST")))
                    
                    print(test_plot)
                    

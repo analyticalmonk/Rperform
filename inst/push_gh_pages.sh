@@ -78,12 +78,12 @@ if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}  gh-pages > /dev/null
 
   # Copy the generated html file to the gh-pages branch and preserve the old files
-  cd ./gh-pages
+  cd ./gh-pages/Rperform
   if [! -f index.html]
   then
     mv index.html index_old.html
   fi
-  cp -Rf ../RperformTest.html index_buildnum${TRAVIS_BUILD_NUMBER}.html
+  cp -Rf ../../RperformTest.html index_buildnum${TRAVIS_BUILD_NUMBER}.html
   cp index_buildnum${TRAVIS_BUILD_NUMBER}.html index.html
 
   # Add, commit and push files to gh-pages branch of the repo
