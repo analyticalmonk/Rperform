@@ -244,7 +244,7 @@ plot_PR <- function(test_path, metric = "time") {
                      # respectively. The seventh line plots a vertical seperator between
                      # the commit from dir2 and the commits from dir1.
                      ggplot2::xlab(label = "Commit messages") +
-                     ggplot2::ylab(label = "Memory (in Mb)") +
+                     ggplot2::ylab(label = "Time (in seconds)") +
                      ggplot2::ggtitle(label = paste0("Variation in ", metric,  " metrics across branches ",
                                                      dir2, " and PR# ", Sys.getenv("TRAVIS_PULL_REQUEST")))
                    
