@@ -210,7 +210,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
       animint::theme_animint(height = 650)
   } 
   
-  viz.list <- list(timeplot = test_plot)
+  viz.list <- list(timeplot = test_plot, update_axes=c("x", "y"))
 
   print("Loaded animint")
   animint::animint2dir(plot.list = viz.list, out.dir = paste0(basename(getwd()), "_", "time_animint"))
@@ -314,7 +314,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
       animint::theme_animint(height = 650)
   } 
   
-  viz.list <- list(memplot = test_plot)
+  viz.list <- list(memplot = test_plot, update_axes=c("x", "y"))
   
   print("Loaded animint")
   animint::animint2dir(plot.list = viz.list, out.dir = paste0(basename(getwd()), "_", "mem_animint"))
