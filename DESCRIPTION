@@ -13,10 +13,10 @@ Imports:
     git2r (>= 0.10.1),
     ggplot2 (>= 1.0.1),
     testthat (>= 0.10.0),
-    devtools (>= 1.8.0)
+    devtools (>= 1.8.0),
+    microbenchmark (>= 1.4-2)
 Suggests:
     animint,
-    microbenchmark (>= 1.4-2),
     rmarkdown,
     knitr
 VignetteBuilder: knitr
