@@ -2,6 +2,24 @@ language: r
 cache: packages
 sudo: false
 warnings_are_errors: false
+r_packages:
+	- microbenchmark
+	- roxygen2
+	- rmarkdown
+
 r_github_packages:
+
+  - analyticalmonk/Rperform
   - hadley/plyr
   - tdhock/animint
+
+before_script:
+   - travis_wait 30 source `Rscript -e "cat(find.package(\"Rperform\"))"`/push_gh_pages.sh
+
+env:
+global:
+	-secure: "0LS3xZ6isISrFWVm7GwxJaDjY+JeYBR/5A1DVr76+qGHe2TsZXkZpjtMMsuvFqKDsZziXsTRVFI3BPGyo7QL3sqkuJobsDff0T9ZUFv8kDK8p4RgAXFkPO8+9KHyEPLIYQ+0lVdaRY7Zgis+t0r0+/tTwVfwH3p9joqjvDvonhsvfTeRbyuMm7RTfP2yQ1l/GTivc31DrgofwMxe8T5lP8YZ48yOSalH9e3bhNu0UczZgSUGfg9n7NVoQY2QHS0QdJWDvKge6cmlc0LyGjfHCaNs4Htno920xWOEFsRTPJIkVGVFSFk1XGC/TlwK+JFUE6jgmJ/hhSQziz3ibT5U52fNipCtBqrr++d1Dneulki9YwN/ihQgGeuyK87UF+O3Ujq23v19Gqpq6yKgSJl6Ny9t+7JtwDJyo7efkfdi0WjOgWBT4lkuSg55Tt7ui5TNDpSgsifwn4GoCmooTJjZr9w0kbs0hNE1YPIDQAx85WOg6nS3Z2a1KeCP9IdmoYB+p3apnrN3JhWkLpB80XyqIu8duoELbB+MG+IPS65QXaFVPoMYkyQJszY4OSZrgGNc3mX7EdGLLmPdRPU9jKJcyHN+su/53EgbgenpWwZAZb1p9N56PfraiMVTstg0W+vjrneLfrBfClg9bZKNTQyW50Z5HSGURzSgX4pE6crVbAs="
+	-USER_EMAIL="kaurdevinder07@gmail.com"
+	-PR_COMMAND="Rperform::plot_PR_webpage(test_path = './INSERT_PATH_TO_TEST_DIR/INSERT_TEST_NAME_HERE', metric = 'time')"
+	-RM_COMMAND="Rperform::plot_webpage(test_directory = './INSERT_PATH_TO_TEST_DIR/', metric = 'time')"
+
