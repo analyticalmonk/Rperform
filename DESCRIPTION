@@ -16,6 +16,7 @@ Imports:
     devtools (>= 1.8.0),
     microbenchmark (>= 1.4-2)
 Suggests:
+	testthat
     animint,
     rmarkdown,
     knitr
