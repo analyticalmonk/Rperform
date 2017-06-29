@@ -8,7 +8,6 @@ compare_brancht(test_path, branch1, branch2 = "master")
 }
 \arguments{
 \item{test_path}{File-path for the test file to be tested.}
-
 \item{branch1}{Branch against whose commits the test file is to be 
 tested.}
 
@@ -20,7 +19,6 @@ against the first commit till the latest common commit in branch1, and
 against the latest commit in branch2.
 }
 \section{Value}{
-
 compare_brancht returns an object of class "data.frame".
 The data-frame consists of the following columns:
 \code{test_name}
@@ -50,6 +48,5 @@ t_path <- "Path/to/file"
 library(Rperform)
 compare_brancht(test_path = t_path, branch1 = "helper", branch2 = "master")
 }
-
 }
 

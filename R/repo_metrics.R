@@ -339,7 +339,7 @@ time_compare <- function(test_path, num_commits = 10) {
 #' its execution.
 #' 
 #' @param test_path File-path for the test file which is to be checked.
-#' @param test_commit git2r commit \code{object} corresponding to which the
+#' @param  git2r commit \code{object} corresponding to which the
 #'   memory stats are to be checked.
 #'    
 #' @examples

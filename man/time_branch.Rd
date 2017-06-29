@@ -34,8 +34,7 @@ The data-frame consists of the following columns:
 
 \section{Warning}{
 
-  Function assumes the current directory to be the root directory of the
-  package being tested.
+  Function assumes the current directory to be the root directory of the package being tested.
 }
 \examples{
 
