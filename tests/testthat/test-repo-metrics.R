@@ -22,6 +22,8 @@ test_that("Data frames returned by metric functions are of the correct dimension
   expect_equal((ncol(time_compare(test_path = "tests/testthat/test-count.r", 2))), 7)
   expect_equal(ncol(mem_compare(test_path = "tests/testthat/test-count.r", 2)), 7)
 })
+
+
 setwd("./../")
 unlink(x = "./stringr", recursive = T, force = T)
 

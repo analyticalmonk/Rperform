@@ -1,0 +1,23 @@
+ 1610  git branch 
+ 1611  git branch -d testsuitenew 
+ 1612  ls
+ 1613  git status 
+ 1614  git branch 
+ 1615  git checkout -b testsuite17
+ 1616  git status 
+ 1617  git branch 
+ 1618  git checkout testsuite17 
+ 1619  git branch 
+ 1620  git status 
+ 1621  git add .
+ 1622  git add -u
+ 1623  git add -all
+ 1624  git add --all
+ 1625  git status 
+ 1626  git commit -m "Added new test cases in test-repo-metric.R"
+ 1627* git push origin testsuite17
+ 1628  git branch -r
+ 1629  git fetch -p
+ 1630  git branch -r
+ 1631  history 
+ 1632  history > history_for_print.txt
