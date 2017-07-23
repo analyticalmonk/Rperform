@@ -53,7 +53,7 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
   stopifnot(is.numeric(num_commits))
   stopifnot(length(num_commits) == 1)
   num_commits <- floor(num_commits)
-  
+
   # Git operations
   target <- git2r::repository("./")
   origin_state <- git2r::head(target)
@@ -65,8 +65,7 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
   test_results_df <- time_compare(test_path, num_commits)
   test_results_df$branch <- branch
   ## -----------------------------------------------------------------------
-  
-  test_results_df
+   test_results_df
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -110,7 +109,6 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
 #'   Function assumes the current directory to be the root directory of the
 #'   package being tested.
 #' 
-
 compare_brancht <- function(test_path, branch1, branch2 = "master") {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
@@ -184,7 +182,6 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
 #'   Function assumes the current directory to be the root directory of the
 #'   package being tested.
 #'
-
 compare_branchm <- function(test_path, branch1, branch2 = "master") {
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
@@ -199,7 +196,6 @@ compare_branchm <- function(test_path, branch1, branch2 = "master") {
   #                  same_commit
   # ---------------------------------------------
   #      common_datetime, cnum_b1, cnum_b2
-  
   # For branch1
   git2r::checkout(target, branch1)
   if (same_commit$cnum_b2 == 1) {
@@ -221,7 +217,6 @@ compare_branchm <- function(test_path, branch1, branch2 = "master") {
 }
 
 ##  -----------------------------------------------------------------------------------------
-
 ## -----------------------------------------------------------------------------------------
 ## Function to find the latest common commit given two branches of a repository
 ## ----------------------------------------------------------------------------  
