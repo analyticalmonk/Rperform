@@ -13,7 +13,16 @@ test_that("To checck if the parameters of 'time_branch' are passed right",
 
 	{	
 		expect_error(time_branch(test_path=tests/testthat/test-dup.r, branch = "master", num_commits = 5))
-		expect_error(time_branch(test_path=tests/testthat/test-dup.r, branch = master, num_commits = 5))
+		expect_error(time_branch(test_path="tests/testthat/test-dup.r", branch = master, num_commits = 5))
+		expect_error(time_branch(test_path=tests/testthat/test-dup.r, branch = "master", num_commits = "5"))
+		}
+)
+
+test_that("To checck if the parameters of 'compare_branchm' are passed right",
+
+	{	
+		expect_error(time_branch(test_path=tests/testthat/test-dup.r, branch = "master", num_commits = 5))
+		expect_error(time_branch(test_path="tests/testthat/test-dup.r", branch = master, num_commits = 5))
 		expect_error(time_branch(test_path=tests/testthat/test-dup.r, branch = "master", num_commits = "5"))
 		}
 )

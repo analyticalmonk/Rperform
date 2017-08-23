@@ -116,7 +116,7 @@ compare_brancht <- function(test_path, branch1, branch2 = "master") {
   stopifnot(length(branch1) == 1)
   stopifnot(is.character(branch2))
   stopifnot(length(branch2) == 1)
-  
+
   same_commit <- .common_commit(branch1 = branch1, branch2 = branch2)
   #                  same_commit
   # ---------------------------------------------
