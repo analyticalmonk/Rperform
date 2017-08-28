@@ -233,7 +233,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
     .save_data(time_data, pattern = "*.[rR]$", replacement = "_time.RData",
                replace_string = basename(test_path))
   }
-  #dev gsub is uded to replace something using regular expressions
+  #dev gsub is used to replace something using regular expressions
   curr_name <- gsub(pattern = " ", replacement = "_", x = basename(test_path))
   curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
   
