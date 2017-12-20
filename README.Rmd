@@ -4,6 +4,8 @@ Rperform
 [![Build Status](https://travis-ci.org/analyticalmonk/Rperform.svg?branch=master)](https://travis-ci.org/analyticalmonk/Rperform)
 
 
+**NOTE: The project's development was on hold during 2017 but will resume from January 2018.**
+
 Rperform is a package that allows R developers to track quantitative performance metrics of their code. It focuses on providing changes in a package’s performance metrics, related to runtime and memory, over different git versions and across git branches. Rperform can be integrated with Travis-CI to do performance testing during Travis builds by making changes to the repo's .travis.yml file. **It can prove to be particularly useful while measuring the possible changes which can be introduced by a pull request (PR).**
 
 **_For integrating Rperform with your travis build, check out the instructions provided on the [Rperform Wiki](https://github.com/analyticalmonk/Rperform/wiki/Integrating-Rperform-with-Travis-CI)_**.
