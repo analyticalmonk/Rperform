@@ -1,4 +1,6 @@
 
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # Rperform
 
 [![Build
@@ -24,16 +26,17 @@ Wiki](https://github.com/analyticalmonk/Rperform/wiki/Integrating-Rperform-with-
 the [Rperform
 wiki](https://github.com/analyticalmonk/Rperform/wiki/Integrating-Rperform-with-Travis-CI).***
 
-<em>The project was initiated as a part of the [Google Summer of
+*The project was initiated as a part of the [Google Summer of
 Code 2015](https://github.com/rstats-gsoc/gsoc2015/wiki/Test-timings-on-Travis)
 program. [Toby Dylan Hocking](https://github.com/tdhock) and [Hadley
-Wickham](https://github.com/hadley) were the mentors.</em><br> <em>The
-project was accepted into the [Google Summer of
+Wickham](https://github.com/hadley) were the mentors.*
+
+*The project was accepted into the [Google Summer of
 Code 2016](https://github.com/rstats-gsoc/gsoc2016/wiki/Rperform:-Performance-analysis-of-R-package-code)
 program. [Joshua Ulrich](https://github.com/joshuaulrich) and [Toby
-Dylan Hocking](https://github.com/tdhock) were the mentors.</em>
+Dylan Hocking](https://github.com/tdhock) were the mentors.*
 
-## Installation
+# Installation
 
   - You can install the package from github using `devtools`\*.
 
@@ -50,25 +53,13 @@ or,
 devtools::install_github("analyticalmonk/Rperform")
 ```
 
-\*Follow the instructions on the [devtools
-README](https://github.com/hadley/devtools#updating-to-the-latest-version-of-devtools)
-to install the latest version.
-
-  - Build and install it using the command line.
-
-<!-- end list -->
-
-    git clone https://github.com/analyticalmonk/rperform/ Rperform
-    R CMD build Rperform
-    R CMD INSTALL <insert name of the built tar file>
-
-## Basic examples
+# Basic examples
 
 *For detailed information regarding Rperform’s plotting functions, check
 out the
 **[Wiki](https://github.com/analyticalmonk/Rperform/wiki/Plotting-package-metrics-with-Rperform)**.*
 
-<b>IMPORTANT</b>: The Rperform package requires you to set the current
+**IMPORTANT**: The Rperform package requires you to set the current
 directory to the concerned git repository before using the functions.
 
 ``` r
@@ -160,7 +151,3 @@ directory to the concerned git repository before using the functions.
 13.5       test-join.r     max_mem_mb   pass      0.148 Can now use CRA 2015-01-08 14:09:43
 13.6       test-join.r     leak_mb      pass      0.148 Can now use CRA 2015-01-08 14:09:43
 ```
-
------
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
