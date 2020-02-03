@@ -49,7 +49,7 @@ get_datetime <- function(commit_val) {
 get_msg <- function(commit_val) {
   stopifnot(git2r::is_commit(commit_val))
   
-  base::substr(commit_val@summary, start = 1, stop = 15)  
+  base::substr(git2r::summary(commit_val), start = 1, stop = 15)  
 }
 
 ##  -----------------------------------------------------------------------------------------
