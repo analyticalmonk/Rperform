@@ -28,7 +28,7 @@ get_sha <- function(commit_val) {
 
 get_datetime <- function(commit_val) {
   stopifnot(git2r::is_commit(commit_val))
-  
+  print(commit_val)
   methods::as((commit_val@author@when), "POSIXct")
 }
 
