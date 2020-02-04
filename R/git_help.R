@@ -31,7 +31,7 @@ get_sha <- function(commit_val) {
 get_datetime <- function(commit_val) {
   stopifnot(is_commit(commit_val))
   
-  methods::as(committer(commit_val)@when, "POSIXct")
+  methods::as(commit(commit_val)@committer@when, "POSIXct")
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -71,3 +71,4 @@ get_branch <- function(dir_path = "./") {
 }
 
 ##  -----------------------------------------------------------------------------------------
+
