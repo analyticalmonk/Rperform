@@ -6,14 +6,12 @@
 #' @param commit_val git commit object, as returned by git2r::commits()
 #' 
 #' @seealso \code{\link[git2r]{commits}}
- 
+
 # The get_sha function, given a git commit object returns a character vector which is the
 # SHA1 value for the given commit.
 
-library(git2r)
-
 get_sha <- function(commit_val) {
-  stopifnot(is_commit(commit_val))
+  stopifnot(git2r::is_commit(commit_val))
   
   attr(commit_val, which = "sha")  
 }
@@ -29,9 +27,9 @@ get_sha <- function(commit_val) {
 #' @seealso \code{\link[git2r]{commits}}
 
 get_datetime <- function(commit_val) {
-  stopifnot(is_commit(commit_val))
+  stopifnot(git2r::is_commit(commit_val))
   
-  methods::as(commit(commit_val)@committer@when, "POSIXct")
+  methods::as((commit_val$author$when), "POSIXct")
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -49,9 +47,9 @@ get_datetime <- function(commit_val) {
 # message's summary for the given commit.
 
 get_msg <- function(commit_val) {
-  stopifnot(is_commit(commit_val))
+  stopifnot(git2r::is_commit(commit_val))
   
-  base::substr(summary(commit_val), start = 1, stop = 15)  
+  base::substr(commit_val$summary, start = 1, stop = 15)  
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -66,8 +64,8 @@ get_msg <- function(commit_val) {
 #' @seealso \code{\link[git2r]{repository}}
 
 get_branch <- function(dir_path = "./") {
-  repo <- repository(dir_path)
-  head(repo)@name
+  repo <- git2r::repository(dir_path)
+  git2r::head(repo)@name
 }
 
 ##  -----------------------------------------------------------------------------------------
