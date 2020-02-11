@@ -65,7 +65,7 @@ get_msg <- function(commit_val) {
 
 get_branch <- function(dir_path = "./") {
   repo <- git2r::repository(dir_path)
-  git2r::head(repo)@name
+  git2r::repository_head(repo)$name
 }
 
 ##  -----------------------------------------------------------------------------------------

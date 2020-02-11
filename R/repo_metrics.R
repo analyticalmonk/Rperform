@@ -55,9 +55,9 @@ list_commits <- function(path = "./", num_commits = 20){
   date_list <- list()
   
   for (i in 1:num_commits) {
-    com <- attr(commit_list[[i]], which = "sha")
-    msg <- attr(commit_list[[i]], which = "summary")
-    com_date <- as(commit_list[[i]]@committer@when, "character")
+    com <- commit_list[[i]]$sha
+    msg <- commit_list[[i]]$summary
+    com_date <- commit_list[[i]]$author$when
     sha_list[i] <- com
     msg_list[i] <- msg
     date_list[i] <- com_date
@@ -152,7 +152,7 @@ time_commit <- function(test_path, test_commit) {
   target <- git2r::repository("./")
 # Reverting to the current branch on exit from the function
 ######################################################################  
-  original_state <- git2r::head(target)
+  original_state <- git2r::repository_head(target)
   git2r::checkout(test_commit)
   on.exit(expr = git2r::checkout(original_state))
 ######################################################################
@@ -415,7 +415,7 @@ mem_commit <- function(test_path, test_commit) {
   
   ## Git operations
   target <- git2r::repository("./")
-  original_state <- git2r::head(target)
+  original_state <- git2r::repository_head(target)
   git2r::checkout(test_commit)
   on.exit(expr = git2r::checkout(original_state))
   test_results <- list()
