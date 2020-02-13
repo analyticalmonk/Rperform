@@ -226,6 +226,7 @@ time_commit <- function(test_path, test_commit) {
         NA
       }
     )
+    browser()
 
     time_df <- data.frame(test_name, metric_name = "runtime (in seconds)", status, 
                           metric_val = seconds, message = msg_val, 
