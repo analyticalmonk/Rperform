@@ -13,7 +13,7 @@
 get_sha <- function(commit_val) {
   stopifnot(git2r::is_commit(commit_val))
   
-  attr(commit_val, which = "sha")  
+  commit_val$sha
 }
 
 ##  -----------------------------------------------------------------------------------------

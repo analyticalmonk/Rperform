@@ -197,6 +197,7 @@ time_commit <- function(test_path, test_commit) {
 # --------------------------------------------------------------------------
 
   testthatQuantity <- function(test_name, code){
+    # browser()
     e <- parent.frame()
     code_subs <- substitute(code)
     run <- function(){
@@ -208,9 +209,7 @@ time_commit <- function(test_path, test_commit) {
     # (time as NA, status as 'fail') to let the user know of the error.
     seconds <- tryCatch(expr = {
         if(requireNamespace('microbenchmark')){
-          times <- microbenchmark::microbenchmark(test = {
-            run()
-          }, times = 3)
+          times <- microbenchmark::microbenchmark(run, times = 3L)
           times$time/1e9
         } else {
           replicate(3, {
@@ -226,8 +225,7 @@ time_commit <- function(test_path, test_commit) {
         NA
       }
     )
-    browser()
-
+    
     time_df <- data.frame(test_name, metric_name = "runtime (in seconds)", status, 
                           metric_val = seconds, message = msg_val, 
                           sha = sha_val, date_time = commit_dtime)
