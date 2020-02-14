@@ -167,14 +167,16 @@ time_commit <- function(test_path, test_commit) {
   
   # require(testthat)
   file_status = "pass"
+  
+  test <- function(){
+    base::source(temp_file_original, local = T)
+  }
 # We have used tryCatch so that execution doesn't stop in case of an error
 # in the test file. Rather we will modify the values in the result data frame
 # (time as NA, status as 'fail') to let the user know of the error.
   seconds_file <- tryCatch(expr = {
       if(requireNamespace('microbenchmark')){
-        times <- microbenchmark::microbenchmark(test = {
-          base::source(temp_file_original, local = T)
-        }, times = 3)
+        times <- microbenchmark::microbenchmark(test, times = 3L)
         times$time/1e9
       } else {
         replicate(3, {
