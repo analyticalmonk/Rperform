@@ -199,7 +199,6 @@ time_commit <- function(test_path, test_commit) {
 # --------------------------------------------------------------------------
 
   testthatQuantity <- function(test_name, code){
-    # browser()
     e <- parent.frame()
     code_subs <- substitute(code)
     run <- function(){
@@ -209,9 +208,10 @@ time_commit <- function(test_path, test_commit) {
     # We have used tryCatch so that execution doesn't stop in case of an error
     # in a testthat block. Rather we modify the values in the result data frame
     # (time as NA, status as 'fail') to let the user know of the error.
+    # browser()
     seconds <- tryCatch(expr = {
         if(requireNamespace('microbenchmark')){
-          times <- microbenchmark::microbenchmark(run, times = 3L)
+          times <- microbenchmark::microbenchmark(run(), times = 1)
           times$time/1e9
         } else {
           replicate(3, {
@@ -227,7 +227,6 @@ time_commit <- function(test_path, test_commit) {
         NA
       }
     )
-    
     time_df <- data.frame(test_name, metric_name = "runtime (in seconds)", status, 
                           metric_val = seconds, message = msg_val, 
                           sha = sha_val, date_time = commit_dtime)
@@ -644,7 +643,6 @@ mem_compare <- function(test_path, num_commits = 10) {
       result_list[[paste0(commit_i, as.character(test_t))]] <- mem_result 
     }
   }
-  
   system("rm *RSS*")
   system("rm mem_result.RData")
   do.call(what = rbind, args = result_list)
