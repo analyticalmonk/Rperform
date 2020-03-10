@@ -167,24 +167,7 @@ time_commit <- function(test_path, test_commit) {
 # We have used tryCatch so that execution doesn't stop in case of an error
 # in the test file. Rather we will modify the values in the result data frame
 # (time as NA, status as 'fail') to let the user know of the error.
-  seconds_file <- tryCatch(expr = {
-      if(requireNamespace('microbenchmark')){
-        times <- microbenchmark::microbenchmark(test(), times = 1)
-        times$time/1e9
-      } else {
-        replicate(3, {
-          time_vec <- system.time( {
-            source(temp_file_original, local = T)
-          } )
-          time_vec[["elapsed"]]
-        })
-      }
-    },
-    error = function(e){
-      file_status = "fail"
-      NA
-    }
-  )
+  seconds_file <- .benchmark(test())
 
 # ---------------------------------------------------------------
 
@@ -202,24 +185,7 @@ testthatQuantity <- function(test_name, code){
     # in a testthat block. Rather we modify the values in the result data frame
     # (time as NA, status as 'fail') to let the user know of the error.
     # browser()
-    seconds <- tryCatch(expr = {
-        if(requireNamespace('microbenchmark')){
-          times <- microbenchmark::microbenchmark(run(), times = 1)
-          times$time/1e9
-        } else {
-          replicate(3, {
-            time_vec <- system.time( {
-              run()
-            } )
-            time_vec[["elapsed"]]
-          })
-        }
-      },
-      error = function(e){
-        status = "fail"
-        NA
-      }
-    )
+    seconds <- .benchmark(run())
     time_df <- data.frame(test_name, metric_name = "runtime (in seconds)", status, 
                           metric_val = seconds, message = msg_val, 
                           sha = sha_val, date_time = commit_dtime)
@@ -639,3 +605,24 @@ mem_compare <- function(test_path, num_commits = 10) {
 }
 
 ##  -----------------------------------------------------------------------------------------
+
+.benchmark <- function(func){
+  benechmark_result <- tryCatch(expr = {
+    if(requireNamespace('microbenchmark')){
+      times <- microbenchmark::microbenchmark(func, times = 1)
+      times$time/1e9
+    } else {
+      replicate(3, {
+        time_vec <- system.time( {
+          source(temp_file_original, local = T)
+        } )
+        time_vec[["elapsed"]]
+      })
+    }
+  },
+  error = function(e){
+    file_status = "fail"
+    NA
+  })
+  return(benechmark_result)
+}
