@@ -41,10 +41,6 @@ utils::globalVariables(c("mem_result"))
 # n commits in the repo.
 
 list_commits <- function(path = "./", num_commits = 20){
-  stopifnot(is.character(path))
-  stopifnot(length(path) == 1)
-  stopifnot(is.numeric(num_commits))
-  stopifnot(length(num_commits) == 1)
   num_commits <- floor(num_commits)
 
   target <- git2r::repository(path)
@@ -120,10 +116,7 @@ list_commits <- function(path = "./", num_commits = 20){
 # against the specified commit in the current git repository.
 
 time_commit <- function(test_path, test_commit) {
-  
-  stopifnot(is.character(test_path))
-  stopifnot(length(test_path) == 1)
-  stopifnot(!is.null(test_commit))
+
   stopifnot(git2r::is_commit(test_commit))
 
   # Get the meta-information from the commit
@@ -176,7 +169,7 @@ time_commit <- function(test_path, test_commit) {
 # (time as NA, status as 'fail') to let the user know of the error.
   seconds_file <- tryCatch(expr = {
       if(requireNamespace('microbenchmark')){
-        times <- microbenchmark::microbenchmark(test, times = 3L)
+        times <- microbenchmark::microbenchmark(test(), times = 1)
         times$time/1e9
       } else {
         replicate(3, {
@@ -198,7 +191,7 @@ time_commit <- function(test_path, test_commit) {
 # Code block measuring the run-time of the testthat code blocks (if present)
 # --------------------------------------------------------------------------
 
-  testthatQuantity <- function(test_name, code){
+testthatQuantity <- function(test_name, code){
     e <- parent.frame()
     code_subs <- substitute(code)
     run <- function(){
@@ -308,10 +301,6 @@ time_commit <- function(test_path, test_commit) {
 # for.
 
 time_compare <- function(test_path, num_commits = 10) {
-  stopifnot(is.character(test_path))
-  stopifnot(length(test_path) == 1)
-  stopifnot(is.numeric(num_commits))
-  stopifnot(length(num_commits) == 1)
   num_commits <- floor(num_commits)
   
   target <- git2r::repository("./")
