@@ -667,9 +667,8 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
     # save(time_frame, file = file.path("Rperform_Data", sub(pattern = pattern,
     #                                                        replacement = replacement,
     #                                                        x = basename(replace_string))))
-    write.csv(time_frame, file = file.path("Rperform_Data", sub(pattern = pattern,
-                                                                replacement = replacement,
-                                                                x = basename(replace_string))))
+    csv_file = file.path("Rperform_Data", sub(pattern = pattern, replacement = replacement, x = basename(replace_string)))
+    write.table(time_frame, file = csv_file, sep = ",", col.names = !file.exists(csv_file), append = TRUE)
   }
   else if(grepl(pattern = "mem", x = replacement) > 0){
     mem_frame <- metric_frame
