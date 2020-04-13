@@ -115,8 +115,8 @@ list_commits <- function(path = "./", num_commits = 20){
 # The time_commit function, given a test-file path, checks its run-time details
 # against the specified commit in the current git repository.
 
-time_commit <- function(test_path, test_commit) {
-
+time_commit <- function(test_path, test_commit, test_num = 0) {
+  # browser()
   stopifnot(git2r::is_commit(test_commit))
 
   # Get the meta-information from the commit
@@ -159,15 +159,23 @@ time_commit <- function(test_path, test_commit) {
 # --------------------------------------------------------------
   
   # require(testthat)
-  file_status = "pass"
-  
+  file_status <- "fail"
+  seconds_file <- NA
   test <- function(){
     base::source(temp_file_original, local = T)
   }
 # We have used tryCatch so that execution doesn't stop in case of an error
 # in the test file. Rather we will modify the values in the result data frame
 # (time as NA, status as 'fail') to let the user know of the error.
-  seconds_file <- .benchmark(test())
+  # seconds_file <- .benchmark(test())
+  tryCatch(expr={
+    seconds_file <- .benchmark(test())
+    file_status <- "pass"
+  },   
+  error = function(e){
+    file_status <- "fail"
+    NA
+  })
 
 # ---------------------------------------------------------------
 
@@ -180,13 +188,20 @@ testthatQuantity <- function(test_name, code){
     run <- function(){
       testthat:::test_code(test_name, code_subs, env=e)
     }
-    status = "pass"
+    status <- "fail"
+    seconds <- NA
     # We have used tryCatch so that execution doesn't stop in case of an error
     # in a testthat block. Rather we modify the values in the result data frame
     # (time as NA, status as 'fail') to let the user know of the error.
-    # browser()
-    seconds <- .benchmark(run())
-    time_df <- data.frame(test_name, metric_name = "runtime (in seconds)", status, 
+    tryCatch(expr={
+      seconds <- .benchmark(run())
+      status <- "pass"
+    },   
+    error = function(e){
+      status <- "fail"
+      NA
+    })
+    time_df <- data.frame(test_num, test_name, metric_name = "runtime (in seconds)", status, 
                           metric_val = seconds, message = msg_val, 
                           sha = sha_val, date_time = commit_dtime)
     test_results[[test_name]] <<- time_df
@@ -203,7 +218,7 @@ testthatQuantity <- function(test_name, code){
   test_results_df <- do.call(rbind, test_results)
 #   test_results_df["file runtime"] <- seconds_file
 #   test_results_df["file runtime-2"] <- seconds_file2
-  test_results_df <- rbind(test_results_df, data.frame(test_name = basename(test_path), 
+  test_results_df <- rbind(test_results_df, data.frame(test_num, test_name = basename(test_path), 
                                        metric_name = "runtime (in seconds)", status = file_status,
                                        metric_val = seconds_file, message = msg_val, 
                                        sha = sha_val, date_time = commit_dtime))
@@ -275,7 +290,10 @@ time_compare <- function(test_path, num_commits = 10) {
 
   for(commit_i in seq_along(commit_list)){
     one_commit <- commit_list[[commit_i]]
-    suppressMessages(result_list[[commit_i]] <- time_commit(test_path, one_commit))
+    for (current_i in 1:3){
+      suppressMessages(result_list[[3*(commit_i-1)+current_i]] <- time_commit(test_path, one_commit, test_num = current_i))
+    }
+    # browser()
   } 
   
   test_results <- do.call(rbind, result_list)
@@ -607,22 +625,7 @@ mem_compare <- function(test_path, num_commits = 10) {
 ##  -----------------------------------------------------------------------------------------
 
 .benchmark <- function(func){
-  benechmark_result <- tryCatch(expr = {
-    if(requireNamespace('microbenchmark')){
       times <- microbenchmark::microbenchmark(func, times = 1)
       times$time/1e9
-    } else {
-      replicate(3, {
-        time_vec <- system.time( {
-          source(temp_file_original, local = T)
-        } )
-        time_vec[["elapsed"]]
-      })
-    }
-  },
-  error = function(e){
-    file_status = "fail"
-    NA
-  })
-  return(benechmark_result)
+
 }
