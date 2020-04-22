@@ -159,7 +159,7 @@ time_commit <- function(test_path, test_commit, test_num = 0) {
 # --------------------------------------------------------------
   
   # require(testthat)
-  file_status <- "fail"
+  file_status <- "Fail"
   seconds_file <- NA
   test <- function(){
     base::source(temp_file_original, local = T)
@@ -170,10 +170,10 @@ time_commit <- function(test_path, test_commit, test_num = 0) {
   # seconds_file <- .benchmark(test())
   tryCatch(expr={
     seconds_file <- .benchmark(test())
-    file_status <- "pass"
+    file_status <- "Pass"
   },   
   error = function(e){
-    file_status <- "fail"
+    file_status <- "Fail"
     NA
   })
 
@@ -188,22 +188,22 @@ testthatQuantity <- function(test_name, code){
     run <- function(){
       testthat:::test_code(test_name, code_subs, env=e)
     }
-    status <- "fail"
+    status <- "Fail"
     seconds <- NA
     # We have used tryCatch so that execution doesn't stop in case of an error
     # in a testthat block. Rather we modify the values in the result data frame
     # (time as NA, status as 'fail') to let the user know of the error.
     tryCatch(expr={
       seconds <- .benchmark(run())
-      status <- "pass"
+      status <- "Pass"
     },   
     error = function(e){
-      status <- "fail"
+      status <- "Fail"
       NA
     })
     time_df <- data.frame(test_num, test_name, metric_name = "runtime (in seconds)", status, 
-                          metric_val = seconds, message = msg_val, 
-                          sha = sha_val, date_time = commit_dtime)
+                          metric_val = seconds, commit_message = msg_val, 
+                          commit_SHA = sha_val, commit_date = commit_dtime, benchmark_date = Sys.time())
     test_results[[test_name]] <<- time_df
   }
 
@@ -220,8 +220,8 @@ testthatQuantity <- function(test_name, code){
 #   test_results_df["file runtime-2"] <- seconds_file2
   test_results_df <- rbind(test_results_df, data.frame(test_num, test_name = basename(test_path), 
                                        metric_name = "runtime (in seconds)", status = file_status,
-                                       metric_val = seconds_file, message = msg_val, 
-                                       sha = sha_val, date_time = commit_dtime))
+                                       metric_val = seconds_file, commit_message = msg_val, 
+                                       commit_SHA = sha_val, commit_date = commit_dtime, benchmark_date = Sys.time()))
   rownames(test_results_df) <- NULL
   test_results_df
 
@@ -408,7 +408,7 @@ mem_commit <- function(test_path, test_commit) {
     }
     new_name <- gsub(pattern = " ", replacement = "", x = test_name)
     
-    test_status <- "pass"
+    test_status <- "Pass"
     # We have used tryCatch so that execution doesn't stop in case of an error
     # in a testthat block. Rather we modify the values in the result data frame
     # (memories as NA, status as 'fail') to let the user know of the error. 
@@ -444,7 +444,7 @@ mem_commit <- function(test_path, test_commit) {
   
   ## Obtaining the memory metrics for the file 
   file_name <- basename(test_path)
-  file_status <- "pass"
+  file_status <- "Pass"
   rss_list <- 
   tryCatch(expr = {
     .rss.profile.start(paste0(file_name, ".RSS"))
