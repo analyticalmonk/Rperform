@@ -810,3 +810,41 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
   remove(temp_out)
 }
 
+
+
+run_all_test <- function(num_commits = 1) {
+  test_file_list <- list.files(path = "./tests/testthat/", full.names = TRUE)
+  # stop(length(test_file_list) == 0)
+  # Obtain the metrics data
+  time_data <- list()
+  for(test_file in test_file_list){
+    temp_time_data <- data.frame(test_num= 0, test_name= basename(test_file), metric_name = "runtime (in seconds)", status="Fail",
+                                 metric_val = NA, commit_message = NA, commit_SHA = NA, commit_date = NA, benchmark_date = Sys.time())
+    tryCatch(expr={
+      suppressMessages(temp_time_data <- time_compare(test_file, num_commits))
+    },   
+    error = function(e){
+    },
+    finally = {
+      time_data <- rbind(time_data,temp_time_data)
+    })
+  }
+  
+  .save_data_alt(time_data, pattern = "*.[rR]$", replacement = "_result.csv",
+             replace_string = getwd())
+}
+
+.save_data_alt <- function(metric_frame, pattern = "*.[rR]$", replacement, replace_string) {
+  
+  # Create a directory for storing the metric data
+  if (!dir.exists("./Rperform_Data")){
+    dir.create(path = "./Rperform_Data")
+  }
+  
+  time_frame <- metric_frame
+  csv_file = file.path("Rperform_Data", paste(basename(replace_string), "Result.csv", sep = "_"))
+  write.table(time_frame, file = csv_file, sep = ",", col.names = !file.exists(csv_file), append = TRUE)
+  
+  # write.csv(time_frame, file = file.path("Rperform_Data", paste(basename(replace_string), "Result.csv", sep = "_")), append = TRUE)
+  # browser()
+}
