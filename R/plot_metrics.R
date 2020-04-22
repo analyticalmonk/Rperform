@@ -830,7 +830,6 @@ run_all_test <- function(num_commits = 1) {
     })
   }
   
- colnames(time_data) <- c("num", colnames(time_data))
   .save_data_alt(time_data, pattern = "*.[rR]$", replacement = "_result.csv",
              replace_string = getwd())
 }
