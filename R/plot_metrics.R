@@ -830,7 +830,7 @@ run_all_test <- function(num_commits = 1) {
     })
   }
   
-  colnames(time_data)[1] <- "num"
+ colnames(PeakSegDisk_Result) <- c("num", colnames(PeakSegDisk_Result))
   .save_data_alt(time_data, pattern = "*.[rR]$", replacement = "_result.csv",
              replace_string = getwd())
 }
