@@ -844,8 +844,5 @@ run_all_test <- function(num_commits = 1) {
   
   time_frame <- metric_frame
   csv_file = file.path("Rperform_Data", paste(basename(replace_string), "Result.csv", sep = "_"))
-  write.table(time_frame, file = csv_file, sep = ",", col.names = !file.exists(csv_file), append = TRUE)
-  
-  # write.csv(time_frame, file = file.path("Rperform_Data", paste(basename(replace_string), "Result.csv", sep = "_")), append = TRUE)
-  # browser()
+  write.table(time_frame, file = csv_file, sep = ",",row.names = FALSE ,col.names = !file.exists(csv_file), append = TRUE)
 }
