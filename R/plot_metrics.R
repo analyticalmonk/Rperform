@@ -816,12 +816,14 @@ run_all_test <- function(num_commits = 1) {
   test_file_list <- list.files(path = "./tests/testthat/", full.names = TRUE)
   # stop(length(test_file_list) == 0)
   # Obtain the metrics data
+  head_sha = git2r::commits(n=1)[[1]]$sha
+  benchmark_date = Sys.time()
   time_data <- list()
   for(test_file in test_file_list){
     temp_time_data <- data.frame(test_num= 0, test_name= basename(test_file), metric_name = "runtime (in seconds)", status="Fail",
-                                 metric_val = NA, commit_message = NA, commit_SHA = NA, commit_date = NA, benchmark_date = Sys.time())
+                                 metric_val = NA, commit_message = NA, commit_SHA = NA, commit_date = NA, benchmark_date = benchmark_date, benchmark_most_recent_SHA = head_sha)
     tryCatch(expr={
-      suppressMessages(temp_time_data <- time_compare(test_file, num_commits))
+      suppressMessages(temp_time_data <- time_compare(test_file, num_commits, benchmark_date, head_sha))
     },   
     error = function(e){
     },
@@ -843,5 +845,5 @@ run_all_test <- function(num_commits = 1) {
   
   time_frame <- metric_frame
   csv_file = file.path("Rperform_Data", paste(basename(replace_string), "Result.csv", sep = "_"))
-  write.table(time_frame, file = csv_file, sep = ",",row.names = FALSE ,col.names = !file.exists(csv_file), append = TRUE)
+  write.table(time_frame, file = csv_file, sep = ",",row.names = FALSE ,col.names = !file.exists(csv_file), append = TRUE) 
 }
