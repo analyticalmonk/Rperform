@@ -115,7 +115,7 @@ list_commits <- function(path = "./", num_commits = 20){
 # The time_commit function, given a test-file path, checks its run-time details
 # against the specified commit in the current git repository.
 
-time_commit <- function(test_path, test_commit, test_num = 0) {
+time_commit <- function(test_path, test_commit, test_num = 0, current_date, head_sha) {
   # browser()
   stopifnot(git2r::is_commit(test_commit))
 
@@ -203,7 +203,8 @@ testthatQuantity <- function(test_name, code){
     })
     time_df <- data.frame(test_num, test_name, metric_name = "runtime (in seconds)", status, 
                           metric_val = seconds, commit_message = msg_val, 
-                          commit_SHA = sha_val, commit_date = commit_dtime, benchmark_date = Sys.time())
+                          commit_SHA = sha_val, commit_date = commit_dtime, 
+                          benchmark_date = current_date, benchmark_most_recent_SHA = head_sha)
     test_results[[test_name]] <<- time_df
   }
 
@@ -221,7 +222,8 @@ testthatQuantity <- function(test_name, code){
   test_results_df <- rbind(test_results_df, data.frame(test_num, test_name = basename(test_path), 
                                        metric_name = "runtime (in seconds)", status = file_status,
                                        metric_val = seconds_file, commit_message = msg_val, 
-                                       commit_SHA = sha_val, commit_date = commit_dtime, benchmark_date = Sys.time()))
+                                       commit_SHA = sha_val, commit_date = commit_dtime, 
+                                       benchmark_date = current_date, benchmark_most_recent_SHA = head_sha))
   rownames(test_results_df) <- NULL
   test_results_df
 
@@ -281,7 +283,7 @@ testthatQuantity <- function(test_name, code){
 # (if successful), datetime and message corresponding to the commit the value is
 # for.
 
-time_compare <- function(test_path, num_commits = 10) {
+time_compare <- function(test_path, num_commits = 10, current_date, head_sha) {
   num_commits <- floor(num_commits)
   
   target <- git2r::repository("./")
@@ -291,7 +293,8 @@ time_compare <- function(test_path, num_commits = 10) {
   for(commit_i in seq_along(commit_list)){
     one_commit <- commit_list[[commit_i]]
     for (current_i in 1:3){
-      suppressMessages(result_list[[3*(commit_i-1)+current_i]] <- time_commit(test_path, one_commit, test_num = current_i))
+      suppressMessages(result_list[[3*(commit_i-1)+current_i]] <- time_commit(test_path, one_commit, test_num = current_i, 
+                                                                              current_date, head_sha))
     }
     # browser()
   } 
