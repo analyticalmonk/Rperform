@@ -11,6 +11,8 @@
 # SHA1 value for the given commit.
 
 get_sha <- function(commit_val) {
+  print("Commit Val is ")
+  print(commit_val)
   stopifnot(git2r::is_commit(commit_val))
   
   attr(commit_val, which = "sha")  
@@ -27,6 +29,8 @@ get_sha <- function(commit_val) {
 #' @seealso \code{\link[git2r]{commits}}
 
 get_datetime <- function(commit_val) {
+  print("Commit Val is ")
+  print(commit_val)
   stopifnot(git2r::is_commit(commit_val))
   
   methods::as((commit_val@committer@when), "POSIXct")
@@ -47,6 +51,8 @@ get_datetime <- function(commit_val) {
 # message's summary for the given commit.
 
 get_msg <- function(commit_val) {
+  print("Commit Val is ")
+  print(commit_val)
   stopifnot(git2r::is_commit(commit_val))
   
   base::substr(commit_val@summary, start = 1, stop = 15)  
