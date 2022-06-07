@@ -56,7 +56,7 @@ time_branch <- function(test_path, branch = "master", num_commits = 5) {
   
   # Git operations
   target <- git2r::repository("./")
-  origin_state <- git2r::head(target)
+  origin_state <-  git2r::repository_head(target)
   git2r::checkout(target, branch)
   on.exit(expr = git2r::checkout(origin_state))
   
@@ -194,7 +194,7 @@ compare_branchm <- function(test_path, branch1, branch2 = "master") {
   stopifnot(length(branch2) == 1)
   
   target <- git2r::repository("./")
-  original_state <- git2r::head(target)
+  original_state <- git2r::repository_head(target)
   same_commit <- .common_commit(branch1 = branch1, branch2 = branch2)
   #                  same_commit
   # ---------------------------------------------
@@ -239,7 +239,7 @@ compare_branchm <- function(test_path, branch1, branch2 = "master") {
   target1 <- git2r::repository(file.path("./"))
   # If branch1 is specified, check out to it and obtain commit list
   if (!is.null(branch1)) {
-    original_state1 <- git2r::head(target1)
+    original_state1 <- git2r::repository_head(target1)
     git2r::checkout(object = target1, branch = branch1)
   }
   commitlist1 <- git2r::commits(target1)
@@ -256,7 +256,7 @@ compare_branchm <- function(test_path, branch1, branch2 = "master") {
   target2 <- git2r::repository(file.path("./"))
   # If branch2 is specified, check out to it and obtain commit list
   if (!is.null(branch2)) {
-    original_state2 <- git2r::head(target2)
+    original_state2 <- git2r::repository_head(target2)
     git2r::checkout(object = target2, branch = branch2) 
   }
   commitlist2 <- git2r::commits(target2)

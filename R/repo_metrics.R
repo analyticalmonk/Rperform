@@ -41,10 +41,6 @@ utils::globalVariables(c("mem_result"))
 # n commits in the repo.
 
 list_commits <- function(path = "./", num_commits = 20){
-  stopifnot(is.character(path))
-  stopifnot(length(path) == 1)
-  stopifnot(is.numeric(num_commits))
-  stopifnot(length(num_commits) == 1)
   num_commits <- floor(num_commits)
 
   target <- git2r::repository(path)
@@ -55,9 +51,9 @@ list_commits <- function(path = "./", num_commits = 20){
   date_list <- list()
   
   for (i in 1:num_commits) {
-    com <- attr(commit_list[[i]], which = "sha")
-    msg <- attr(commit_list[[i]], which = "summary")
-    com_date <- as(commit_list[[i]]@committer@when, "character")
+    com <- commit_list[[i]]$sha
+    msg <- commit_list[[i]]$summary
+    com_date <- commit_list[[i]]$author$when
     sha_list[i] <- com
     msg_list[i] <- msg
     date_list[i] <- com_date
@@ -119,11 +115,8 @@ list_commits <- function(path = "./", num_commits = 20){
 # The time_commit function, given a test-file path, checks its run-time details
 # against the specified commit in the current git repository.
 
-time_commit <- function(test_path, test_commit) {
-  
-  stopifnot(is.character(test_path))
-  stopifnot(length(test_path) == 1)
-  stopifnot(!is.null(test_commit))
+time_commit <- function(test_path, test_commit, test_num = 0, current_date, head_sha) {
+  # browser()
   stopifnot(git2r::is_commit(test_commit))
 
   # Get the meta-information from the commit
@@ -152,7 +145,7 @@ time_commit <- function(test_path, test_commit) {
   target <- git2r::repository("./")
 # Reverting to the current branch on exit from the function
 ######################################################################  
-  original_state <- git2r::head(target)
+  original_state <- git2r::repository_head(target)
   git2r::checkout(test_commit)
   on.exit(expr = git2r::checkout(original_state))
 ######################################################################
@@ -166,70 +159,52 @@ time_commit <- function(test_path, test_commit) {
 # --------------------------------------------------------------
   
   # require(testthat)
-  file_status = "pass"
+  file_status <- "Fail"
+  seconds_file <- NA
+  test <- function(){
+    base::source(temp_file_original, local = T)
+  }
 # We have used tryCatch so that execution doesn't stop in case of an error
 # in the test file. Rather we will modify the values in the result data frame
 # (time as NA, status as 'fail') to let the user know of the error.
-  seconds_file <- tryCatch(expr = {
-      if(requireNamespace('microbenchmark')){
-        times <- microbenchmark::microbenchmark(test = {
-          base::source(temp_file_original, local = T)
-        }, times = 3)
-        times$time/1e9
-      } else {
-        replicate(3, {
-          time_vec <- system.time( {
-            source(temp_file_original, local = T)
-          } )
-          time_vec[["elapsed"]]
-        })
-      }
-    },
-    error = function(e){
-      file_status = "fail"
-      NA
-    }
-  )
+  # seconds_file <- .benchmark(test())
+  tryCatch(expr={
+    seconds_file <- .benchmark(test())
+    file_status <- "Pass"
+  },   
+  error = function(e){
+    file_status <- "Fail"
+    NA
+  })
 
 # ---------------------------------------------------------------
 
 # Code block measuring the run-time of the testthat code blocks (if present)
 # --------------------------------------------------------------------------
 
-  testthatQuantity <- function(test_name, code){
+testthatQuantity <- function(test_name, code){
     e <- parent.frame()
     code_subs <- substitute(code)
     run <- function(){
       testthat:::test_code(test_name, code_subs, env=e)
     }
-    status = "pass"
+    status <- "Fail"
+    seconds <- NA
     # We have used tryCatch so that execution doesn't stop in case of an error
     # in a testthat block. Rather we modify the values in the result data frame
     # (time as NA, status as 'fail') to let the user know of the error.
-    seconds <- tryCatch(expr = {
-        if(requireNamespace('microbenchmark')){
-          times <- microbenchmark::microbenchmark(test = {
-            run()
-          }, times = 3)
-          times$time/1e9
-        } else {
-          replicate(3, {
-            time_vec <- system.time( {
-              run()
-            } )
-            time_vec[["elapsed"]]
-          })
-        }
-      },
-      error = function(e){
-        status = "fail"
-        NA
-      }
-    )
-
-    time_df <- data.frame(test_name, metric_name = "runtime (in seconds)", status, 
-                          metric_val = seconds, message = msg_val, 
-                          sha = sha_val, date_time = commit_dtime)
+    tryCatch(expr={
+      seconds <- .benchmark(run())
+      status <- "Pass"
+    },   
+    error = function(e){
+      status <- "Fail"
+      NA
+    })
+    time_df <- data.frame(test_num, test_name, metric_name = "runtime (in seconds)", status, 
+                          metric_val = seconds, commit_message = msg_val, 
+                          commit_SHA = sha_val, commit_date = commit_dtime, 
+                          benchmark_date = current_date, benchmark_most_recent_SHA = head_sha)
     test_results[[test_name]] <<- time_df
   }
 
@@ -244,10 +219,11 @@ time_commit <- function(test_path, test_commit) {
   test_results_df <- do.call(rbind, test_results)
 #   test_results_df["file runtime"] <- seconds_file
 #   test_results_df["file runtime-2"] <- seconds_file2
-  test_results_df <- rbind(test_results_df, data.frame(test_name = basename(test_path), 
+  test_results_df <- rbind(test_results_df, data.frame(test_num, test_name = basename(test_path), 
                                        metric_name = "runtime (in seconds)", status = file_status,
-                                       metric_val = seconds_file, message = msg_val, 
-                                       sha = sha_val, date_time = commit_dtime))
+                                       metric_val = seconds_file, commit_message = msg_val, 
+                                       commit_SHA = sha_val, commit_date = commit_dtime, 
+                                       benchmark_date = current_date, benchmark_most_recent_SHA = head_sha))
   rownames(test_results_df) <- NULL
   test_results_df
 
@@ -307,11 +283,7 @@ time_commit <- function(test_path, test_commit) {
 # (if successful), datetime and message corresponding to the commit the value is
 # for.
 
-time_compare <- function(test_path, num_commits = 10) {
-  stopifnot(is.character(test_path))
-  stopifnot(length(test_path) == 1)
-  stopifnot(is.numeric(num_commits))
-  stopifnot(length(num_commits) == 1)
+time_compare <- function(test_path, num_commits = 10, current_date, head_sha) {
   num_commits <- floor(num_commits)
   
   target <- git2r::repository("./")
@@ -320,7 +292,11 @@ time_compare <- function(test_path, num_commits = 10) {
 
   for(commit_i in seq_along(commit_list)){
     one_commit <- commit_list[[commit_i]]
-    suppressMessages(result_list[[commit_i]] <- time_commit(test_path, one_commit))
+    for (current_i in 1:3){
+      suppressMessages(result_list[[3*(commit_i-1)+current_i]] <- time_commit(test_path, one_commit, test_num = current_i, 
+                                                                              current_date, head_sha))
+    }
+    # browser()
   } 
   
   test_results <- do.call(rbind, result_list)
@@ -415,7 +391,7 @@ mem_commit <- function(test_path, test_commit) {
   
   ## Git operations
   target <- git2r::repository("./")
-  original_state <- git2r::head(target)
+  original_state <- git2r::repository_head(target)
   git2r::checkout(test_commit)
   on.exit(expr = git2r::checkout(original_state))
   test_results <- list()
@@ -435,7 +411,7 @@ mem_commit <- function(test_path, test_commit) {
     }
     new_name <- gsub(pattern = " ", replacement = "", x = test_name)
     
-    test_status <- "pass"
+    test_status <- "Pass"
     # We have used tryCatch so that execution doesn't stop in case of an error
     # in a testthat block. Rather we modify the values in the result data frame
     # (memories as NA, status as 'fail') to let the user know of the error. 
@@ -471,7 +447,7 @@ mem_commit <- function(test_path, test_commit) {
   
   ## Obtaining the memory metrics for the file 
   file_name <- basename(test_path)
-  file_status <- "pass"
+  file_status <- "Pass"
   rss_list <- 
   tryCatch(expr = {
     .rss.profile.start(paste0(file_name, ".RSS"))
@@ -643,7 +619,6 @@ mem_compare <- function(test_path, num_commits = 10) {
       result_list[[paste0(commit_i, as.character(test_t))]] <- mem_result 
     }
   }
-  
   system("rm *RSS*")
   system("rm mem_result.RData")
   do.call(what = rbind, args = result_list)
@@ -651,3 +626,9 @@ mem_compare <- function(test_path, num_commits = 10) {
 }
 
 ##  -----------------------------------------------------------------------------------------
+
+.benchmark <- function(func){
+      times <- microbenchmark::microbenchmark(func, times = 1)
+      times$time/1e9
+
+}
