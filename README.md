@@ -3,7 +3,7 @@
 
 `Rperform` is a package that allows R developers to track quantitative performance metrics of their code. It helps to provide changes in a package’s performance metrics related to runtime and memory. It is used to access performance metrics over different git versions and across git branches. It can also be integrated with `Travis-CI` for performance testing during Travis builds by making changes to the repo's `.travis.yml` file. It can prove to be particularly useful while measuring the possible changes which can be introduced by a pull request (PR).
 
-_The project was initiated as a part of the [Google Summer of Code 2015](https://github.com/rstats-gsoc/gsoc2015/wiki/Test-timings-on-Travis) program and the [Google Summer of Code 2016](https://github.com/rstats-gsoc/gsoc2016/wiki/Rperform:-Performance-analysis-of-R-package-code) program. It was accepted into the [Google Summer of Code 2022](https://github.com/rstats-gsoc/gsoc2022/wiki/Rperform)_ 
+_The project was initiated as a part of the [Google Summer of Code 2015](https://github.com/rstats-gsoc/gsoc2015/wiki/Test-timings-on-Travis) program and the [Google Summer of Code 2016](https://github.com/rstats-gsoc/gsoc2016/wiki/Rperform:-Performance-analysis-of-R-package-code) program. It was accepted into the [Google Summer of Code 2022](https://github.com/rstats-gsoc/gsoc2022/wiki/Rperform) program_ 
 
 
 
