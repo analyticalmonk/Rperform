@@ -1,3 +1,5 @@
+library(testthat)
+
 context("Joining strings")
 
 test_that("basic case works", {
