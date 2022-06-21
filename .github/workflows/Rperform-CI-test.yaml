@@ -1,16 +1,15 @@
 # Custom Workflow for Rperform CI test
-
 name: R
 
 on:
   push:
-    branches: [test-RPerform]
+    branches: [master]
   pull_request:
-    branches: [test-RPerform]
+    branches: [master]
 
 
 jobs:
-  check_debug_symbols:
+  build_rperform:
     runs-on: ubuntu-latest
       
     steps:

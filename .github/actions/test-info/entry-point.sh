@@ -11,11 +11,6 @@ Rscript -e "library(git2r)"
 
 Rscript -e "install.packages('./', repos = NULL, type='source', verbose=TRUE)"
 
-Rscript -e "wd <- paste(getwd(), '/inst/test-pkgs/stringr', sep = '')"
-Rscript -e "setwd(dir = wd)"
-
-Rscript -e "library(Rperform)"
-Rscript -e "time_compare(test_path = 'inst/tests/test-dup.r', num_commits = 2)"
 
 echo "Rperform test passed successfully"
 exit 0
