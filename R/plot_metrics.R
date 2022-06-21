@@ -203,17 +203,17 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   
   if (length(levels(time_data$test_name)) > 6) {
     test_plot <- test_plot + 
-      animint::theme_animint(height = 700)
+      animint2::theme_animint(height = 700)
   }
   else if (length(levels(time_data$test_name)) > 3) {
     test_plot <- test_plot +
-      animint::theme_animint(height = 650)
+      animint2::theme_animint(height = 650)
   } 
   
   viz.list <- list(timeplot = test_plot)
 
   print("Loaded animint")
-  animint::animint2dir(plot.list = viz.list, out.dir = paste0(basename(getwd()), "_", "time_animint"))
+  animint2::animint2dir(plot.list = viz.list, out.dir = paste0(basename(getwd()), "_", "time_animint"))
   unlink(x = paste0(basename(getwd()), "_", "time_animint"), recursive = T, force = T)
 }
 
@@ -307,17 +307,17 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   
   if (length(levels(mem_data$test_name)) > 6) {
     test_plot <- test_plot + 
-      animint::theme_animint(height = 700)
+      animint2::theme_animint(height = 700)
   }
   else if (length(levels(mem_data$test_name)) > 3) {
     test_plot <- test_plot +
-      animint::theme_animint(height = 650)
+      animint2::theme_animint(height = 650)
   } 
   
   viz.list <- list(memplot = test_plot)
   
   print("Loaded animint")
-  animint::animint2dir(plot.list = viz.list, out.dir = paste0(basename(getwd()), "_", "mem_animint"))
+  animint2::animint2dir(plot.list = viz.list, out.dir = paste0(basename(getwd()), "_", "mem_animint"))
   unlink(x = paste0(basename(getwd()), "_", "mem_animint"), recursive = T, force = T)
 }
 
