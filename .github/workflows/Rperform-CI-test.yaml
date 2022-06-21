@@ -1,0 +1,19 @@
+# Custom Workflow for Rperform CI test
+
+name: R
+
+on:
+  push:
+    branches: [test-RPerform]
+  pull_request:
+    branches: [test-RPerform]
+
+
+jobs:
+  check_debug_symbols:
+    runs-on: ubuntu-latest
+      
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Rperform environment and run the sample code
+        uses:  ./.github/actions/test-info
