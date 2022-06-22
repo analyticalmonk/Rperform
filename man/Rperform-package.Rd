@@ -26,7 +26,7 @@ Maintainer: \packageMaintainer{Rperform}
 \keyword{ package }
 \seealso{
 ~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[git2r:git2r-package]{git2r}} ~~
+~~ \code{\link[https://github.com/ropensci/git2r]{git2r}} ~~
 }
 \examples{
 }
