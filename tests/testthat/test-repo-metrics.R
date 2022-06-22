@@ -9,8 +9,8 @@ if(!dir.exists(paths = "./stringr")){
 setwd("./stringr")
 
 test_that("Wrong parameter type results in error", {
-  expect_error(time_compare(test_path = "inst/tests/test-dup.r", num_commits = "5"))
-  expect_error(mem_compare(test_path = "inst/tests/test-dup.r", num_commits = "5"))
+  expect_error(time_compare(test_path = "inst/tests/test-dup.r", num_commits = 5))
+  expect_error(mem_compare(test_path = "inst/tests/test-dup.r", num_commits = 5))
 })
 
 # test_that("Data frames returned by metric functions are of the correct dimensions",{
