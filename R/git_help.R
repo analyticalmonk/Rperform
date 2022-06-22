@@ -13,7 +13,7 @@
 get_sha <- function(commit_val) {
   stopifnot(git2r::is_commit(commit_val))
   
-  attr(commit_val, which = "sha")  
+   commit_val$sha
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ get_sha <- function(commit_val) {
 get_datetime <- function(commit_val) {
   stopifnot(git2r::is_commit(commit_val))
   
-  methods::as((commit_val@committer@when), "POSIXct")
+  as.POSIXct(git2r::when(commit_val$author$when))
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ get_datetime <- function(commit_val) {
 get_msg <- function(commit_val) {
   stopifnot(git2r::is_commit(commit_val))
   
-  base::substr(commit_val@summary, start = 1, stop = 15)  
+  base::substr(commit_val[[4]], start = 1, stop = 15)  
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -65,7 +65,8 @@ get_msg <- function(commit_val) {
 
 get_branch <- function(dir_path = "./") {
   repo <- git2r::repository(dir_path)
-  git2r::head(repo)@name
+  head <- git2r::repository_head(repo)
+  head[[1]]
 }
 
 ##  -----------------------------------------------------------------------------------------

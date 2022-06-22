@@ -63,7 +63,7 @@ utils::globalVariables(c("metric_val", "test_name"))
 #'
 
 plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, save_plots = FALSE,
-                         interactive = FALSE) {
+                         interactive = FALSE){                     
   stopifnot(is.character(test_path))
   stopifnot(length(test_path) == 1)
   stopifnot(is.character(metric))
@@ -75,12 +75,12 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   stopifnot(is.logical(save_plots))
   stopifnot(length(save_plots) == 1)
   floor(num_commits)
-  
+
   if (metric == "time") {
     if (interactive) {
       temp_out <- capture.output(.plot_interactive_time(test_path, num_commits, save_data, save_plots))
     } else {
-      temp_out <- capture.output(.plot_time(test_path, num_commits, save_data, save_plots))
+       temp_out <- capture.output(.plot_time(test_path, num_commits, save_data, save_plots))      
     }
   }
   else if (metric == "memory") {
@@ -221,10 +221,8 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
 
 
 .plot_time <- function(test_path, num_commits, save_data, save_plots) {
-  
   # Obtain the metrics data
   suppressMessages(time_data <- time_compare(test_path, num_commits))
-  
   # Store the metrics data if save_data is TRUE
   if (save_data){
     
