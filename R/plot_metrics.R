@@ -80,7 +80,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
     if (interactive) {
       temp_out <- capture.output(.plot_interactive_time(test_path, num_commits, save_data, save_plots))
     } else {
-       temp_out <- capture.output(.plot_time(test_path, num_commits, save_data, save_plots))      
+      temp_out <- capture.output(.plot_time(test_path, num_commits, save_data, save_plots))      
     }
   }
   else if (metric == "memory") {
