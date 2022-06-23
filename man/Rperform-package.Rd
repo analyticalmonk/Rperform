@@ -29,4 +29,16 @@ Maintainer: \packageMaintainer{Rperform}
 ~~ \code{\link[https://github.com/ropensci/git2r]{git2r}} ~~
 }
 \examples{
+
+\dontrun{
+# Set the current directory to the git repository concerned.
+setwd("./Path/to/repository")
+
+# Set the file-path
+t_path <- "Path/to/file"
+
+# Load the library
+library(Rperform)
+}
+
 }
