@@ -1,5 +1,0 @@
-name: 'Rperform CI test Info'
-description: 'GitHub Action for testing Rperform package on stringr project'
-runs:
-  using: 'docker'
-  image: 'Dockerfile'
