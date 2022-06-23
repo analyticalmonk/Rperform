@@ -8,3 +8,9 @@
 ^README-.*\.png$
 ^images$
 SampleFiles_TravisPR
+^\.github/
+
+
+
+
+
