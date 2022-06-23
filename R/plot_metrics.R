@@ -75,7 +75,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   stopifnot(is.logical(save_plots))
   stopifnot(length(save_plots) == 1)
   floor(num_commits)
-
+  
   if (metric == "time") {
     if (interactive) {
       temp_out <- capture.output(.plot_interactive_time(test_path, num_commits, save_data, save_plots))
@@ -135,27 +135,27 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
     test_frame <- metric_data[metric_data$test_name == t_names[num],]
     
     tryCatch(expr = {test_plot <- 
-                       ggplot2::ggplot(data = test_frame, mapping = ggplot2::aes(message, metric_val)) +
-                       ggplot2::geom_point(color = "blue") + 
-                       ggplot2::facet_grid(facets = metric_name ~ ., scales = "free") +
-                       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
-                       ggplot2::scale_x_discrete(limits = rev(levels(test_frame$message))) +
-                       # In the above 5 lines of code, the first line creates the basic qplot. The
-                       # fourth and fifth lines display the x-axis labels at 90 degrees to the
-                       # horizontal and correct the order of message labels on the x -axis,
-                       # respectively.
-                       ggplot2::xlab("Commit message") +
-                       ggplot2::ylab("Metric value") +
-                       ggplot2::ggtitle(label = paste0("Variation in metrics for ", t_names[num]))
-                     
-                     
-                     if (save_plots == TRUE) {
-                       .save_plots(test_plot = test_plot, test_name = t_names[num], metric = "testMetrics")
-                       print(test_plot)
-                     }
-                     else {
-                       print(test_plot)
-                     }
+      ggplot2::ggplot(data = test_frame, mapping = ggplot2::aes(message, metric_val)) +
+      ggplot2::geom_point(color = "blue") + 
+      ggplot2::facet_grid(facets = metric_name ~ ., scales = "free") +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+      ggplot2::scale_x_discrete(limits = rev(levels(test_frame$message))) +
+      # In the above 5 lines of code, the first line creates the basic qplot. The
+      # fourth and fifth lines display the x-axis labels at 90 degrees to the
+      # horizontal and correct the order of message labels on the x -axis,
+      # respectively.
+      ggplot2::xlab("Commit message") +
+      ggplot2::ylab("Metric value") +
+      ggplot2::ggtitle(label = paste0("Variation in metrics for ", t_names[num]))
+    
+    
+    if (save_plots == TRUE) {
+      .save_plots(test_plot = test_plot, test_name = t_names[num], metric = "testMetrics")
+      print(test_plot)
+    }
+    else {
+      print(test_plot)
+    }
     },
     error = function(e) {
       print("Encountered an error!")
@@ -188,7 +188,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
                                         substr(levels(time_data$test_name), 
                                                start = nchar(levels(time_data$test_name)) - 4,
                                                stop = nchar(levels(time_data$test_name))))
-
+  
   test_plot <- ggplot2::ggplot() +
     ggplot2::geom_point(mapping = ggplot2::aes(x = message, y = metric_val,
                                                href = remoteUrl),
@@ -211,7 +211,7 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   } 
   
   viz.list <- list(timeplot = test_plot)
-
+  
   print("Loaded animint")
   animint2::animint2dir(plot.list = viz.list, out.dir = paste0(basename(getwd()), "_", "time_animint"))
   unlink(x = paste0(basename(getwd()), "_", "time_animint"), recursive = T, force = T)
@@ -236,28 +236,28 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   
   # Plot the metric data
   tryCatch(expr =   {test_plot <- 
-                       ggplot2::ggplot() +
-                       ggplot2::geom_point(mapping = ggplot2::aes(message, metric_val), 
-                                           data = time_data, color = "blue") +
-                       ggplot2::facet_grid(facets =  test_name ~ ., scales = "free") +
-                       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
-                       ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
-                       # In the above 5 lines of code, the first line creates the basic qplot. The
-                       # fourth and fifth lines display the x-axis labels at 90 degrees to the
-                       # horizontal and correct the order of message labels on the x -axis,
-                       # respectively.
-                       ggplot2::xlab("Commit message") +
-                       ggplot2::ylab("Time (in seconds)") +
-                       ggplot2::ggtitle(label = paste0("Variation in time metrics for ", curr_name))
-                     
-                     if (save_plots == TRUE) {
-                       .save_plots(test_plot = test_plot, test_name = curr_name, metric = "time",
-                                   width = 1600, height = 1200)
-                       print(test_plot)
-                     }
-                     else {
-                       print(test_plot)
-                     }
+    ggplot2::ggplot() +
+    ggplot2::geom_point(mapping = ggplot2::aes(message, metric_val), 
+                        data = time_data, color = "blue") +
+    ggplot2::facet_grid(facets =  test_name ~ ., scales = "free") +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+    ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
+    # In the above 5 lines of code, the first line creates the basic qplot. The
+    # fourth and fifth lines display the x-axis labels at 90 degrees to the
+    # horizontal and correct the order of message labels on the x -axis,
+    # respectively.
+    ggplot2::xlab("Commit message") +
+    ggplot2::ylab("Time (in seconds)") +
+    ggplot2::ggtitle(label = paste0("Variation in time metrics for ", curr_name))
+  
+  if (save_plots == TRUE) {
+    .save_plots(test_plot = test_plot, test_name = curr_name, metric = "time",
+                width = 1600, height = 1200)
+    print(test_plot)
+  }
+  else {
+    print(test_plot)
+  }
   },
   error = function(e){
     print("Encountered an error!")
@@ -286,10 +286,10 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   mem_data$remoteUrl <- paste0(remoteUrl, mem_data$sha)
   
   levels(mem_data$test_name) <- paste0(substr(levels(mem_data$test_name), start = 0, stop = 4),
-                                        "...",
-                                        substr(levels(mem_data$test_name), 
-                                               start = nchar(levels(mem_data$test_name)) - 4,
-                                               stop = nchar(levels(mem_data$test_name))))
+                                       "...",
+                                       substr(levels(mem_data$test_name), 
+                                              start = nchar(levels(mem_data$test_name)) - 4,
+                                              stop = nchar(levels(mem_data$test_name))))
   
   test_plot <- ggplot2::ggplot() +
     ggplot2::geom_point(mapping = ggplot2::aes(x = message, y = metric_val,
@@ -338,28 +338,28 @@ plot_metrics <- function(test_path, metric, num_commits = 5, save_data = FALSE, 
   curr_name <- gsub(pattern = ".[rR]$", replacement = "", x = curr_name)
   
   tryCatch(expr = {test_plot <- 
-                     ggplot2::ggplot(data = mem_data, mapping = ggplot2::aes(message, metric_val)) +
-                     ggplot2::geom_point(color = "blue") +
-                     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90),
-                                    strip.text.x = ggplot2::element_text(size = 10, face = "bold")) +
-                     ggplot2::scale_x_discrete(limits = rev(levels(mem_data$message))) +
-                     ggplot2::facet_grid(test_name ~ metric_name, scales = "free") +
-                     # In the above 5 lines of code, the first line creates the basic qplot. The
-                     # third and fourth lines display the x-axis labels at 90 degrees to the
-                     # horizontal and correct the order of message labels on the x -axis,
-                     # respectively. The fourth line creates a facet grid so as to seperate
-                     # the plots for the max memory and leak memory metrics.
-                     ggplot2::ylab(label = "Memory (in Mb)") +
-                     ggplot2::xlab(label = "Commit messages") +
-                     ggplot2::ggtitle(label = paste0("Variation in memory metrics for ", curr_name))
-                   
-                   if (save_plots == TRUE) {
-                     .save_plots(test_plot = test_plot, test_name = curr_name, metric = "memory")
-                     print(test_plot)
-                   }
-                   else {
-                     print(test_plot)
-                   }
+    ggplot2::ggplot(data = mem_data, mapping = ggplot2::aes(message, metric_val)) +
+    ggplot2::geom_point(color = "blue") +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90),
+                   strip.text.x = ggplot2::element_text(size = 10, face = "bold")) +
+    ggplot2::scale_x_discrete(limits = rev(levels(mem_data$message))) +
+    ggplot2::facet_grid(test_name ~ metric_name, scales = "free") +
+    # In the above 5 lines of code, the first line creates the basic qplot. The
+    # third and fourth lines display the x-axis labels at 90 degrees to the
+    # horizontal and correct the order of message labels on the x -axis,
+    # respectively. The fourth line creates a facet grid so as to seperate
+    # the plots for the max memory and leak memory metrics.
+    ggplot2::ylab(label = "Memory (in Mb)") +
+    ggplot2::xlab(label = "Commit messages") +
+    ggplot2::ggtitle(label = paste0("Variation in memory metrics for ", curr_name))
+  
+  if (save_plots == TRUE) {
+    .save_plots(test_plot = test_plot, test_name = curr_name, metric = "memory")
+    print(test_plot)
+  }
+  else {
+    print(test_plot)
+  }
   },
   error = function(e) {
     print("Encountered an error!")
@@ -665,39 +665,39 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
     extremes_frame <- .find_midvals(data = test_frame)
     
     tryCatch(expr = {test_plot <- 
-                       ggplot2::ggplot(data = test_frame, mapping = ggplot2::aes(message, metric_val)) +
-                       ggplot2::geom_point(color = "blue") +
-                       ggplot2::facet_grid(facets = metric_name ~ ., scales = "free") +
-                       ggplot2::geom_text(data = extremes_frame, 
-                                          mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.3, 
-                                                                 y = mid_val,
-                                                                 label = branch2, angle = 90)) +
-                       ggplot2::geom_text(data = extremes_frame, 
-                                          mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.7, 
-                                                                 y = mid_val,
-                                                                 label = branch1, angle = -90)) +
-                       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
-                       ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = same_commit$cnum_b2 + 0.5)) +
-                       ggplot2::scale_x_discrete(limits = rev(levels(test_frame$message))) +
-                       # In the above 6 lines of code, the first line creates
-                       # the basic qplot. The fourth and sixth lines display the
-                       # x-axis labels at 90 degrees to the horizontal and
-                       # correct the order of message labels on the x -axis, 
-                       # respectively. The fifth line plots a vertical seperator between
-                       # the commit from branch2 and the commits from branch1.
-                       ggplot2::xlab("Commit message") +
-                       ggplot2::ylab("Metric value") +
-                       ggplot2::ggtitle(label = paste0("Variation in metrics for ", t_names[num]))
-                     
-                     curr_name <- paste0(branch1, "_", branch2, "_", t_names[num])
-                     
-                     if (save_plots == TRUE) {
-                       .save_plots(test_plot = test_plot, test_name = t_names[num],
-                                   metric = "testMetrics")
-                       print(test_plot)
-                     } else {
-                       print(test_plot)
-                     }
+      ggplot2::ggplot(data = test_frame, mapping = ggplot2::aes(message, metric_val)) +
+      ggplot2::geom_point(color = "blue") +
+      ggplot2::facet_grid(facets = metric_name ~ ., scales = "free") +
+      ggplot2::geom_text(data = extremes_frame, 
+                         mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.3, 
+                                                y = mid_val,
+                                                label = branch2, angle = 90)) +
+      ggplot2::geom_text(data = extremes_frame, 
+                         mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.7, 
+                                                y = mid_val,
+                                                label = branch1, angle = -90)) +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+      ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = same_commit$cnum_b2 + 0.5)) +
+      ggplot2::scale_x_discrete(limits = rev(levels(test_frame$message))) +
+      # In the above 6 lines of code, the first line creates
+      # the basic qplot. The fourth and sixth lines display the
+      # x-axis labels at 90 degrees to the horizontal and
+      # correct the order of message labels on the x -axis, 
+      # respectively. The fifth line plots a vertical seperator between
+      # the commit from branch2 and the commits from branch1.
+      ggplot2::xlab("Commit message") +
+      ggplot2::ylab("Metric value") +
+      ggplot2::ggtitle(label = paste0("Variation in metrics for ", t_names[num]))
+    
+    curr_name <- paste0(branch1, "_", branch2, "_", t_names[num])
+    
+    if (save_plots == TRUE) {
+      .save_plots(test_plot = test_plot, test_name = t_names[num],
+                  metric = "testMetrics")
+      print(test_plot)
+    } else {
+      print(test_plot)
+    }
     },
     error = function(e){
       print("Encountered an error!")
@@ -741,39 +741,39 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
   
   # Plot the branches' metric data
   tryCatch(expr = {test_plot <- 
-                     ggplot2::ggplot(data = time_data, mapping = ggplot2::aes(message, metric_val)) +
-                     ggplot2::geom_point(color = "blue") +
-                     ggplot2::facet_grid(test_name ~ ., scales = "free") +
-                     ggplot2::geom_text(data = extremes_frame, 
-                                        mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.3,
-                                                               y = mid_val,
-                                                               label = branch2, angle = 90)) +
-                     ggplot2::geom_text(data = extremes_frame, 
-                                        mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.7,
-                                                               y = mid_val,
-                                                               label = branch1, angle = -90)) +
-                     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
-                     ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = same_commit$cnum_b2 + 0.5)) +
-                     ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
-                     # In the above 8 lines of code, the first line creates
-                     # the basic plot. The sixth and eigth lines display the
-                     # x-axis labels at 90 degrees to the horizontal and
-                     # correct the order of message labels on the x -axis, 
-                     # respectively. The seventh line plots a vertical seperator between
-                     # the commit from branch2 and the commits from branch1.
-                     ggplot2::xlab(label = "Commit messages") +
-                     ggplot2::ylab(label = "Time (in seconds)") +
-                     ggplot2::ggtitle(label = paste0("Variation in time metrics across branches ",
-                                                     branch2, " and ", branch1))
-                   
-                   if (save_plots == TRUE) {
-                     .save_plots(test_plot = test_plot, test_name = curr_name, metric = "time",
-                                 width = 1600, height = 900)
-                     print(test_plot)
-                   }
-                   else {
-                     print(test_plot)
-                   }
+    ggplot2::ggplot(data = time_data, mapping = ggplot2::aes(message, metric_val)) +
+    ggplot2::geom_point(color = "blue") +
+    ggplot2::facet_grid(test_name ~ ., scales = "free") +
+    ggplot2::geom_text(data = extremes_frame, 
+                       mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.3,
+                                              y = mid_val,
+                                              label = branch2, angle = 90)) +
+    ggplot2::geom_text(data = extremes_frame, 
+                       mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.7,
+                                              y = mid_val,
+                                              label = branch1, angle = -90)) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90)) +
+    ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = same_commit$cnum_b2 + 0.5)) +
+    ggplot2::scale_x_discrete(limits = rev(levels(time_data$message))) +
+    # In the above 8 lines of code, the first line creates
+    # the basic plot. The sixth and eigth lines display the
+    # x-axis labels at 90 degrees to the horizontal and
+    # correct the order of message labels on the x -axis, 
+    # respectively. The seventh line plots a vertical seperator between
+    # the commit from branch2 and the commits from branch1.
+    ggplot2::xlab(label = "Commit messages") +
+    ggplot2::ylab(label = "Time (in seconds)") +
+    ggplot2::ggtitle(label = paste0("Variation in time metrics across branches ",
+                                    branch2, " and ", branch1))
+  
+  if (save_plots == TRUE) {
+    .save_plots(test_plot = test_plot, test_name = curr_name, metric = "time",
+                width = 1600, height = 900)
+    print(test_plot)
+  }
+  else {
+    print(test_plot)
+  }
   },
   error = function(e){
     print("Encountered an error!")
@@ -815,39 +815,39 @@ plot_branchmetrics <- function(test_path, metric, branch1, branch2 = "master",
   
   # Plot the branches' metric data
   tryCatch(expr = {test_plot <- 
-                     ggplot2::ggplot(data = mem_data, mapping = ggplot2::aes(message, metric_val)) +
-                     ggplot2::geom_point(color = "blue") +
-                     ggplot2::facet_grid(test_name ~ metric_name, scales = "free") +
-                     ggplot2::geom_text(data = extremes_frame, 
-                                        mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.3,
-                                                               y = mid_val,
-                                                               label = branch2, angle = 90)) +
-                     ggplot2::geom_text(data = extremes_frame, 
-                                        mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.7,
-                                                               y = mid_val,
-                                                               label = branch1, angle = -90)) +                     
-                     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90),
-                                    strip.text.x = ggplot2::element_text(size = 10, face = "bold")) +
-                     ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = same_commit$cnum_b2 + 0.5)) +
-                     ggplot2::scale_x_discrete(limits = rev(levels(mem_data$message))) +
-                     # In the above 8 lines of code, the first line creates
-                     # the basic plot. The sixth and eigth lines display the
-                     # x-axis labels at 90 degrees to the horizontal and
-                     # correct the order of message labels on the x -axis, 
-                     # respectively. The seventh line plots a vertical seperator between
-                     # the commit from branch2 and the commits from branch1.
-                     ggplot2::xlab(label = "Commit messages") +
-                     ggplot2::ylab(label = "Memory (in Mb") +
-                     ggplot2::ggtitle(label = paste0("Variation in memory metrics across branches ",
-                                                     branch2, " and ", branch1))
-                   
-                   if (save_plots == TRUE) {
-                     .save_plots(test_plot = test_plot, test_name = curr_name, metric = "memory")
-                     print(test_plot)
-                   }
-                   else {
-                     print(test_plot)
-                   }
+    ggplot2::ggplot(data = mem_data, mapping = ggplot2::aes(message, metric_val)) +
+    ggplot2::geom_point(color = "blue") +
+    ggplot2::facet_grid(test_name ~ metric_name, scales = "free") +
+    ggplot2::geom_text(data = extremes_frame, 
+                       mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.3,
+                                              y = mid_val,
+                                              label = branch2, angle = 90)) +
+    ggplot2::geom_text(data = extremes_frame, 
+                       mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.7,
+                                              y = mid_val,
+                                              label = branch1, angle = -90)) +                     
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90),
+                   strip.text.x = ggplot2::element_text(size = 10, face = "bold")) +
+    ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = same_commit$cnum_b2 + 0.5)) +
+    ggplot2::scale_x_discrete(limits = rev(levels(mem_data$message))) +
+    # In the above 8 lines of code, the first line creates
+    # the basic plot. The sixth and eigth lines display the
+    # x-axis labels at 90 degrees to the horizontal and
+    # correct the order of message labels on the x -axis, 
+    # respectively. The seventh line plots a vertical seperator between
+    # the commit from branch2 and the commits from branch1.
+    ggplot2::xlab(label = "Commit messages") +
+    ggplot2::ylab(label = "Memory (in Mb") +
+    ggplot2::ggtitle(label = paste0("Variation in memory metrics across branches ",
+                                    branch2, " and ", branch1))
+  
+  if (save_plots == TRUE) {
+    .save_plots(test_plot = test_plot, test_name = curr_name, metric = "memory")
+    print(test_plot)
+  }
+  else {
+    print(test_plot)
+  }
   },
   error = function(e){
     print("Encountered an error!")

@@ -5,7 +5,7 @@ context("Check if repo metric functionalities work properly")
 
 if(!dir.exists(paths = "./stringr")){
   git2r::clone(url = "https://github.com/EngineerDanny/stringr", local_path = "./stringr")
-  }
+}
 setwd("./stringr")
 
 test_that("Wrong parameter type results in error", {
