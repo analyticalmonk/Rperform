@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 inst/doc
+.DS_Store
+.github/actions/.DS_Store
+.github/.DS_Store
