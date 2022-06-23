@@ -1,6 +1,10 @@
 .Rproj.user
 .Rhistory
 .RData
+.Ruserdata
+*.o
+*.so
+*.dll
 inst/doc
 .DS_Store
 .github/actions/.DS_Store

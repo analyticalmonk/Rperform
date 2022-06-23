@@ -48,8 +48,8 @@ get_datetime <- function(commit_val) {
 
 get_msg <- function(commit_val) {
   stopifnot(git2r::is_commit(commit_val))
-  
-  base::substr(commit_val[[4]], start = 1, stop = 15)  
+    
+  base::substr(commit_val$summary, start = 1, stop = 15)  
 }
 
 ##  -----------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ get_msg <- function(commit_val) {
 get_branch <- function(dir_path = "./") {
   repo <- git2r::repository(dir_path)
   head <- git2r::repository_head(repo)
-  head[[1]]
+  head$name
 }
 
 ##  -----------------------------------------------------------------------------------------
