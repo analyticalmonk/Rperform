@@ -222,34 +222,34 @@ plot_PR <- function(test_path, metric = "time") {
   
   # Plot the dires' metric data
   tryCatch(expr = {test_plot <- 
-                     ggplot2::ggplot(data = PR_data, mapping = ggplot2::aes(message, metric_val)) +
-                     ggplot2::geom_point(color = "blue") +
-                     ggplot2::facet_grid(test_name ~ metric_name, scales = "free") +
-                     ggplot2::geom_text(data = extremes_frame, 
-                                        mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.3,
-                                                               y = mid_val,
-                                                               label = dir2, angle = 90)) +
-                     ggplot2::geom_text(data = extremes_frame, 
-                                        mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.7,
-                                                               y = mid_val,
-                                                               label = dir1, angle = -90)) +                     
-                     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90),
-                                    strip.text.x = ggplot2::element_text(size = 10, face = "bold")) +
-                     ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = same_commit$cnum_b2 + 0.5)) +
-                     ggplot2::scale_x_discrete(limits = rev(levels(PR_data$message))) +
-                     # In the above 8 lines of code, the first line creates
-                     # the basic plot. The sixth and eigth lines display the
-                     # x-axis labels at 90 degrees to the horizontal and
-                     # correct the order of message labels on the x -axis, 
-                     # respectively. The seventh line plots a vertical seperator between
-                     # the commit from dir2 and the commits from dir1.
-                     ggplot2::xlab(label = "Commit messages") +
-                     ggplot2::ylab(label = "Time (in seconds)") +
-                     ggplot2::ggtitle(label = paste0("Variation in ", metric,  " metrics across branches ",
-                                                     dir2, " and PR# ", Sys.getenv("TRAVIS_PULL_REQUEST")))
-                   
-                   print(test_plot)
-                   
+    ggplot2::ggplot(data = PR_data, mapping = ggplot2::aes(message, metric_val)) +
+    ggplot2::geom_point(color = "blue") +
+    ggplot2::facet_grid(test_name ~ metric_name, scales = "free") +
+    ggplot2::geom_text(data = extremes_frame, 
+                       mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.3,
+                                              y = mid_val,
+                                              label = dir2, angle = 90)) +
+    ggplot2::geom_text(data = extremes_frame, 
+                       mapping = ggplot2::aes(x = same_commit$cnum_b2 + 0.7,
+                                              y = mid_val,
+                                              label = dir1, angle = -90)) +                     
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90),
+                   strip.text.x = ggplot2::element_text(size = 10, face = "bold")) +
+    ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = same_commit$cnum_b2 + 0.5)) +
+    ggplot2::scale_x_discrete(limits = rev(levels(PR_data$message))) +
+    # In the above 8 lines of code, the first line creates
+    # the basic plot. The sixth and eigth lines display the
+    # x-axis labels at 90 degrees to the horizontal and
+    # correct the order of message labels on the x -axis, 
+    # respectively. The seventh line plots a vertical seperator between
+    # the commit from dir2 and the commits from dir1.
+    ggplot2::xlab(label = "Commit messages") +
+    ggplot2::ylab(label = "Time (in seconds)") +
+    ggplot2::ggtitle(label = paste0("Variation in ", metric,  " metrics across branches ",
+                                    dir2, " and PR# ", Sys.getenv("TRAVIS_PULL_REQUEST")))
+  
+  print(test_plot)
+  
   },
   error = function(e){
     print("Encountered an error!")

@@ -10,13 +10,13 @@ Description: Rperform helps R package developers keep track of the quantitative
     metrics of their packages over various development versions.
 BugReports: https://github.com/analyticalmonk/Rperform/issues
 Imports:
-    git2r (<= 0.21.0),
+    git2r (>= 0.30.1),
     ggplot2 (>= 1.0.1),
     testthat (>= 0.10.0),
     devtools (>= 1.8.0),
     microbenchmark (>= 1.4-2)
 Suggests:
-    animint,
+    animint2,
     rmarkdown,
     knitr
 VignetteBuilder: knitr
